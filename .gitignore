@@ -65,3 +65,24 @@ model_compressed/
 wandb/
 runs/
 outputs/
+
+# Local configuration and development notes
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+.agents/
+.claude/
+.codex/
+.cursor/
+AGENT.md
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+MEMORY.md
+program.md
+docs/superpowers/
+*.key
+*.p12
+*.pfx
