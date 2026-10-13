@@ -38,19 +38,13 @@ class ImportanceScorer:
         return scores
 
     def head_importance(self, model: nn.Module = None, calibration_inputs=None) -> dict[str, float]:
-        """Estimate per-head importance using activation magnitude as a Taylor proxy.
+        """Return attention-module activation scores (not individual heads).
 
-        When gradients are unavailable (inference-only), activation magnitude
-        serves as a reasonable proxy for sensitivity. For higher-fidelity scoring,
-        pass calibration_inputs to compute gradient-weighted activations.
-
-        Args:
-            model: Optional model reference for gradient-based scoring.
-            calibration_inputs: Optional list of tokenized inputs for gradient pass.
-
-        Returns:
-            Dict mapping attention layer name to normalized importance score in [0, 1].
+        Kept for API compatibility. Gradient/head-level scoring is not implemented;
+        arguments requesting that behavior fail rather than being ignored.
         """
+        if model is not None or calibration_inputs is not None:
+            raise NotImplementedError("Gradient or individual-head scoring is not implemented")
         scores: dict[str, float] = {}
         for name, stats in self.profile.layers.items():
             if "attn" in name or "attention" in name:

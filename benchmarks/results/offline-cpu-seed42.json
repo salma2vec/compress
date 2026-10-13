@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "task": "synthetic cyclic-symbol next-token prediction",
+  "scope": "CPU integration experiment; no pretrained LLM or GPU claim",
+  "seed": 42,
+  "training_steps": 100,
+  "final_training_loss": 0.017499102279543877,
+  "torch": "2.14.1",
+  "python": "3.11.15",
+  "device": "cpu",
+  "threads": 1,
+  "split_sha256": {
+    "training": "95a2115e75a51c9ea5609b13c246a7e99681c968f928a2e583d36e07de616815",
+    "calibration": "7b3f3561ce823f8f580af21c55b00bf7743f380980b8c9cb35e221167baa2b22",
+    "evaluation": "244a54d8605bf495a504c681792701959d308418ed213d9cfa6316465303cdf7"
+  },
+  "importance": {
+    "q": 0.6960564271259709,
+    "k": 0.7059475105679281,
+    "v": 0.5871761895666072,
+    "attn_out": 0.5866620600763981,
+    "mlp.0": 0.815798918110892,
+    "mlp.2": 0.6311514885642431,
+    "head": 1.0
+  },
+  "results": [
+    {
+      "method": "fp32",
+      "assignments": null,
+      "perplexity": 1.0172267454955732,
+      "reference_kl_per_token": 0.0,
+      "persistent_tensor_bytes": 29760,
+      "checkpoint_bytes": 30984,
+      "prefill_median_seconds": 0.00029629149503307417,
+      "prefill_samples_seconds": [
+        0.0004287920019123703,
+        0.0003995000006398186,
+        0.00020737500744871795,
+        0.00019112500012852252,
+        0.00018641700444277376,
+        0.00018683300004340708,
+        0.0003367080062162131,
+        0.0003328749880893156,
+        0.0002798749919747934,
+        0.00031270799809135497
+      ]
+    },
+    {
+      "method": "uniform_int8",
+      "assignments": {
+        "q": "int8",
+        "k": "int8",
+        "v": "int8",
+        "attn_out": "int8",
+        "mlp.0": "int8",
+        "mlp.2": "int8",
+        "head": "int8"
+      },
+      "perplexity": 1.017253421905416,
+      "reference_kl_per_token": 4.7416116899512417e-07,
+      "persistent_tensor_bytes": 10624,
+      "checkpoint_bytes": 12536,
+      "prefill_median_seconds": 0.00047354200069094077,
+      "prefill_samples_seconds": [
+        0.0006495000125141814,
+        0.00044745799095835537,
+        0.0004431249981280416,
+        0.0005606250051641837,
+        0.00033054199593607336,
+        0.0006150830013211817,
+        0.0002965000021504238,
+        0.0004661249986384064,
+        0.0005165829934412614,
+        0.00048095900274347514
+      ]
+    },
+    {
+      "method": "uniform_int4",
+      "assignments": {
+        "q": "int4",
+        "k": "int4",
+        "v": "int4",
+        "attn_out": "int4",
+        "mlp.0": "int4",
+        "mlp.2": "int4",
+        "head": "int4"
+      },
+      "perplexity": 1.0180714209386077,
+      "reference_kl_per_token": 0.0004831072874367237,
+      "persistent_tensor_bytes": 7296,
+      "checkpoint_bytes": 9192,
+      "prefill_median_seconds": 0.0007638954994035885,
+      "prefill_samples_seconds": [
+        0.0006310000026132911,
+        0.0006210419960552827,
+        0.0006150420085759833,
+        0.0006110829999670386,
+        0.000628707988653332,
+        0.001057083994965069,
+        0.0009887919877655804,
+        0.0009699590009404346,
+        0.0008967909961938858,
+        0.0010272499930579215
+      ]
+    },
+    {
+      "method": "mixed",
+      "assignments": {
+        "q": "int8",
+        "k": "int8",
+        "v": "int8",
+        "attn_out": "int8",
+        "mlp.0": "fp16",
+        "mlp.2": "int8",
+        "head": "fp16"
+      },
+      "perplexity": 1.0172325510020122,
+      "reference_kl_per_token": 1.108816576333993e-07,
+      "persistent_tensor_bytes": 11968,
+      "checkpoint_bytes": 13880,
+      "prefill_median_seconds": 0.0004185834986856207,
+      "prefill_samples_seconds": [
+        0.0005390829901443794,
+        0.00039224998909048736,
+        0.0003859999997075647,
+        0.00043170800199732184,
+        0.00029937500949017704,
+        0.000538583000889048,
+        0.0004130000015720725,
+        0.00042416699579916894,
+        0.0004583330010063946,
+        0.0003353329957462847
+      ]
+    },
+    {
+      "method": "mixed_shuffled",
+      "assignments": {
+        "q": "int8",
+        "k": "int8",
+        "v": "int8",
+        "attn_out": "fp16",
+        "mlp.0": "int8",
+        "mlp.2": "int8",
+        "head": "fp16"
+      },
+      "perplexity": 1.0172332936133577,
+      "reference_kl_per_token": 1.6189281382139598e-07,
+      "persistent_tensor_bytes": 11968,
+      "checkpoint_bytes": 13880,
+      "prefill_median_seconds": 0.0003107704978901893,
+      "prefill_samples_seconds": [
+        0.0003546660009305924,
+        0.0003227909910492599,
+        0.00027800000680144876,
+        0.00027495900576468557,
+        0.0002987500047311187,
+        0.00039029199979268014,
+        0.0005361670046113431,
+        0.0004533749888651073,
+        0.0002793329913401976,
+        0.00027333399339113384
+      ]
+    }
+  ]
+}

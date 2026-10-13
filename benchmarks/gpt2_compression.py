@@ -21,7 +21,7 @@ from rich.table import Table
 from rich.console import Console
 
 
-def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20):
+def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20, model_name: str = "gpt2", data_path: str = ""):
     """Execute the full benchmark suite and print results to stdout.
 
     Args:
@@ -30,16 +30,16 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20):
         n_batches: Number of calibration batches to profile.
     """
     console = Console()
-    console.print("[bold]compress benchmark: GPT-2 (124M)[/bold]\n")
+    console.print("[bold]compress benchmark: floating-point quantization simulation[/bold]\n")
 
     try:
-        from transformers import GPT2LMHeadModel, GPT2Tokenizer
+        from transformers import AutoModelForCausalLM, AutoTokenizer
     except ImportError:
         console.print("[red]transformers not installed. Run: pip install transformers[/red]")
         return
 
-    console.print("Loading GPT-2 tokenizer...")
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+    console.print("Loading tokenizer...")
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     tokenizer.pad_token = tokenizer.eos_token
 
     # Synthetic calibration corpus — deterministic, no external data dependency
@@ -56,15 +56,20 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20):
     ]
     cal_texts = [
         rng.choice(templates) + f" topic {i} reveals interesting patterns and significant results."
-        for i in range(n_cal)
+        for i in range(n_cal + n_test)
     ]
-    test_texts = cal_texts[:n_test]
+    if data_path:
+        from pathlib import Path
+        cal_texts = list(dict.fromkeys(line.strip() for line in Path(data_path).read_text().splitlines() if line.strip()))
+        if len(cal_texts) < n_cal + n_test:
+            raise ValueError("Data must contain n_cal + n_test distinct samples")
+    test_texts, cal_texts = cal_texts[n_cal:n_cal + n_test], cal_texts[:n_cal]
 
     methods = [
         ("Baseline (FP32)", None, None),
         ("Uniform INT8", "int8", None),
         ("Activation-aware mixed", "mixed", None),
-        ("Mixed + head pruning (30%)", "mixed", 0.7),
+        ("Mixed + attention weight ablation (30%)", "mixed", 0.7),
     ]
 
     table = Table(title="Compression Benchmark Results")
@@ -80,7 +85,7 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20):
         console.print(f"  Running: [bold]{name}[/bold]")
 
         console.print("    Loading model...")
-        model = GPT2LMHeadModel.from_pretrained("gpt2")
+        model = AutoModelForCausalLM.from_pretrained(model_name, use_safetensors=True)
 
         if quant_mode is not None:
             from compress.profiling.activation_recorder import ActivationRecorder
@@ -108,7 +113,7 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20):
             if keep_frac is not None:
                 from compress.compression.pruning import HeadPruner
                 pruner = HeadPruner(keep_fraction=keep_frac)
-                console.print(f"    Pruning to {int(keep_frac * 100)}% of attention layers...")
+                console.print(f"    Ablating weights in low-score attention modules...")
                 model = pruner.prune_heads(model, importance)
                 report = pruner.pruning_report()
                 console.print(f"    Pruned {report['n_pruned']} layers")

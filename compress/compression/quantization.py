@@ -15,6 +15,10 @@ class QuantizationConfig:
     layer_dtypes: dict[str, str]
     default_dtype: str = "int8"
 
+    def __post_init__(self):
+        if any(value not in {"fp16", "int8", "int4"} for value in [self.default_dtype, *self.layer_dtypes.values()]):
+            raise ValueError("Dtypes must be fp16, int8 or int4")
+
 
 class Int8Quantizer:
     """Per-channel symmetric INT8 quantization.
@@ -40,17 +44,11 @@ class Int8Quantizer:
             scale and zero_point have shape (out_features,).
         """
         w_flat = w.reshape(w.shape[0], -1).float()
-        w_min = w_flat.min(dim=1).values
-        w_max = w_flat.max(dim=1).values
-
-        scale = (w_max - w_min) / 255.0
-        scale = scale.clamp(min=1e-8)
-
-        zero_point = (-128.0 - w_min / scale).round().clamp(-128, 127).to(torch.int8)
-
-        w_q = (
-            (w_flat / scale.unsqueeze(1)) + zero_point.float().unsqueeze(1)
-        ).round().clamp(-128, 127).to(torch.int8)
+        if not torch.isfinite(w_flat).all():
+            raise ValueError("Weights must be finite")
+        scale = (w_flat.abs().amax(dim=1) / 127.0).clamp(min=torch.finfo(torch.float32).tiny)
+        zero_point = torch.zeros(w.shape[0], device=w.device, dtype=torch.int8)
+        w_q = (w_flat / scale.unsqueeze(1)).round().clamp(-127, 127).to(torch.int8)
 
         return w_q.reshape(w.shape), scale, zero_point
 
@@ -120,11 +118,13 @@ class NF4Quantizer:
             indices is uint8 tensor with values in [0, 15].
             scale is a scalar tensor.
         """
-        scale = w.abs().max()
+        if not w.numel() or not torch.isfinite(w).all():
+            raise ValueError("Weights must be nonempty and finite")
+        scale = w.float().abs().max()
         w_norm = (w / scale.clamp(min=1e-8)).clamp(-1, 1)
         levels = cls.NF4_LEVELS.to(w.device)
-        diffs = (w_norm.unsqueeze(-1) - levels).abs()
-        indices = diffs.argmin(dim=-1).to(torch.uint8)
+        boundaries = (levels[:-1] + levels[1:]) / 2
+        indices = torch.bucketize(w_norm.contiguous(), boundaries).to(torch.uint8)
         return indices, scale
 
     @classmethod
@@ -161,7 +161,7 @@ class ActivationAwareQuantizer:
         """Apply per-layer quantization in-place based on the importance config.
 
         For each layer with a weight parameter:
-          - "fp16": cast to half precision and back (reduces dynamic range errors)
+          - "fp16": cast to half precision and back (simulates FP16 rounding)
           - "int8": per-channel INT8 quantize then dequantize
           - "int4": NF4 quantize then dequantize
 
@@ -171,10 +171,16 @@ class ActivationAwareQuantizer:
         Returns:
             The same model with compressed weights.
         """
+        self._compression_log.clear()
+        seen = set()
         for name, module in model.named_modules():
             if not hasattr(module, "weight") or module.weight is None:
                 continue
-            w = module.weight.data
+            if id(module.weight) in seen or module.weight.ndim < 2:
+                continue
+            seen.add(id(module.weight))
+            w = module.weight.detach()
+            original_dtype = w.dtype
             dtype = self.config.layer_dtypes.get(name, self.config.default_dtype)
             self._compression_log[name] = dtype
 
@@ -190,6 +196,7 @@ class ActivationAwareQuantizer:
             elif dtype == "int4":
                 indices, scale = NF4Quantizer.quantize(w)
                 module.weight.data = NF4Quantizer.dequantize(indices, scale)
+            module.weight.data = module.weight.data.to(original_dtype)
 
         return model
 

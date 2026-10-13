@@ -1,232 +1,74 @@
 # compress
 
-**Activation-aware compression for transformer models.**
+A reproducible workbench for activation-guided, weight-only quantization. Profile a calibration distribution, assign precision to weighted modules, store packed weights, and measure the held-out quality/storage tradeoff against uniform and shuffled controls.
 
-Standard quantization treats all weights equally. `compress` profiles which attention heads and MLP neurons are most active on *your specific data distribution*, then applies more aggressive compression to the dormant ones. The result: better task-specific quality at the same compression ratio, or higher compression at the same quality.
+The central question is empirical: **does activation magnitude help allocate a fixed precision budget?** The library implements a simple magnitude × density heuristic. It does not assume that this heuristic improves quality or that a small stored model runs faster.
 
----
-
-## Why activation-aware?
-
-A transformer trained on general text will use different layers heavily depending on what it's actually doing. A model deployed for code generation activates different heads than one running document summarization. Uniform INT8 quantization ignores this entirely.
-
-`compress` profiles the model on a calibration corpus representative of your deployment distribution, computes a per-layer importance score, and assigns quantization precision accordingly:
-
-- **High importance** (active, dense) → FP16
-- **Medium importance** → INT8
-- **Low importance** (sparse, near-zero activations) → INT4 (NF4)
-
-In practice this means critical layers stay sharp while dormant layers are aggressively compressed, improving the quality/size tradeoff over uniform schemes.
-
----
-
-## Installation
+## Install and run
 
 ```bash
-pip install compress
-# or for development:
 git clone https://github.com/salma2vec/compress.git
 cd compress
-pip install -e ".[dev]"
+python -m venv .venv
+source .venv/bin/activate
+pip install -e '.[dev]'
+python -m pytest -q
+python -m benchmarks.offline --seed 42 --steps 100 --output results/offline.json
 ```
 
-**Requirements:** Python ≥ 3.11, PyTorch ≥ 2.0, Transformers ≥ 4.35
+Python 3.11+ and PyTorch 2.6+ are required. The offline benchmark needs no downloaded model, dataset, API key, or accelerator. It trains a small causal attention model on a synthetic cyclic-symbol task, uses separate calibration and evaluation sequences, and writes configuration, corpus hashes, raw timing samples, likelihoods, checkpoint sizes and tensor storage bytes. This is a functional integration experiment, not a pretrained-language-model benchmark.
 
----
+A measured [CPU reference run](docs/reference-run.md) is included with its raw report.
 
-## Quickstart
+## Two quantization paths
+
+| Path | Representation | Purpose |
+| --- | --- | --- |
+| `ActivationAwareQuantizer` | Original floating-point parameters with quantization error simulated | Broad compatibility and quality ablations; no storage compression |
+| `pack_model` | FP16 buffers, symmetric INT8, or two NF4 indices per byte | Actual weight storage reduction for ordinary `nn.Linear` modules |
+
+The packed backend dequantizes weights before each PyTorch matrix multiplication. Persistent storage can shrink while latency and peak working memory increase. It has no fused low-bit inference kernel. NF4 uses the QLoRA codebook with per-output-row scaling, not QLoRA's full blockwise quantization/finetuning pipeline.
 
 ```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from compress import (
-    ActivationRecorder,
-    ImportanceScorer,
-    ActivationAwareQuantizer,
-    QuantizationConfig,
-    MixedPrecisionConfig,
-)
+from compress import ActivationRecorder, ImportanceScorer, MixedPrecisionConfig, QuantizationConfig
+from compress.compression.packed import pack_model, save_packed, load_packed, tensor_bytes
 
-# Load your model
-model = AutoModelForCausalLM.from_pretrained("gpt2")
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-tokenizer.pad_token = tokenizer.eos_token
-
-# 1. Profile activations on calibration data
-recorder = ActivationRecorder(model)
-texts = ["Your calibration text here.", "More representative samples..."]
-profile = recorder.record(texts, tokenizer, n_batches=100)
-
-# 2. Compute per-layer importance scores
-scorer = ImportanceScorer(profile)
-importance = scorer.layer_importance()
-print(scorer.summary())
-# {'n_layers': 144, 'mean_importance': 0.41, 'dtype_breakdown': {'fp16': 18, 'int8': 52, 'int4': 74}}
-
-# 3. Build a mixed-precision config from importance scores
-mp_config = MixedPrecisionConfig.from_importance(importance)
-mp_config.to_json("my_model_config.json")  # Save for reproducibility
-
-# 4. Quantize
-q_config = QuantizationConfig(layer_dtypes=mp_config.layer_dtypes)
-quantizer = ActivationAwareQuantizer(q_config)
-model = quantizer.quantize_model(model)
-print(quantizer.compression_report())
-# {'fp16': 18, 'int8': 52, 'int4': 74}
-
-# 5. Measure the result
-from compress import compute_perplexity, measure_latency
-
-ppl = compute_perplexity(model, tokenizer, texts[:50])
-lat = measure_latency(model, tokenizer, n_tokens=50)
-print(f"Perplexity: {ppl:.2f}")
-print(f"Throughput: {lat['tokens_per_sec']:.1f} tok/s")
+# model, tokenizer, calibration_texts are supplied by the caller.
+profile = ActivationRecorder(model).record(calibration_texts, tokenizer, n_batches=100)
+scores = ImportanceScorer(profile).layer_importance()
+plan = MixedPrecisionConfig.from_importance(scores)
+plan.to_json('precision.json')
+model = pack_model(model, QuantizationConfig(plan.layer_dtypes))
+print(tensor_bytes(model))
+save_packed(model, 'model.safetensors')
+# Rebuild the same architecture explicitly; no Python model objects are unpickled.
+restored = load_packed(build_model(), 'model.safetensors')
 ```
 
-### Using the CLI
+Packed conversion is inference-only and modifies the model in place. It rejects tied linear weights and `nn.MultiheadAttention`, which reads child weights directly. Models using GPT-2-style `Conv1D`, custom weight access, shared module aliases, or other fused projection APIs require an adapter; use the simulation path for those architectures. Validate outputs before deploying a new model family.
+
+## Evaluation contracts
+
+- Calibration failures are visible, hooks are cleaned up on failure, and tensors move to the model device. Statistics are weighted by activation element count.
+- Importance is normalized per profile; it is a module-level heuristic, not a causal sensitivity estimate or an individual-head score.
+- Perplexity evaluates complete documents using overlapping windows and counts each predicted target once. Model failures and nonfinite losses stop evaluation.
+- Generation latency synchronizes CUDA/MPS and counts tokens actually emitted, including early stopping. Raw samples accompany the summary.
+- The offline comparison includes FP32, uniform INT8, uniform NF4, mixed precision and a mixed assignment shuffled within equal-shaped layer groups. The latter preserves the same stored-byte budget.
+- Checkpoints use safetensors. Hugging Face CLI model loading also requires safetensors and does not enable remote model code.
+
+## Hugging Face simulation workflow
 
 ```bash
-# Profile a model
-compress profile --model gpt2 --out profile.json --n-batches 100
-
-# Quantize using the profile
-compress quantize --model gpt2 --profile-path profile.json --out ./gpt2-compressed/
-
-# Evaluate
-compress evaluate --model ./gpt2-compressed/
-
-# Run the full benchmark
-compress benchmark
+compress profile --model gpt2 --data calibration.txt --out profile.json
+compress quantize --model gpt2 --profile-path profile.json --out simulated-model
+compress evaluate --model simulated-model --data heldout.txt
+compress benchmark --model gpt2
 ```
 
----
+The `quantize` CLI saves fake-quantized floating-point weights in a normal Hugging Face directory. It does **not** produce packed low-bit weights; use `pack_model` for supported custom architectures. The downloaded-model benchmark uses disjoint calibration/evaluation samples but remains a synthetic smoke experiment unless you supply a representative corpus. Do not use its latency to infer low-bit kernel acceleration.
 
-## Architecture
+## Research scope
 
-```
-compress/
-├── profiling/
-│   ├── activation_recorder.py   # Forward hook-based activation profiler
-│   ├── importance.py            # Per-layer importance scoring
-│   └── calibration_data.py     # Calibration corpus utilities
-├── compression/
-│   ├── quantization.py          # INT8, NF4, activation-aware quantizer
-│   ├── pruning.py               # Structured head pruning
-│   ├── mixed_precision.py       # Layer → dtype assignment
-│   └── distillation.py         # Layer-drop distillation
-├── reconstruction/
-│   ├── correction.py            # Post-compression bias correction
-│   └── weight_surgery.py       # Weight transplantation utilities
-├── evaluation/
-│   ├── perplexity.py            # Language model perplexity
-│   ├── latency.py               # Token generation latency
-│   └── task_eval.py            # Classification and MC accuracy
-└── cli.py                       # Typer CLI
-```
+`profiling/`, `compression/`, `evaluation/`, and `reconstruction/` separate measurement from interventions. Auxiliary APIs include attention **weight ablation** (`HeadPruner`, a legacy name), layer selection, weight transplantation and bias correction. These are experimental utilities; weight ablation does not remove heads or reduce parameter count, and layer selection does not train a distilled student.
 
-**Pipeline:** `ActivationRecorder` → `ImportanceScorer` → `MixedPrecisionConfig` → `ActivationAwareQuantizer` → evaluation
-
----
-
-## Benchmark
-
-Run `make benchmark` or `compress benchmark` to reproduce.
-
-| Method                       | Perplexity | Tokens/sec | PPL delta |
-|------------------------------|------------|------------|-----------|
-| Baseline (FP32)              | —          | —          | —         |
-| Uniform INT8                 | —          | —          | —         |
-| Activation-aware mixed       | —          | —          | —         |
-| Mixed + head pruning (30%)   | —          | —          | —         |
-
-*Fill in after running `make benchmark` on your hardware.*
-
----
-
-## API Reference
-
-### `ActivationRecorder`
-
-```python
-class ActivationRecorder(model: nn.Module, epsilon: float = 1e-3)
-```
-
-Attaches forward hooks to all attention and MLP submodules and accumulates per-layer activation statistics across a calibration corpus.
-
-| Method | Description |
-|--------|-------------|
-| `attach()` | Register forward hooks on all `attn`/`mlp`/`attention`/`feed_forward` submodules |
-| `detach()` | Remove all registered hooks |
-| `reset()` | Clear accumulated statistics |
-| `record(inputs, tokenizer, n_batches)` | Run forward passes and return `ActivationProfile` |
-
-**`ActivationProfile`** exposes `layers: dict[str, LayerStats]`. Each `LayerStats` has `mean_magnitude`, `sparsity`, `variance`, `n_samples`.
-
----
-
-### `ImportanceScorer`
-
-```python
-class ImportanceScorer(profile: ActivationProfile)
-```
-
-Computes normalized per-layer importance scores from an activation profile.
-
-| Method | Description |
-|--------|-------------|
-| `layer_importance()` | Returns `dict[str, float]` in [0, 1] — composite of magnitude × density |
-| `head_importance(model, calibration_inputs)` | Attention-only importance scores |
-| `recommended_dtype(layer_name)` | Returns `"fp16"`, `"int8"`, or `"int4"` |
-| `summary()` | Returns counts and statistics |
-
----
-
-### `ActivationAwareQuantizer`
-
-```python
-class ActivationAwareQuantizer(config: QuantizationConfig)
-```
-
-Applies mixed-precision quantization to a model in-place.
-
-| Method | Description |
-|--------|-------------|
-| `quantize_model(model)` | Apply per-layer dtype assignments from config, return model |
-| `compression_report()` | Returns `dict[str, int]` with counts per dtype |
-
-Supported dtypes:
-- `"fp16"` — cast to half and back (precision reduction, no bit-packing)
-- `"int8"` — per-channel symmetric INT8 with scale/zero-point
-- `"int4"` — 4-bit NormalFloat (QLoRA-style NF4)
-
----
-
-### `HeadPruner`
-
-```python
-class HeadPruner(keep_fraction: float = 0.7)
-```
-
-Structured pruning of attention layers ranked by importance.
-
-| Method | Description |
-|--------|-------------|
-| `prune_heads(model, importance)` | Zero out bottom `(1 - keep_fraction)` of attention layers |
-| `pruning_report()` | Returns `{"n_pruned": int, "pruned_layers": list[str]}` |
-
----
-
-## Adding a New Compression Method
-
-1. Create `compress/compression/my_method.py`
-2. Implement a class with a `compress_model(model, importance) -> nn.Module` interface
-3. Register it in `compress/compression/__init__.py`
-4. Add tests in `tests/test_my_method.py`
-5. Wire it into the benchmark in `benchmarks/gpt2_compression.py`
-
-The `importance: dict[str, float]` dict from `ImportanceScorer.layer_importance()` is the canonical interface for passing activation-guided signals to compression methods.
-
----
-
-## License
-
-Apache 2.0
+See [methodology and related work](docs/methodology.md) for assumptions, limitations and current research context. No SOTA result or same-budget quality improvement is claimed. A publication-scale study still requires representative pretrained models, multiple seeds/corpora, matched budgets, hardware-aware low-bit kernels and external baselines.

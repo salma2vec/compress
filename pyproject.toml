@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "compress"
@@ -20,7 +20,8 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    "torch>=2.0",
+    "torch>=2.6",
+    "safetensors>=0.4.5",
     "transformers>=4.35",
     "numpy>=1.24",
     "typer>=0.9",
@@ -36,7 +37,7 @@ compress = "compress.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["compress*"]
+include = ["compress*", "benchmarks*"]
 
 [tool.ruff]
 line-length = 100

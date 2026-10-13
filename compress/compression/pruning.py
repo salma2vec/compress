@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class HeadPruner:
-    """Structured pruning of attention layers ranked by importance.
+    """Attention weight ablation (legacy class name; not structural head pruning).
 
     Zeroes out the weights (and biases) of the lowest-scoring attention
     layers, effectively removing their contribution to the forward pass.
@@ -34,9 +34,11 @@ class HeadPruner:
         Returns:
             The pruned model.
         """
+        self.pruned_heads.clear()
+        modules = dict(model.named_modules())
         attn_layers = {
             k: v for k, v in importance.items()
-            if "attn" in k or "attention" in k
+            if ("attn" in k or "attention" in k) and k in modules and getattr(modules[k], "weight", None) is not None
         }
         if not attn_layers:
             return model

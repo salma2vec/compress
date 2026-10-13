@@ -1,129 +1,60 @@
+"""Small calibration fits which update only explicitly selected parameters."""
 import torch
-import torch.nn as nn
-from typing import Optional
+from torch import nn
 
 
 class PostCompressionCorrection:
-    """Recover accuracy lost to quantization via a lightweight calibration pass.
-
-    After aggressive quantization, output logits can drift significantly from
-    the original model. This class minimizes the mean-squared error between
-    the compressed model's outputs and the original model's outputs on a small
-    calibration set by fine-tuning only the bias parameters — the lightest
-    possible adaptation that can partially compensate for systematic quantization
-    error.
-
-    For stronger correction, consider full bias + LayerNorm fine-tuning, or
-    GPTQ-style layer-wise reconstruction.
-
-    Args:
-        model: The compressed model to correct.
-        original_model: The original (uncompressed) teacher model.
-    """
-
     def __init__(self, model: nn.Module, original_model: nn.Module):
-        self.model = model
-        self.original = original_model
+        self.model, self.original = model, original_model
 
-    def correct_bias(
-        self,
-        calibration_inputs: list[torch.Tensor],
-        lr: float = 1e-4,
-        steps: int = 100,
-        verbose: bool = False,
-    ) -> list[float]:
-        """Minimize output difference on calibration data by adjusting biases.
+    @staticmethod
+    def _logits(output):
+        if isinstance(output, torch.Tensor):
+            return output
+        return output.logits if hasattr(output, 'logits') else output[0]
 
-        Freezes all parameters except biases, then runs Adam optimization to
-        minimize the MSE between compressed and original model logits.
-
-        Args:
-            calibration_inputs: List of tokenized input dicts (as returned by
-                a HuggingFace tokenizer with return_tensors="pt").
-            lr: Learning rate for the Adam optimizer.
-            steps: Number of optimization steps.
-            verbose: If True, print loss every 10 steps.
-
-        Returns:
-            List of per-step loss values.
-        """
-        self.model.train()
-        params = [p for n, p in self.model.named_parameters() if "bias" in n]
-        if not params:
+    def _correct(self, inputs, select, lr, steps, verbose=False):
+        if not inputs or steps < 1 or lr <= 0:
+            raise ValueError("Nonempty calibration data, positive steps and learning rate required")
+        selected = [p for name, p in self.model.named_parameters() if select(name)]
+        if not selected:
             return []
-
-        optimizer = torch.optim.Adam(params, lr=lr)
+        selected_ids = {id(p) for p in selected}
+        requires_grad = {p: p.requires_grad for p in self.model.parameters()}
+        modes = (self.model.training, self.original.training)
+        optimizer = torch.optim.Adam(selected, lr=lr)
         losses = []
-        batch = calibration_inputs[:10]
-
-        for step in range(steps):
-            for x in batch:
-                with torch.no_grad():
-                    target = self.original(**x) if isinstance(x, dict) else self.original(x)
-                pred = self.model(**x) if isinstance(x, dict) else self.model(x)
-
-                t_logits = target.logits if hasattr(target, "logits") else target[0]
-                p_logits = pred.logits if hasattr(pred, "logits") else pred[0]
-
-                loss = ((p_logits - t_logits) ** 2).mean()
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
-                losses.append(loss.item())
-
-            if verbose and step % 10 == 0:
-                avg = sum(losses[-len(batch):]) / max(len(batch), 1)
-                print(f"  step {step:4d}/{steps}  avg_loss={avg:.6f}")
-
-        self.model.eval()
+        try:
+            # Evaluation mode disables dropout while autograd remains enabled.
+            self.model.eval()
+            self.original.eval()
+            for parameter in self.model.parameters():
+                parameter.requires_grad_(id(parameter) in selected_ids)
+            for step in range(steps):
+                for x in inputs:
+                    with torch.no_grad():
+                        target = self.original(**x) if isinstance(x, dict) else self.original(x)
+                    prediction = self.model(**x) if isinstance(x, dict) else self.model(x)
+                    loss = (self._logits(prediction) - self._logits(target)).square().mean()
+                    if not torch.isfinite(loss):
+                        raise ValueError("Nonfinite reconstruction loss")
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+                    losses.append(float(loss.detach()))
+                if verbose and step % 10 == 0:
+                    print(f"step={step} loss={losses[-1]:.6g}")
+        finally:
+            for parameter, flag in requires_grad.items():
+                parameter.requires_grad_(flag)
+            self.model.train(modes[0])
+            self.original.train(modes[1])
         return losses
 
-    def layer_norm_correction(
-        self,
-        calibration_inputs: list[torch.Tensor],
-        lr: float = 1e-3,
-        steps: int = 50,
-    ) -> list[float]:
-        """Fine-tune LayerNorm scale and shift parameters to correct output drift.
+    def correct_bias(self, calibration_inputs, lr=1e-4, steps=100, verbose=False):
+        return self._correct(calibration_inputs, lambda name: name.endswith('bias'), lr, steps, verbose)
 
-        A lightweight complement to correct_bias that adjusts normalization
-        layer statistics to compensate for distribution shifts introduced
-        by quantization.
-
-        Args:
-            calibration_inputs: List of tokenized input dicts.
-            lr: Learning rate.
-            steps: Number of optimization steps.
-
-        Returns:
-            List of per-step loss values.
-        """
-        self.model.train()
-        params = [
-            p for n, p in self.model.named_parameters()
-            if any(k in n for k in ["ln", "layer_norm", "layernorm", "norm"])
-        ]
-        if not params:
-            return []
-
-        optimizer = torch.optim.Adam(params, lr=lr)
-        losses = []
-        batch = calibration_inputs[:10]
-
-        for step in range(steps):
-            for x in batch:
-                with torch.no_grad():
-                    target = self.original(**x) if isinstance(x, dict) else self.original(x)
-                pred = self.model(**x) if isinstance(x, dict) else self.model(x)
-
-                t_logits = target.logits if hasattr(target, "logits") else target[0]
-                p_logits = pred.logits if hasattr(pred, "logits") else pred[0]
-
-                loss = ((p_logits - t_logits) ** 2).mean()
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
-                losses.append(loss.item())
-
-        self.model.eval()
-        return losses
+    def layer_norm_correction(self, calibration_inputs, lr=1e-3, steps=50):
+        prefixes = [name for name, module in self.model.named_modules() if isinstance(module, nn.LayerNorm)]
+        names = {f'{prefix}.{leaf}' if prefix else leaf for prefix in prefixes for leaf in ('weight', 'bias')}
+        return self._correct(calibration_inputs, lambda name: name in names, lr, steps)

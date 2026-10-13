@@ -32,7 +32,7 @@ def profile(
     tokenizer = AutoTokenizer.from_pretrained(model)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    lm = AutoModelForCausalLM.from_pretrained(model)
+    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True)
 
     if data:
         with open(data) as f:
@@ -63,7 +63,7 @@ def quantize(
     """Apply activation-aware mixed-precision quantization.
 
     Loads an activation profile, computes per-layer importance scores, assigns
-    optimal dtypes (fp16/int8/int4), and saves the compressed model weights.
+    heuristic dtypes (fp16/int8/int4), and saves the compressed model weights.
     """
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -74,7 +74,7 @@ def quantize(
 
     console.print(f"[bold]Loading model:[/bold] {model}")
     tokenizer = AutoTokenizer.from_pretrained(model)
-    lm = AutoModelForCausalLM.from_pretrained(model)
+    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True)
 
     console.print(f"Loading profile from {profile_path}")
     with open(profile_path) as f:
@@ -101,7 +101,7 @@ def quantize(
     os.makedirs(out, exist_ok=True)
     lm.save_pretrained(out)
     tokenizer.save_pretrained(out)
-    console.print(f"[green]Compressed model saved to {out}[/green]")
+    console.print(f"[green]Fake-quantized floating-point model saved to {out}[/green]")
 
 
 @app.command()
@@ -122,7 +122,7 @@ def evaluate(
     tokenizer = AutoTokenizer.from_pretrained(model)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    lm = AutoModelForCausalLM.from_pretrained(model)
+    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True)
 
     if data:
         with open(data) as f:
@@ -150,8 +150,8 @@ def benchmark(
     data: str = typer.Option("", help="Optional path to calibration data file."),
 ):
     """Run the full compression benchmark suite and print a comparison table."""
-    from compress.benchmarks.gpt2_compression import run_benchmark
-    run_benchmark()
+    from benchmarks.gpt2_compression import run_benchmark
+    run_benchmark(model_name=model, data_path=data)
 
 
 if __name__ == "__main__":

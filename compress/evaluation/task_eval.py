@@ -1,158 +1,88 @@
+"""Fail-visible task metrics with explicit completion-token scoring."""
+import math
+from contextlib import contextmanager
+
 import torch
-from typing import Optional, Callable
 
 
 class TaskEvaluator:
-    """Evaluate compressed model quality on downstream task metrics.
+    def __init__(self, model, tokenizer, device=None):
+        self.model, self.tokenizer = model, tokenizer
+        self.device = torch.device(device) if device else next(model.parameters(), next(model.buffers(), torch.empty(0))).device
 
-    Provides utilities for classification accuracy, generation quality,
-    and custom metric evaluation. Designed to work with HuggingFace models
-    and standard NLP task formats.
-
-    Args:
-        model: The model to evaluate.
-        tokenizer: Compatible tokenizer.
-        device: Evaluation device. Defaults to model's current device.
-    """
-
-    def __init__(self, model, tokenizer, device: Optional[str] = None):
-        self.model = model
-        self.tokenizer = tokenizer
-        if device is None:
-            try:
-                device = next(model.parameters()).device.type
-            except StopIteration:
-                device = "cpu"
-        self.device = device
-
-    def accuracy(
-        self,
-        prompts: list[str],
-        labels: list[int],
-        max_length: int = 64,
-    ) -> float:
-        """Compute next-token prediction accuracy.
-
-        For each prompt, the model predicts the most probable next token. The
-        prediction is compared against the expected label index (position in
-        the vocabulary).
-
-        Args:
-            prompts: List of input prompts.
-            labels: List of expected next-token vocabulary indices.
-            max_length: Maximum tokenized input length.
-
-        Returns:
-            Accuracy as a float in [0, 1].
-        """
+    @contextmanager
+    def _evaluation(self):
+        training = self.model.training
         self.model.eval()
-        correct = 0
-        total = 0
+        try:
+            with torch.no_grad():
+                yield
+        finally:
+            self.model.train(training)
 
-        with torch.no_grad():
+    def _tokens(self, text, **kwargs):
+        return {key: value.to(self.device) if isinstance(value, torch.Tensor) else value
+                for key, value in self.tokenizer(text, return_tensors="pt", **kwargs).items()}
+
+    @staticmethod
+    def _validate(*items):
+        if not items[0] or len({len(item) for item in items}) != 1:
+            raise ValueError("Inputs must be nonempty and have equal lengths")
+
+    def accuracy(self, prompts, labels, max_length=64):
+        """Next-token vocabulary accuracy; failed examples stop the evaluation."""
+        self._validate(prompts, labels)
+        correct = 0
+        with self._evaluation():
             for prompt, label in zip(prompts, labels):
-                tokens = self.tokenizer(
-                    prompt,
-                    return_tensors="pt",
-                    truncation=True,
-                    max_length=max_length,
-                )
-                try:
-                    outputs = self.model(**tokens)
-                    logits = outputs.logits if hasattr(outputs, "logits") else outputs[0]
-                    pred = logits[0, -1].argmax().item()
-                    if pred == label:
-                        correct += 1
-                    total += 1
-                except Exception:
-                    continue
+                outputs = self.model(**self._tokens(prompt, truncation=True, max_length=max_length))
+                logits = outputs.logits if hasattr(outputs, "logits") else outputs[0]
+                if not torch.isfinite(logits).all():
+                    raise ValueError("Nonfinite task logits")
+                correct += int(logits[0, -1].argmax() == label)
+        return correct / len(prompts)
 
-        return correct / max(total, 1)
+    def multiple_choice_accuracy(self, contexts, choices_list, correct_indices):
+        """Select by summed completion log likelihood; exclude context loss.
 
-    def multiple_choice_accuracy(
-        self,
-        contexts: list[str],
-        choices_list: list[list[str]],
-        correct_indices: list[int],
-    ) -> float:
-        """Score multiple-choice tasks by selecting the highest-probability completion.
-
-        For each context, the model scores each candidate choice by its log-probability
-        under the model, and the choice with the highest score is selected.
-
-        Args:
-            contexts: Input context strings.
-            choices_list: List of candidate completions for each context.
-            correct_indices: Index of the correct choice for each context.
-
-        Returns:
-            Accuracy as a float in [0, 1].
+        Requires a fast tokenizer with character offsets. Full tokenization avoids
+        assuming that separately tokenizing context preserves BPE boundaries.
+        Tokens straddling the context boundary count as completion tokens.
         """
-        self.model.eval()
+        self._validate(contexts, choices_list, correct_indices)
         correct = 0
-        total = 0
-
-        with torch.no_grad():
+        with self._evaluation():
             for context, choices, correct_idx in zip(contexts, choices_list, correct_indices):
+                if not context or not choices or not 0 <= correct_idx < len(choices):
+                    raise ValueError("Context, choices and valid correct index required")
                 scores = []
                 for choice in choices:
-                    full_text = context + choice
-                    tokens = self.tokenizer(
-                        full_text,
-                        return_tensors="pt",
-                        truncation=True,
-                        max_length=256,
-                    )
-                    try:
-                        outputs = self.model(**tokens, labels=tokens["input_ids"])
-                        scores.append(-outputs.loss.item())
-                    except Exception:
-                        scores.append(float("-inf"))
+                    if not choice:
+                        raise ValueError("Choices must be nonempty")
+                    tokens = self._tokens(context + choice, truncation=False, return_offsets_mapping=True)
+                    offsets = tokens.pop('offset_mapping')
+                    labels = tokens['input_ids'].clone()
+                    labels[offsets[..., 1] <= len(context)] = -100
+                    count = int((labels[:, 1:] != -100).sum())
+                    if not count:
+                        raise ValueError("Choice has no predictable tokens")
+                    loss = self.model(**tokens, labels=labels).loss
+                    if not torch.isfinite(loss):
+                        raise ValueError("Nonfinite choice likelihood")
+                    scores.append(-float(loss) * count)
+                correct += scores.index(max(scores)) == correct_idx
+        return correct / len(contexts)
 
-                if scores and max(scores) != float("-inf"):
-                    pred = scores.index(max(scores))
-                    if pred == correct_idx:
-                        correct += 1
-                    total += 1
-
-        return correct / max(total, 1)
-
-    def evaluate_with_metric(
-        self,
-        inputs: list[str],
-        metric_fn: Callable[[str, str], float],
-        references: list[str],
-        max_new_tokens: int = 50,
-    ) -> float:
-        """Evaluate using a custom metric function on generated outputs.
-
-        Args:
-            inputs: Input prompts to generate from.
-            metric_fn: Function that takes (generated, reference) and returns a score.
-            references: Reference strings for each input.
-            max_new_tokens: Number of tokens to generate.
-
-        Returns:
-            Mean metric score across all inputs.
-        """
-        self.model.eval()
+    def evaluate_with_metric(self, inputs, metric_fn, references, max_new_tokens=50):
+        self._validate(inputs, references)
         scores = []
-
-        with torch.no_grad():
+        with self._evaluation():
             for prompt, reference in zip(inputs, references):
-                tokens = self.tokenizer(prompt, return_tensors="pt")
-                try:
-                    output_ids = self.model.generate(
-                        **tokens,
-                        max_new_tokens=max_new_tokens,
-                        do_sample=False,
-                    )
-                    generated = self.tokenizer.decode(
-                        output_ids[0][tokens["input_ids"].shape[1]:],
-                        skip_special_tokens=True,
-                    )
-                    scores.append(metric_fn(generated, reference))
-                except Exception:
-                    continue
-
-        return sum(scores) / max(len(scores), 1)
+                tokens = self._tokens(prompt)
+                output = self.model.generate(**tokens, max_new_tokens=max_new_tokens, do_sample=False)
+                generated = self.tokenizer.decode(output[0, tokens['input_ids'].shape[1]:], skip_special_tokens=True)
+                score = float(metric_fn(generated, reference))
+                if not math.isfinite(score):
+                    raise ValueError("Nonfinite metric")
+                scores.append(score)
+        return sum(scores) / len(scores)

@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from dataclasses import dataclass, field
 from typing import Any
+import math
 
 
 @dataclass
@@ -35,6 +36,10 @@ class ActivationProfile:
     def from_dict(cls, data: dict[str, dict]) -> "ActivationProfile":
         profile = cls()
         for name, d in data.items():
+            if not all(math.isfinite(d[key]) for key in ("mean_magnitude", "sparsity", "variance", "n_samples")):
+                raise ValueError("Activation statistics must be finite")
+            if d["mean_magnitude"] < 0 or not 0 <= d["sparsity"] <= 1 or d["variance"] < 0 or d["n_samples"] < 1:
+                raise ValueError("Invalid activation statistics")
             profile.layers[name] = LayerStats(
                 mean_magnitude=d["mean_magnitude"],
                 sparsity=d["sparsity"],
@@ -63,78 +68,65 @@ class ActivationRecorder:
 
     def _make_hook(self, name: str):
         def hook(module, input, output):
-            # Handle tuple outputs (e.g. attention layers return (attn_out, weights))
-            if isinstance(output, tuple):
-                t = output[0].detach().float()
-            else:
-                t = output.detach().float()
-
-            if name not in self._stats:
-                self._stats[name] = []
-            self._stats[name].append({
-                "mean_mag": t.abs().mean().item(),
-                "sparsity": (t.abs() < self.epsilon).float().mean().item(),
-                "variance": t.var().item() if t.numel() > 1 else 0.0,
-            })
+            t = output[0] if isinstance(output, tuple) else output
+            if not isinstance(t, torch.Tensor):
+                return
+            t = t.detach().float()
+            if not t.numel() or not torch.isfinite(t).all():
+                raise ValueError(f"Invalid activation in {name}")
+            stats = self._stats.setdefault(name, dict(count=0, calls=0, abs_sum=0., sum=0., sum_sq=0., zeros=0))
+            stats["count"] += t.numel()
+            stats["calls"] += 1
+            stats["abs_sum"] += t.abs().sum().item()
+            stats["sum"] += t.sum().item()
+            stats["sum_sq"] += t.square().sum().item()
+            stats["zeros"] += (t.abs() < self.epsilon).sum().item()
         return hook
 
     def attach(self):
-        """Attach forward hooks to all attention and MLP submodules."""
+        """Idempotently hook weighted modules and attention/MLP containers."""
+        if self._hooks:
+            return
         for name, module in self.model.named_modules():
-            if any(k in name for k in ["attn", "attention", "mlp", "feed_forward"]):
-                h = module.register_forward_hook(self._make_hook(name))
-                self._hooks.append(h)
+            weight = getattr(module, "weight", None)
+            if (isinstance(weight, torch.Tensor) and weight.ndim >= 2) or any(k in name for k in ["attn", "attention", "mlp", "feed_forward"]):
+                self._hooks.append(module.register_forward_hook(self._make_hook(name)))
 
     def detach(self):
-        """Remove all registered forward hooks."""
-        for h in self._hooks:
-            h.remove()
+        for hook in self._hooks:
+            hook.remove()
         self._hooks.clear()
 
     def reset(self):
-        """Clear accumulated statistics."""
         self._stats.clear()
 
     def record(self, inputs: list[str], tokenizer, n_batches: int = 10) -> ActivationProfile:
-        """Run forward passes and accumulate activation statistics.
-
-        Args:
-            inputs: List of text strings to use as calibration inputs.
-            tokenizer: HuggingFace tokenizer compatible with the model.
-            n_batches: Maximum number of inputs to process.
-
-        Returns:
-            ActivationProfile with per-layer statistics.
-        """
+        """Record element-weighted statistics, failing visibly on broken samples."""
+        if n_batches < 1 or not inputs:
+            raise ValueError("Calibration requires positive n_batches and nonempty inputs")
         self.reset()
         self.attach()
+        training = self.model.training
         self.model.eval()
-
-        with torch.no_grad():
-            for text in inputs[:n_batches]:
-                tokens = tokenizer(
-                    text,
-                    return_tensors="pt",
-                    truncation=True,
-                    max_length=128,
-                    padding=False,
-                )
-                try:
+        device = next(self.model.parameters(), torch.empty(0)).device
+        try:
+            with torch.no_grad():
+                for text in inputs[:n_batches]:
+                    tokens = tokenizer(text, return_tensors="pt", truncation=True, max_length=128, padding=False)
+                    tokens = {name: value.to(device) if isinstance(value, torch.Tensor) else value for name, value in tokens.items()}
                     self.model(**tokens)
-                except Exception:
-                    # Skip samples that cause errors (e.g. empty sequences)
-                    continue
-
-        self.detach()
-
+        finally:
+            self.detach()
+            self.model.train(training)
         profile = ActivationProfile()
-        for name, stats_list in self._stats.items():
-            if not stats_list:
-                continue
+        for name, stats in self._stats.items():
+            n = stats["count"]
             profile.layers[name] = LayerStats(
-                mean_magnitude=sum(s["mean_mag"] for s in stats_list) / len(stats_list),
-                sparsity=sum(s["sparsity"] for s in stats_list) / len(stats_list),
-                variance=sum(s["variance"] for s in stats_list) / len(stats_list),
-                n_samples=len(stats_list),
+                mean_magnitude=stats["abs_sum"] / n,
+                sparsity=stats["zeros"] / n,
+                variance=max(0., stats["sum_sq"] / n - (stats["sum"] / n) ** 2),
+                n_samples=stats["calls"],
             )
+        if not profile.layers:
+            raise ValueError("No activations recorded for supported modules")
         return profile

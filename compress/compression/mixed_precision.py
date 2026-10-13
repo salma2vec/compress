@@ -1,4 +1,5 @@
 import json
+import math
 
 
 class MixedPrecisionConfig:
@@ -38,6 +39,10 @@ class MixedPrecisionConfig:
         Returns:
             A new MixedPrecisionConfig instance.
         """
+        if not 0 <= int8_threshold <= fp16_threshold <= 1:
+            raise ValueError("Thresholds must satisfy 0 <= int8 <= fp16 <= 1")
+        if any(not math.isfinite(score) or not 0 <= score <= 1 for score in importance.values()):
+            raise ValueError("Importance scores must be finite and in [0, 1]")
         layer_dtypes: dict[str, str] = {}
         for name, score in importance.items():
             if score > fp16_threshold:

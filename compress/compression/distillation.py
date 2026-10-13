@@ -41,13 +41,15 @@ class LayerDropDistillation:
         Returns:
             Sorted list of layer indices to keep.
         """
+        if n_layers < 1:
+            raise ValueError("n_layers must be positive")
         n_keep = max(1, int(n_layers * self.keep_fraction))
 
         if not importance:
             return list(range(n_keep))
 
         # Aggregate importance scores per transformer block index
-        layer_scores: dict[int, float] = {}
+        layer_scores: dict[int, float] = {i: 0.0 for i in range(n_layers)}
         for name, score in importance.items():
             for i in range(n_layers):
                 if f".{i}." in name or name.endswith(f".{i}"):
@@ -75,7 +77,7 @@ class LayerDropDistillation:
         Returns:
             Dict mapping block index to aggregated importance score.
         """
-        layer_scores: dict[int, float] = {}
+        layer_scores: dict[int, float] = {i: 0.0 for i in range(n_layers)}
         for name, score in importance.items():
             for i in range(n_layers):
                 if f".{i}." in name or name.endswith(f".{i}"):
