@@ -36,7 +36,7 @@ both its score and practical-quality gates and remains a negative result.
 | Path | Representation | Purpose |
 | --- | --- | --- |
 | `ActivationAwareQuantizer` | Original floating-point parameters with quantization error simulated | Broad compatibility and quality ablations; no storage compression |
-| `pack_model` | FP16 buffers, symmetric INT8, or two NF4 indices per byte | Actual weight storage reduction for ordinary `nn.Linear` modules |
+| `pack_model` | FP16 buffers, symmetric INT8, or two NF4 indices per byte; optional rowwise INT8 for ordinary untied `nn.Embedding` | Actual weight storage reduction for supported linear modules and input embeddings |
 
 The packed backend dequantizes weights before each PyTorch matrix multiplication. Persistent storage can shrink while latency and peak working memory increase. It has no fused low-bit inference kernel. NF4 uses the QLoRA codebook with per-output-row scaling, not QLoRA's full blockwise quantization/finetuning pipeline.
 
@@ -56,18 +56,6 @@ save_packed(model, 'model.safetensors')
 restored = load_packed(build_model(), 'model.safetensors')
 ```
 
-Packed conversion is inference-only and modifies the model in place. Pass
-`pack_embeddings=True` to store ordinary untied `nn.Embedding` weights in
-rowwise INT8 and dequantize only requested rows. Version-2 safetensors archives
-record embedding precision and padding semantics; old linear-only version-1
-archives load unchanged. Embedding subclasses, `max_norm`, tied weights and
-architectures that access a child `.weight` directly require an adapter. The
-backend also rejects tied linear weights and `nn.MultiheadAttention`, which reads
-child weights directly. Models using GPT-2-style `Conv1D`, custom weight access,
-shared module aliases, or other fused projection APIs require an adapter; use the
-simulation path for those architectures. Validate outputs before deploying a new
-model family.
-
 For models with an ordinary, **untied** `nn.Embedding`, opt into INT8 input
 embedding storage as well:
 
@@ -79,12 +67,18 @@ restored = load_packed(build_model(), "model.safetensors")
 
 Embedding lookup dequantizes only the requested rows. It retains the original
 output dtype and padding-row values. Embeddings with `max_norm`, custom embedding
-subclasses, tied weights, or callers reading `.weight` require an adapter. Explicit
-embedding entries in the precision plan must be INT8; linear assignments keep
-their existing meaning. This option writes version-2 checkpoint metadata. The
-default remains linear-only packing and writes the original version-1 format;
-both formats can be loaded. Smaller persistent tensors do not establish lower
-latency, peak memory, or preserved language-model quality: measure those separately.
+subclasses, tied weights, or callers reading `.weight` require an adapter. The
+backend also rejects tied linear weights and `nn.MultiheadAttention`, which reads
+child weights directly. Models using GPT-2-style `Conv1D`, custom weight access,
+shared module aliases, or other fused projection APIs require an adapter; use the
+simulation path for those architectures. Explicit embedding entries in the
+precision plan must be INT8; linear assignments keep their existing meaning.
+This option writes version-2 checkpoint metadata with embedding precision and
+padding semantics. The default remains linear-only packing and writes the
+original version-1 format; both formats can be loaded. Validate outputs before
+deploying a new model family. Smaller persistent tensors do not establish lower
+latency, peak memory, or preserved language-model quality: measure those
+separately.
 
 Declared output heads now receive at least INT8 by default. The default exact
 module path is `lm_head`; set `output_head_names` for another architecture. This

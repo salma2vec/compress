@@ -40,3 +40,8 @@ rows and weights for ordinary PyTorch operations. No inference-speed, peak-memor
 energy, multi-model or state-of-the-art claim follows. AWQ, CASA and MixQuant are
 discussed in the protocol as related primary work; this experiment reproduces
 none of their methods or reported results.
+
+The next validation gate is to reproduce the frozen storage-and-quality result
+on a second untouched corpus and a larger model with an ordinary untied
+embedding. Tied embeddings need a separately designed and validated shared-weight
+format before they are in scope.

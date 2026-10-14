@@ -12,30 +12,447 @@
   "panel": {
     "seed": 1043,
     "articles": 8,
-    "paragraphs": 16,
+    "paragraphs": [
+      {
+        "row": 3272,
+        "article": 3265,
+        "tokens": 227,
+        "sha256": "cae13c684c3462e21e4616eef846dfa6583b8ca1745379a813bc4de564a7cba5"
+      },
+      {
+        "row": 3292,
+        "article": 3265,
+        "tokens": 201,
+        "sha256": "f1661123891958c9b44d79b4eb9248e6e486082f6d71c5e26a1d55d7ddf2d3a9"
+      },
+      {
+        "row": 1282,
+        "article": 1265,
+        "tokens": 149,
+        "sha256": "aa323725832ca85a85cbc5b825bf5300100879398f21847fa1f84a770c9185be"
+      },
+      {
+        "row": 1307,
+        "article": 1265,
+        "tokens": 131,
+        "sha256": "a982ed45550a8f89f7310d5d6ef412a8818e3ee036e9b0fef37b7303fcbfc6bc"
+      },
+      {
+        "row": 1242,
+        "article": 1223,
+        "tokens": 218,
+        "sha256": "c7fb8f71b4153378701d58cdd243882742243a7524e7ac6f4bb94490ca6c0003"
+      },
+      {
+        "row": 1252,
+        "article": 1223,
+        "tokens": 208,
+        "sha256": "adac5a3dd5468c9b1f6de0f68e06f745ae3c5d2d6da7e83c36aa0b6f0e3bec67"
+      },
+      {
+        "row": 2757,
+        "article": 2726,
+        "tokens": 128,
+        "sha256": "4e235b114ec8d22def19bdf21500bc52a453db5b7905b8bfe42a42b5587c50ba"
+      },
+      {
+        "row": 2746,
+        "article": 2726,
+        "tokens": 160,
+        "sha256": "cdb7de44ab87412dbde0c8bd382a409ffa92ee23367c10e00890f5dc08d49234"
+      },
+      {
+        "row": 800,
+        "article": 789,
+        "tokens": 152,
+        "sha256": "a460d812225f71e20a076b0cb854ccbebfcd286f1472dc863a42c7cedfb4d945"
+      },
+      {
+        "row": 882,
+        "article": 789,
+        "tokens": 214,
+        "sha256": "0c1ec00ba7e959596370a8f524899da6827ae614c71bcbde6e4d23641d29b986"
+      },
+      {
+        "row": 3779,
+        "article": 3768,
+        "tokens": 185,
+        "sha256": "690501939a67c7a46f60d0e33e026d7b922481cb064ddfab923cffea55fbf9c7"
+      },
+      {
+        "row": 3780,
+        "article": 3768,
+        "tokens": 184,
+        "sha256": "b0b01dde7c6dbbb33ba268904e158340bbf20eb4e51ee15e3dd8c9dd8822c4d1"
+      },
+      {
+        "row": 3959,
+        "article": 3884,
+        "tokens": 254,
+        "sha256": "e54959cf5f70b977a3e09de09eaa5919005a369e2bf066c5033bd05c9d05ca73"
+      },
+      {
+        "row": 3908,
+        "article": 3884,
+        "tokens": 202,
+        "sha256": "2b0264854799cb3a754873c5f5bd19ce1675e6d128a31d85b33b53edbc168594"
+      },
+      {
+        "row": 98,
+        "article": 32,
+        "tokens": 139,
+        "sha256": "78e670aef8b81fd6c94fcb870fd15e7186fa0ed0b6dc083642dadba6db622410"
+      },
+      {
+        "row": 106,
+        "article": 32,
+        "tokens": 362,
+        "sha256": "f6e2876094e7b07a6a20ed72848a4e80022df353e4ec8165122b1f1655b2b781"
+      }
+    ],
     "predicted_tokens": 3098,
-    "rows": [3272, 3292, 1282, 1307, 1242, 1252, 2757, 2746, 800, 882, 3779, 3780, 3959, 3908, 98, 106]
+    "rows": [
+      3272,
+      3292,
+      1282,
+      1307,
+      1242,
+      1252,
+      2757,
+      2746,
+      800,
+      882,
+      3779,
+      3780,
+      3959,
+      3908,
+      98,
+      106
+    ]
   },
   "results": {
     "fp32": {
       "persistent_tensor_bytes": 281706560,
       "mean_nll": 4.478343979707451,
       "perplexity": 88.08867518796065,
-      "checkpoint_sha256": "9bf4382f636fdd3a1fd7cb12148cd724dc221ceb6e45aadb87a0f2445c5f348d"
+      "checkpoint_sha256": "9bf4382f636fdd3a1fd7cb12148cd724dc221ceb6e45aadb87a0f2445c5f348d",
+      "tensor_hash_aggregate": "20b75d183d53e1be533ead2cca44e2c944ba4bcc265a7b783a846e848f610844",
+      "predicted_tokens": 3098,
+      "negative_log_likelihood": 13873.909649133682,
+      "per_document": [
+        {
+          "row": 3272,
+          "article": 3265,
+          "nll": 913.0463495254517,
+          "tokens": 226
+        },
+        {
+          "row": 3292,
+          "article": 3265,
+          "nll": 930.3009986877441,
+          "tokens": 200
+        },
+        {
+          "row": 1282,
+          "article": 1265,
+          "nll": 718.6930027008057,
+          "tokens": 148
+        },
+        {
+          "row": 1307,
+          "article": 1265,
+          "nll": 576.1145210266113,
+          "tokens": 130
+        },
+        {
+          "row": 1242,
+          "article": 1223,
+          "nll": 1019.3117108345032,
+          "tokens": 217
+        },
+        {
+          "row": 1252,
+          "article": 1223,
+          "nll": 1019.8583121299744,
+          "tokens": 207
+        },
+        {
+          "row": 2757,
+          "article": 2726,
+          "nll": 629.3406434059143,
+          "tokens": 127
+        },
+        {
+          "row": 2746,
+          "article": 2726,
+          "nll": 733.4273343086243,
+          "tokens": 159
+        },
+        {
+          "row": 800,
+          "article": 789,
+          "nll": 641.1851410865784,
+          "tokens": 151
+        },
+        {
+          "row": 882,
+          "article": 789,
+          "nll": 848.9005515575409,
+          "tokens": 213
+        },
+        {
+          "row": 3779,
+          "article": 3768,
+          "nll": 806.8160018920898,
+          "tokens": 184
+        },
+        {
+          "row": 3780,
+          "article": 3768,
+          "nll": 806.6956744194031,
+          "tokens": 183
+        },
+        {
+          "row": 3959,
+          "article": 3884,
+          "nll": 1064.2767243385315,
+          "tokens": 253
+        },
+        {
+          "row": 3908,
+          "article": 3884,
+          "nll": 940.3695259094238,
+          "tokens": 201
+        },
+        {
+          "row": 98,
+          "article": 32,
+          "nll": 601.8635444641113,
+          "tokens": 138
+        },
+        {
+          "row": 106,
+          "article": 32,
+          "nll": 1623.7096128463745,
+          "tokens": 361
+        }
+      ]
     },
     "linear_int8": {
       "persistent_tensor_bytes": 148128320,
       "mean_nll": 4.491650139077238,
       "perplexity": 89.2686300629119,
       "checkpoint_sha256": "88fdeb8bd2681c512ce7faa085c2e173b2f24b631c97beee13afc97cfb74bd8c",
-      "checkpoint_format_version": "1"
+      "checkpoint_format_version": "1",
+      "tensor_hash_aggregate": "afeefeae0671b1c829aca6989a4560b95351b9d8ebfb798ee6afd1cd4718b408",
+      "predicted_tokens": 3098,
+      "negative_log_likelihood": 13915.132130861282,
+      "per_document": [
+        {
+          "row": 3272,
+          "article": 3265,
+          "nll": 918.8123264312744,
+          "tokens": 226
+        },
+        {
+          "row": 3292,
+          "article": 3265,
+          "nll": 928.7023544311523,
+          "tokens": 200
+        },
+        {
+          "row": 1282,
+          "article": 1265,
+          "nll": 723.5163803100586,
+          "tokens": 148
+        },
+        {
+          "row": 1307,
+          "article": 1265,
+          "nll": 578.9351987838745,
+          "tokens": 130
+        },
+        {
+          "row": 1242,
+          "article": 1223,
+          "nll": 1020.7388195991516,
+          "tokens": 217
+        },
+        {
+          "row": 1252,
+          "article": 1223,
+          "nll": 1027.8001399040222,
+          "tokens": 207
+        },
+        {
+          "row": 2757,
+          "article": 2726,
+          "nll": 633.2468366622925,
+          "tokens": 127
+        },
+        {
+          "row": 2746,
+          "article": 2726,
+          "nll": 735.4151072502136,
+          "tokens": 159
+        },
+        {
+          "row": 800,
+          "article": 789,
+          "nll": 643.5513563156128,
+          "tokens": 151
+        },
+        {
+          "row": 882,
+          "article": 789,
+          "nll": 849.2938163280487,
+          "tokens": 213
+        },
+        {
+          "row": 3779,
+          "article": 3768,
+          "nll": 805.4051742553711,
+          "tokens": 184
+        },
+        {
+          "row": 3780,
+          "article": 3768,
+          "nll": 809.2440505027771,
+          "tokens": 183
+        },
+        {
+          "row": 3959,
+          "article": 3884,
+          "nll": 1066.5416159629822,
+          "tokens": 253
+        },
+        {
+          "row": 3908,
+          "article": 3884,
+          "nll": 941.6794295310974,
+          "tokens": 201
+        },
+        {
+          "row": 98,
+          "article": 32,
+          "nll": 605.7562837600708,
+          "tokens": 138
+        },
+        {
+          "row": 106,
+          "article": 32,
+          "nll": 1626.4932408332825,
+          "tokens": 361
+        }
+      ]
     },
     "linear_embedding_int8": {
       "persistent_tensor_bytes": 71062592,
       "mean_nll": 4.492818914512575,
       "perplexity": 89.37302604071878,
       "checkpoint_sha256": "26025317dab54804d7fc56a4e213d93dc9272c8f435158459d7897250b8a4516",
-      "checkpoint_format_version": "2"
+      "checkpoint_format_version": "2",
+      "tensor_hash_aggregate": "ed7252d5ec567ea0cba17c0ad2942ef4328b2fc2f2228571a287b2154112bd3a",
+      "predicted_tokens": 3098,
+      "negative_log_likelihood": 13918.752997159958,
+      "per_document": [
+        {
+          "row": 3272,
+          "article": 3265,
+          "nll": 919.0944557189941,
+          "tokens": 226
+        },
+        {
+          "row": 3292,
+          "article": 3265,
+          "nll": 928.5202980041504,
+          "tokens": 200
+        },
+        {
+          "row": 1282,
+          "article": 1265,
+          "nll": 723.6386108398438,
+          "tokens": 148
+        },
+        {
+          "row": 1307,
+          "article": 1265,
+          "nll": 578.8947820663452,
+          "tokens": 130
+        },
+        {
+          "row": 1242,
+          "article": 1223,
+          "nll": 1020.9536309242249,
+          "tokens": 217
+        },
+        {
+          "row": 1252,
+          "article": 1223,
+          "nll": 1027.8226447105408,
+          "tokens": 207
+        },
+        {
+          "row": 2757,
+          "article": 2726,
+          "nll": 632.7742395401001,
+          "tokens": 127
+        },
+        {
+          "row": 2746,
+          "article": 2726,
+          "nll": 736.0059499740601,
+          "tokens": 159
+        },
+        {
+          "row": 800,
+          "article": 789,
+          "nll": 644.1390399932861,
+          "tokens": 151
+        },
+        {
+          "row": 882,
+          "article": 789,
+          "nll": 850.3338553905487,
+          "tokens": 213
+        },
+        {
+          "row": 3779,
+          "article": 3768,
+          "nll": 805.450008392334,
+          "tokens": 184
+        },
+        {
+          "row": 3780,
+          "article": 3768,
+          "nll": 809.6485934257507,
+          "tokens": 183
+        },
+        {
+          "row": 3959,
+          "article": 3884,
+          "nll": 1066.8895411491394,
+          "tokens": 253
+        },
+        {
+          "row": 3908,
+          "article": 3884,
+          "nll": 941.6339993476868,
+          "tokens": 201
+        },
+        {
+          "row": 98,
+          "article": 32,
+          "nll": 606.0098905563354,
+          "tokens": 138
+        },
+        {
+          "row": 106,
+          "article": 32,
+          "nll": 1626.9434571266174,
+          "tokens": 361
+        }
+      ]
     }
   },
   "correctness": {
@@ -51,5 +468,31 @@
     "expected_candidate_tensor_bytes": 71062592,
     "candidate_tensor_bytes_exact": true,
     "practical_gate": true
+  },
+  "protocol": {
+    "version": 1,
+    "article_seed": 1043,
+    "article_count": 8,
+    "paragraphs_per_article": 2,
+    "evaluation_context": 256,
+    "evaluation_stride": 128,
+    "maximum_fp32_ppl_ratio": 1.05,
+    "expected_candidate_tensor_bytes": 71062592,
+    "method_order": [
+      "fp32",
+      "linear_int8",
+      "linear_embedding_int8"
+    ],
+    "device": "cpu",
+    "threads": 1
+  },
+  "asset_sha256": {
+    "config.json": "002050231a9b1ec3ac77aa6b9b3bbdc4d923f4068a7dd33b8da72a9bd6ad9a43",
+    "model.safetensors": "ebfa4e2f18696ebd83716a0d39fe2c025f2ff8483f72a83ca59c475692fc9d15",
+    "special_tokens_map.json": "6f50ab5a5a509a1c309d6171f339b196a900dc9c99ad0408ff23bb615fdae7ad",
+    "tokenizer.json": "c24618a1b3e6a38167beff1c72cffd126c3a66254347304b50547d12c5f25624",
+    "tokenizer_config.json": "70e38394e494931c6f773ba41e19460dd4436526b852207367f04341b4066d3f",
+    "wikitext-2-raw-v1/test-00000-of-00001.parquet": "5f1bea067869d04849c0f975a2b29c4ff47d867f484f5010ea5e861eab246d91",
+    "wikitext-2-raw-v1/train-00000-of-00001.parquet": "e83889baabc497075506f91975be5fac0d45c5290b6b20582c8cd1e853d0c9f7"
   }
 }
