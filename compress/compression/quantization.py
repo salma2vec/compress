@@ -14,10 +14,47 @@ class QuantizationConfig:
     """
     layer_dtypes: dict[str, str]
     default_dtype: str = "int8"
+    protect_output_head: bool = True
+    output_head_names: tuple[str, ...] = ("lm_head",)
 
     def __post_init__(self):
+        if not isinstance(self.layer_dtypes, dict) or any(
+            not isinstance(name, str) or not isinstance(value, str)
+            for name, value in self.layer_dtypes.items()
+        ) or not isinstance(self.default_dtype, str):
+            raise ValueError("Precision assignments must map module paths to dtype strings")
         if any(value not in {"fp16", "int8", "int4"} for value in [self.default_dtype, *self.layer_dtypes.values()]):
             raise ValueError("Dtypes must be fp16, int8 or int4")
+        if type(self.protect_output_head) is not bool:
+            raise ValueError("protect_output_head must be boolean")
+        if not isinstance(self.output_head_names, (tuple, list)) or any(
+            not isinstance(name, str) or not name for name in self.output_head_names
+        ):
+            raise ValueError("output_head_names must contain explicit nonempty module paths")
+        if self.protect_output_head and not self.output_head_names:
+            raise ValueError("Declare at least one output-head path when protection is enabled")
+
+    def dtype_for(self, name: str) -> str:
+        """INT8 is a floor for declared output heads, not a downgrade from FP16."""
+        requested = self.layer_dtypes.get(name, self.default_dtype)
+        if self.protect_output_head and name in self.output_head_names and requested == "int4":
+            return "int8"
+        return requested
+
+    def to_dict(self) -> dict:
+        return {
+            "layer_dtypes": dict(self.layer_dtypes), "default_dtype": self.default_dtype,
+            "protect_output_head": self.protect_output_head,
+            "output_head_names": list(self.output_head_names),
+        }
+
+    @classmethod
+    def from_dict(cls, value: dict) -> "QuantizationConfig":
+        if not isinstance(value, dict) or set(value) != {
+            "layer_dtypes", "default_dtype", "protect_output_head", "output_head_names"
+        } or not isinstance(value["layer_dtypes"], dict):
+            raise ValueError("Invalid quantization policy metadata")
+        return cls(**value)
 
 
 class Int8Quantizer:
@@ -173,6 +210,10 @@ class ActivationAwareQuantizer:
         """
         self._compression_log.clear()
         seen = set()
+        protected_weights = {
+            id(module.weight) for name, module in model.named_modules()
+            if name in self.config.output_head_names and hasattr(module, "weight")
+        } if self.config.protect_output_head else set()
         for name, module in model.named_modules():
             if not hasattr(module, "weight") or module.weight is None:
                 continue
@@ -181,7 +222,11 @@ class ActivationAwareQuantizer:
             seen.add(id(module.weight))
             w = module.weight.detach()
             original_dtype = w.dtype
-            dtype = self.config.layer_dtypes.get(name, self.config.default_dtype)
+            dtype = self.config.dtype_for(name)
+            # Shared embedding/head parameters are visited only once. Protect
+            # the storage even when its embedding alias is encountered first.
+            if id(module.weight) in protected_weights and dtype == "int4":
+                dtype = "int8"
             self._compression_log[name] = dtype
 
             if dtype == "fp16":
@@ -198,6 +243,8 @@ class ActivationAwareQuantizer:
                 module.weight.data = NF4Quantizer.dequantize(indices, scale)
             module.weight.data = module.weight.data.to(original_dtype)
 
+        model._compress_quantization_policy = self.config.to_dict()
+        model._compress_applied_dtypes = dict(self._compression_log)
         return model
 
     def compression_report(self) -> dict[str, int]:

@@ -168,7 +168,10 @@ def run(output, device="cpu", seed=42, calibration_count=32, evaluation_count=16
             if assignment is None:
                 save_file(candidate.state_dict(), str(checkpoint))
             else:
-                candidate = pack_model(candidate, QuantizationConfig(assignment))
+                # Preserve the original uniform-NF4 control, even when supported
+                # packing defaults protect output heads in newer releases.
+                candidate = pack_model(candidate, QuantizationConfig(
+                    assignment, protect_output_head=False))
                 save_packed(candidate, checkpoint)
             state_hashes = {k: digest(v.detach().cpu().contiguous().numpy().tobytes())
                             for k, v in candidate.state_dict().items()}

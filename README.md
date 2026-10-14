@@ -49,6 +49,17 @@ restored = load_packed(build_model(), 'model.safetensors')
 
 Packed conversion is inference-only and modifies the model in place. It rejects tied linear weights and `nn.MultiheadAttention`, which reads child weights directly. Models using GPT-2-style `Conv1D`, custom weight access, shared module aliases, or other fused projection APIs require an adapter; use the simulation path for those architectures. Validate outputs before deploying a new model family.
 
+Declared output heads now receive at least INT8 by default. The default exact
+module path is `lm_head`; set `output_head_names` for another architecture. This
+follows the [recorded NF4 failure diagnosis](docs/failure-diagnosis.md): protecting
+the output head removed most of the catastrophic loss, but did not restore FP32
+quality. `QuantizationConfig(..., protect_output_head=False)` explicitly disables
+the floor. New precision-plan JSON and packed checkpoints retain this policy;
+old mapping-only plans and old checkpoints preserve their original assignments.
+Use `plan.to_quantization_config()` to carry a plan's override into packing.
+The simulation CLI exposes `--allow-nf4-output-head` and `--output-head-names`.
+The historical benchmark explicitly opts out for its uniform-NF4 control.
+
 ## Evaluation contracts
 
 - Calibration failures are visible, hooks are cleaned up on failure, and tensors move to the model device. Statistics are weighted by activation element count.

@@ -58,7 +58,7 @@ class PackedLinear(nn.Module):
 
 def _prepare_packed_modules(model: nn.Module, config: QuantizationConfig):
     """Construct every replacement before changing the supplied model."""
-    QuantizationConfig(dict(config.layer_dtypes), config.default_dtype)
+    QuantizationConfig.from_dict(config.to_dict())
     modules = [(name, module) for name, module in model.named_modules() if isinstance(module, nn.Linear)]
     if not modules:
         raise ValueError("No nn.Linear modules found")
@@ -70,7 +70,7 @@ def _prepare_packed_modules(model: nn.Module, config: QuantizationConfig):
         parent = model.get_submodule(parent_name) if parent_name else model
         if isinstance(parent, nn.MultiheadAttention):
             raise ValueError("MultiheadAttention accesses out_proj.weight directly; use fake quantization")
-    return [(name, PackedLinear(module, config.layer_dtypes.get(name, config.default_dtype)))
+    return [(name, PackedLinear(module, config.dtype_for(name)))
             for name, module in modules]
 
 
@@ -90,7 +90,9 @@ def pack_model(model: nn.Module, config: QuantizationConfig):
     Some architectures directly access child .weight (e.g. MultiheadAttention).
     Such modules cannot use this portable backend; the caller must exclude them.
     """
-    return _install_packed_modules(model, _prepare_packed_modules(model, config))
+    model = _install_packed_modules(model, _prepare_packed_modules(model, config))
+    model._compress_quantization_policy = config.to_dict()
+    return model
 
 
 def tensor_bytes(model):
@@ -102,8 +104,15 @@ def save_packed(model, path):
     spec = {name: module.precision for name, module in model.named_modules() if isinstance(module, PackedLinear)}
     if not spec:
         raise ValueError("Model has no packed layers")
+    policy = getattr(model, "_compress_quantization_policy", None)
+    if policy is None:
+        policy = QuantizationConfig(spec, protect_output_head=False).to_dict()
+    config = QuantizationConfig.from_dict(policy)
+    if any(config.dtype_for(name) != precision for name, precision in spec.items()):
+        raise ValueError("Packed layers no longer match recorded quantization policy")
     state = {name: tensor.detach().cpu().contiguous().clone() for name, tensor in model.state_dict().items()}
-    save_file(state, str(path), metadata={"format_version": "1", "layers": json.dumps(spec)})
+    save_file(state, str(path), metadata={"format_version": "1", "layers": json.dumps(spec),
+                                       "quantization_policy": json.dumps(policy)})
 
 
 def load_packed(model, path):
@@ -119,12 +128,22 @@ def load_packed(model, path):
         layers = json.loads(metadata.get("layers", "null"))
         if not isinstance(layers, dict) or not all(isinstance(name, str) for name in layers):
             raise ValueError("Checkpoint layers must be a name-to-precision mapping")
+        policy = (json.loads(metadata["quantization_policy"])
+                  if "quantization_policy" in metadata else
+                  QuantizationConfig(layers, protect_output_head=False).to_dict())
+        config = QuantizationConfig.from_dict(policy)
+        if any(config.dtype_for(name) != precision for name, precision in layers.items()):
+            raise ValueError("Checkpoint layers contradict quantization policy")
         # Read metadata and tensors through one handle; do not reopen a changed path.
         state = {name: handle.get_tensor(name) for name in handle.keys()}
     expected = {name for name, module in model.named_modules() if isinstance(module, nn.Linear)}
     if set(layers) != expected:
         raise ValueError("Checkpoint linear layers do not match model architecture")
-    replacements = _prepare_packed_modules(model, QuantizationConfig(layers))
+    # Restore the archive exactly, including old intentionally unprotected NF4
+    # experiments. New packing defaults must never silently change old weights.
+    replacements = _prepare_packed_modules(
+        model, QuantizationConfig(layers, protect_output_head=False)
+    )
     expected_state = dict(model.state_dict())
     for name, packed in replacements:
         prefix = f"{name}." if name else ""
@@ -145,4 +164,5 @@ def load_packed(model, path):
             raise ValueError(f"Checkpoint contains nonpositive quantization scale: {name}")
     model = _install_packed_modules(model, replacements)
     model.load_state_dict(state, strict=True)
+    model._compress_quantization_policy = policy
     return model

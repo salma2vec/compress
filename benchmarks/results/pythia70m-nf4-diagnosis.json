@@ -1,0 +1,1951 @@
+{
+  "schema_version": 1,
+  "protocol": {
+    "version": 1,
+    "minimum_excess_nll": 1.0,
+    "dominant_fraction": 0.8,
+    "context": 256,
+    "stride": 128,
+    "parity_context": 128,
+    "parity_atol": 0.0001,
+    "parity_rtol": 0.0001,
+    "head": "lm_head",
+    "methods": [
+      "fp32",
+      "uniform_int8",
+      "uniform_nf4",
+      "nf4_body_int8_head",
+      "fp32_body_nf4_head"
+    ],
+    "purpose": "Exploratory diagnosis on the previously observed pilot paragraphs"
+  },
+  "source_commit": "eda071efb5aa39b303b6f0119072d5ea6e48e5ea",
+  "source_clean": true,
+  "harness_sha256": "ab85d339e1f90daa5178068dd2589cdd50e894e31a189d3ad3106f4c59eafa0c",
+  "protocol_sha256": "8ff497321ebddef57c9002a2ffdfc571c449f49c7d9e7c62dddd8a2feb943ffa",
+  "pilot_report_sha256": "90b398e64a1419b629a27d11ba93953a5a028feffbbfe67479991499c6fac0d6",
+  "device": "mps",
+  "python": "3.11.15",
+  "platform": "macOS-14.6-arm64-arm-64bit",
+  "package_versions": {
+    "torch": "2.14.1",
+    "transformers": "5.19.0",
+    "safetensors": "0.8.0",
+    "pyarrow": "26.0.0",
+    "numpy": "2.4.6"
+  },
+  "threads": 1,
+  "mps_cpu_fallback_enabled": false,
+  "dtype": "float32",
+  "results": [
+    {
+      "method": "fp32",
+      "negative_log_likelihood": 13517.549529075623,
+      "predicted_tokens": 3090,
+      "perplexity": 79.40898301658709,
+      "persistent_tensor_bytes": 281706560,
+      "per_document": [
+        {
+          "row": 187,
+          "negative_log_likelihood": 743.4680442810059,
+          "predicted_tokens": 168
+        },
+        {
+          "row": 1162,
+          "negative_log_likelihood": 637.5455498695374,
+          "predicted_tokens": 175
+        },
+        {
+          "row": 2823,
+          "negative_log_likelihood": 843.1209411621094,
+          "predicted_tokens": 192
+        },
+        {
+          "row": 3298,
+          "negative_log_likelihood": 712.4715762138367,
+          "predicted_tokens": 167
+        },
+        {
+          "row": 533,
+          "negative_log_likelihood": 622.8947839736938,
+          "predicted_tokens": 139
+        },
+        {
+          "row": 4327,
+          "negative_log_likelihood": 1321.3082122802734,
+          "predicted_tokens": 278
+        },
+        {
+          "row": 1868,
+          "negative_log_likelihood": 1147.5905923843384,
+          "predicted_tokens": 271
+        },
+        {
+          "row": 1512,
+          "negative_log_likelihood": 637.2526245117188,
+          "predicted_tokens": 152
+        },
+        {
+          "row": 2713,
+          "negative_log_likelihood": 1681.8500533103943,
+          "predicted_tokens": 316
+        },
+        {
+          "row": 2828,
+          "negative_log_likelihood": 671.6482210159302,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 3406,
+          "negative_log_likelihood": 949.8824615478516,
+          "predicted_tokens": 224
+        },
+        {
+          "row": 360,
+          "negative_log_likelihood": 753.5553050041199,
+          "predicted_tokens": 155
+        },
+        {
+          "row": 1838,
+          "negative_log_likelihood": 574.8889045715332,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 2492,
+          "negative_log_likelihood": 578.1849455833435,
+          "predicted_tokens": 133
+        },
+        {
+          "row": 2178,
+          "negative_log_likelihood": 1089.9768977165222,
+          "predicted_tokens": 268
+        },
+        {
+          "row": 2527,
+          "negative_log_likelihood": 551.9104156494141,
+          "predicted_tokens": 168
+        }
+      ],
+      "weight_residuals": {},
+      "checkpoint_sha256": "9bf4382f636fdd3a1fd7cb12148cd724dc221ceb6e45aadb87a0f2445c5f348d",
+      "checkpoint_bytes": 281715144,
+      "state_tensor_sha256": {
+        "gpt_neox.embed_in.weight": "ad5374e53dc57b9779607f15acd90126d75c6da9ee2530d8dca6450d5edc0f14",
+        "gpt_neox.layers.0.input_layernorm.weight": "e10efaaba4e068cd29e5d9e92b5b735aa6c286f0ab9014946af2dda6e1cb9d2c",
+        "gpt_neox.layers.0.input_layernorm.bias": "31987888c3565391150f9caae7ea3aafa37be5fcdde80982b0c99321653112d4",
+        "gpt_neox.layers.0.post_attention_layernorm.weight": "5672ce58d8b84b6c438f8983d975f94842770bc8d07e752f408949d1e9e3cb92",
+        "gpt_neox.layers.0.post_attention_layernorm.bias": "c55621d8d70225a54a2c404403cdfd5495badf4f059411f750a84473374e421f",
+        "gpt_neox.layers.0.attention.query_key_value.weight": "3c96d50c9abdecc097e9b82eeb778e527265067631df5b11ab3a0a77f42e3cea",
+        "gpt_neox.layers.0.attention.query_key_value.bias": "7ea3e9e24ade1d07580b62eb0ba2da0dffa478b125a9ba0b4d94b9e4799521ff",
+        "gpt_neox.layers.0.attention.dense.weight": "71bf38e21c9f56d8f866e6474bf3e9849da3b5e51f87847a9c98ccc53b9bdeea",
+        "gpt_neox.layers.0.attention.dense.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.weight": "0f7389adc3f940ebe62d58d6c8af3795db247bbdef539e05afe1b11d81f710e9",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.bias": "bf9239d460529184442f9d8a91198f850d1c9130bee80cfb9d02996301787dc2",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.weight": "93c9876dfd8941b3c3e26cbdeb396a0223476254ef9917047fa367e4cb0709eb",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.1.input_layernorm.weight": "e2bd69a2cf18fee7209d059ea1823cbdad5b6e93411d5bdcd0052c5ec906d21f",
+        "gpt_neox.layers.1.input_layernorm.bias": "536f69a2d1c662fe32ab915a8369afdb9434a535f0d8001ddec6592d76733559",
+        "gpt_neox.layers.1.post_attention_layernorm.weight": "d17d6b4009a90eae06b94e7623d40898bfc4929584929ce4e99d1899919ff9a9",
+        "gpt_neox.layers.1.post_attention_layernorm.bias": "19f2afad47cb05a167cadb972f1bdd8f898fff2ddf9f7521ef4f176b8c429527",
+        "gpt_neox.layers.1.attention.query_key_value.weight": "e317a799d932900e360559c2e8b99c4f9353025d8b5071c101675139e213cfa8",
+        "gpt_neox.layers.1.attention.query_key_value.bias": "c28a4820284ad176c1df97b18c1b70e781de1a2e9f14c16d8f253c5b468d29af",
+        "gpt_neox.layers.1.attention.dense.weight": "16626996cd5b8358a0334c56a34fe5c9841c1f321140bbcf234f24bf201cc104",
+        "gpt_neox.layers.1.attention.dense.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.weight": "96cb87fc28a2c762a1dc950bc34ac582f672b9a8e2bee3c682005b8a081f915f",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.bias": "aaec245f2eb485d3694e40fb85389c8c524dec2bfcebbd41ca3edd96a7fdaec3",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.weight": "6bd2938dd9aea502531917e770b701bcfbfb94f39f3fc015d2dd6b985483731f",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.2.input_layernorm.weight": "a91d0bd3bf0fd3f0b6b270beb1794421a6a39e74716ea4c0a482baeeadfbdcea",
+        "gpt_neox.layers.2.input_layernorm.bias": "65c27f6e6c35ea61ab7c1948809c6c7849419b083791778e7872d75548e04e9d",
+        "gpt_neox.layers.2.post_attention_layernorm.weight": "6b4886da757336f83c3212220070d78eb0f6db2ab37fe54079edb15f2ac25a25",
+        "gpt_neox.layers.2.post_attention_layernorm.bias": "dca7ec054644bf19e87623660fbe17da9a8229f3fd87667bdc65e8861b85d7e9",
+        "gpt_neox.layers.2.attention.query_key_value.weight": "615edc4e9caeb83295ab382c3b7ba0e7f00ab04af5d0b18e0424b3209ac57765",
+        "gpt_neox.layers.2.attention.query_key_value.bias": "919ca059b51a40b9a2b088035b8733c99aa244e60022aeb47221ee5f87148a48",
+        "gpt_neox.layers.2.attention.dense.weight": "6c67819562f44211b3ebd898095d09a97a08eab877626431fc97cd33b106099a",
+        "gpt_neox.layers.2.attention.dense.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.weight": "c0459bc32f4bedc9b379f68669b199aeffbe846bf0b03cfeb53a6837d8876331",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.bias": "9c569bd213d6524fbde85bc07721e2f246bb4401602665d4a9e091ecf75e6e3e",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.weight": "06db5f4f2528235c9720e376a271779d6b8d34a61f795148d78568acfb28b3c5",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.3.input_layernorm.weight": "451cedd0c9daad6b91090cc623ea3352a051ae11b74e66ff7c0f46c22a3f06fc",
+        "gpt_neox.layers.3.input_layernorm.bias": "91b33998e4c850d78bd0927fdcec16173fdfa64a6f4ae96f639eae5c8a295a36",
+        "gpt_neox.layers.3.post_attention_layernorm.weight": "8e09b1230192b2fdd6f54a948c708531f90d51ebe8d2cb38b6390840319ef4bd",
+        "gpt_neox.layers.3.post_attention_layernorm.bias": "0daf3f87aaadac23c4727a7c8ee04dad6a1012ae3bbdc32eb5b414044ec20782",
+        "gpt_neox.layers.3.attention.query_key_value.weight": "415f77faf0c5cf991be5db792f6024e39b16549a5d262229b57da53ce497f394",
+        "gpt_neox.layers.3.attention.query_key_value.bias": "1ce4cab7b80e85bde36b612b96258e35d77f7fa0030ede48b5f188e58ebbbb25",
+        "gpt_neox.layers.3.attention.dense.weight": "ec7f27c2aaad89f6d6fe546dd970cb4c417da03dee5840a74a3bc59c4a02aa0d",
+        "gpt_neox.layers.3.attention.dense.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.weight": "b6773fb39b01caec1fe7b1e342cf8a13dc6d5f6573ac05a32f1895619f51f51e",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.bias": "f4db9c35cd7a4db3f6c7ddcd5ae02d58c8070b0119fcbf122b8d73507911753a",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.weight": "0b5f9b4437230e51b1e2b8de989a5413a87ae7d06331e7c308b7466eb8e2b681",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.4.input_layernorm.weight": "1a3fa3d309f736c8fcf07e47073255f2ed3ad1778297318e4ecce113167cdb64",
+        "gpt_neox.layers.4.input_layernorm.bias": "3f82b8aab93cf60c9ac4c0317565ed76b5c9b2be1d68fafb0949c910be3a7c73",
+        "gpt_neox.layers.4.post_attention_layernorm.weight": "1f5bf1d55f30b3392141754997b3cf2faba4a7e53ef18fb95cdadca9161cf15d",
+        "gpt_neox.layers.4.post_attention_layernorm.bias": "5074c1c20e3430c6768cb5e8c7ff655ff5aa8c067a37f8abe26bec482ca4d314",
+        "gpt_neox.layers.4.attention.query_key_value.weight": "ac62ed4ca633911d8a4e2225f51716fc965b97f66abd4f58cc9ca18c68d48e55",
+        "gpt_neox.layers.4.attention.query_key_value.bias": "897961c8476cbb53d97eea146a9100209fed0b20ad169db66215f39dca0588ba",
+        "gpt_neox.layers.4.attention.dense.weight": "610a12a7e0debae2e43cd41598c20cb1293e0fbb3d43006673422bad545d6070",
+        "gpt_neox.layers.4.attention.dense.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.weight": "5e390aa502d260d09558173b462664d8de1ec93797659ebb392a79e6410e6773",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.bias": "41492310718217c6b9f1eeb6a1d65937d46bafe85f5930614d1d1a5ea05f8664",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.weight": "e4dda39886bdadd3922504e73244f77a9da16e802f1cfcb9bafe0bf6b6943b35",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.5.input_layernorm.weight": "a300cec162475c15d6f9369478792a00df15360617e61abe243e5e4739b7f5d7",
+        "gpt_neox.layers.5.input_layernorm.bias": "c9f988e74050e6bad9b6b6e6f4a3550755e118a15308dd83b9657cfcd7e0fa8d",
+        "gpt_neox.layers.5.post_attention_layernorm.weight": "7d18bc09c50dd95cd58e26dc0fe978b57cfdb1b5dcd4f9f8ec658ca5ebec59ed",
+        "gpt_neox.layers.5.post_attention_layernorm.bias": "b75a3deec4c4213b7ffee54549a120c0272b218348638f8909200d569d9380bc",
+        "gpt_neox.layers.5.attention.query_key_value.weight": "baa0b96e3441b410c89fb21e59938721b0737a68b205f785f7d2fa65fa7fcdfc",
+        "gpt_neox.layers.5.attention.query_key_value.bias": "f6e25816afaa1fc881727a01f903d668b674ccc2ff2476de4f84f8fbeecbaed1",
+        "gpt_neox.layers.5.attention.dense.weight": "05dbe62ed7156f73edd9639d711a10fa8df3c62bf0c5425a37ddd26d80b7a644",
+        "gpt_neox.layers.5.attention.dense.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.weight": "078ccc1245488164e43f2ed3f7e95197ee673693c87b8200b6ceef2a39a61e7a",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.bias": "ec29d09d8e8dbd2aa6209b9a5e59af3ec428709f22831612ef25e0b82277a885",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.weight": "31e2b24a3e80f3e70d119204b8112a141c194c6d4e6c2472bf8591ff99bb125d",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.final_layer_norm.weight": "ca919f50d8ce5eae362e199b3e095757c954bba5bbf242d65ac7958640bb158d",
+        "gpt_neox.final_layer_norm.bias": "2336bb47a21b0e217d69a32131d5360d7313a0bf1b1cf34af973baf86086e1cb",
+        "lm_head.weight": "f06230d58710d3c75b5da586761e7bfddf07f8627be3cba1cea0c37fd67bbe60"
+      },
+      "roundtrip_tensor_hashes_match": true,
+      "explicit_shifted_loss_verified": true,
+      "roundtrip_cpu_logits_exact": true,
+      "cpu_device_parity_passed": true,
+      "cpu_device_max_absolute_logit_difference": 0.0242919921875
+    },
+    {
+      "method": "uniform_int8",
+      "negative_log_likelihood": 13577.776447534561,
+      "predicted_tokens": 3090,
+      "perplexity": 80.9719185669887,
+      "persistent_tensor_bytes": 148128320,
+      "per_document": [
+        {
+          "row": 187,
+          "negative_log_likelihood": 743.8508033752441,
+          "predicted_tokens": 168
+        },
+        {
+          "row": 1162,
+          "negative_log_likelihood": 641.0922348499298,
+          "predicted_tokens": 175
+        },
+        {
+          "row": 2823,
+          "negative_log_likelihood": 845.2363586425781,
+          "predicted_tokens": 192
+        },
+        {
+          "row": 3298,
+          "negative_log_likelihood": 715.8964605331421,
+          "predicted_tokens": 167
+        },
+        {
+          "row": 533,
+          "negative_log_likelihood": 621.7446208000183,
+          "predicted_tokens": 139
+        },
+        {
+          "row": 4327,
+          "negative_log_likelihood": 1327.5884251594543,
+          "predicted_tokens": 278
+        },
+        {
+          "row": 1868,
+          "negative_log_likelihood": 1156.6140370368958,
+          "predicted_tokens": 271
+        },
+        {
+          "row": 1512,
+          "negative_log_likelihood": 639.4676628112793,
+          "predicted_tokens": 152
+        },
+        {
+          "row": 2713,
+          "negative_log_likelihood": 1692.8536548614502,
+          "predicted_tokens": 316
+        },
+        {
+          "row": 2828,
+          "negative_log_likelihood": 674.1628675460815,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 3406,
+          "negative_log_likelihood": 957.1877288818359,
+          "predicted_tokens": 224
+        },
+        {
+          "row": 360,
+          "negative_log_likelihood": 762.2489404678345,
+          "predicted_tokens": 155
+        },
+        {
+          "row": 1838,
+          "negative_log_likelihood": 580.1834888458252,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 2492,
+          "negative_log_likelihood": 576.2330250740051,
+          "predicted_tokens": 133
+        },
+        {
+          "row": 2178,
+          "negative_log_likelihood": 1089.4318704605103,
+          "predicted_tokens": 268
+        },
+        {
+          "row": 2527,
+          "negative_log_likelihood": 553.9842681884766,
+          "predicted_tokens": 168
+        }
+      ],
+      "weight_residuals": {
+        "gpt_neox.layers.0.attention.query_key_value": {
+          "precision": "int8",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 7.316243255672816e-08,
+          "max_absolute_weight_error": 0.0016782265156507492,
+          "original_mean_square": 0.0012736289063468575
+        },
+        "gpt_neox.layers.0.attention.dense": {
+          "precision": "int8",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 2.8818808672781415e-08,
+          "max_absolute_weight_error": 0.0013907123357057571,
+          "original_mean_square": 0.00044106182758696377
+        },
+        "gpt_neox.layers.0.mlp.dense_h_to_4h": {
+          "precision": "int8",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 5.179452600145851e-08,
+          "max_absolute_weight_error": 0.0007624626159667969,
+          "original_mean_square": 0.0009698549401946366
+        },
+        "gpt_neox.layers.0.mlp.dense_4h_to_h": {
+          "precision": "int8",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 3.5051030522481597e-08,
+          "max_absolute_weight_error": 0.0010841544717550278,
+          "original_mean_square": 0.0003980378096457571
+        },
+        "gpt_neox.layers.1.attention.query_key_value": {
+          "precision": "int8",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 7.317515837712563e-08,
+          "max_absolute_weight_error": 0.001087583601474762,
+          "original_mean_square": 0.001255410723388195
+        },
+        "gpt_neox.layers.1.attention.dense": {
+          "precision": "int8",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 3.068738863021281e-08,
+          "max_absolute_weight_error": 0.0009031519293785095,
+          "original_mean_square": 0.000520296220201999
+        },
+        "gpt_neox.layers.1.mlp.dense_h_to_4h": {
+          "precision": "int8",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 5.476932685155589e-08,
+          "max_absolute_weight_error": 0.0021559372544288635,
+          "original_mean_square": 0.0010121852392330766
+        },
+        "gpt_neox.layers.1.mlp.dense_4h_to_h": {
+          "precision": "int8",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.2769606883011875e-07,
+          "max_absolute_weight_error": 0.004635065793991089,
+          "original_mean_square": 0.0004274568345863372
+        },
+        "gpt_neox.layers.2.attention.query_key_value": {
+          "precision": "int8",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 6.04521588343232e-08,
+          "max_absolute_weight_error": 0.0012062862515449524,
+          "original_mean_square": 0.0010487082181498408
+        },
+        "gpt_neox.layers.2.attention.dense": {
+          "precision": "int8",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 5.0449685318199045e-08,
+          "max_absolute_weight_error": 0.0009580296464264393,
+          "original_mean_square": 0.0007218120736069977
+        },
+        "gpt_neox.layers.2.mlp.dense_h_to_4h": {
+          "precision": "int8",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 5.404142200404749e-08,
+          "max_absolute_weight_error": 0.004832804203033447,
+          "original_mean_square": 0.0010899963090196252
+        },
+        "gpt_neox.layers.2.mlp.dense_4h_to_h": {
+          "precision": "int8",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 4.5713868246366474e-08,
+          "max_absolute_weight_error": 0.0020313262939453125,
+          "original_mean_square": 0.00048641033936291933
+        },
+        "gpt_neox.layers.3.attention.query_key_value": {
+          "precision": "int8",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 3.653058229247108e-07,
+          "max_absolute_weight_error": 0.007343411445617676,
+          "original_mean_square": 0.00963981356471777
+        },
+        "gpt_neox.layers.3.attention.dense": {
+          "precision": "int8",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 1.794301738300419e-07,
+          "max_absolute_weight_error": 0.001406930387020111,
+          "original_mean_square": 0.0013207843294367194
+        },
+        "gpt_neox.layers.3.mlp.dense_h_to_4h": {
+          "precision": "int8",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 5.114148393658979e-08,
+          "max_absolute_weight_error": 0.0008729957044124603,
+          "original_mean_square": 0.0009109352249652147
+        },
+        "gpt_neox.layers.3.mlp.dense_4h_to_h": {
+          "precision": "int8",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.220421665948379e-07,
+          "max_absolute_weight_error": 0.0019974596798419952,
+          "original_mean_square": 0.0007368855294771492
+        },
+        "gpt_neox.layers.4.attention.query_key_value": {
+          "precision": "int8",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.9449701085250126e-06,
+          "max_absolute_weight_error": 0.010380864143371582,
+          "original_mean_square": 0.04723944142460823
+        },
+        "gpt_neox.layers.4.attention.dense": {
+          "precision": "int8",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 1.731824461614906e-08,
+          "max_absolute_weight_error": 0.0005504284054040909,
+          "original_mean_square": 0.0002546762698329985
+        },
+        "gpt_neox.layers.4.mlp.dense_h_to_4h": {
+          "precision": "int8",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 4.882275561612914e-08,
+          "max_absolute_weight_error": 0.0012103691697120667,
+          "original_mean_square": 0.0008475808426737785
+        },
+        "gpt_neox.layers.4.mlp.dense_4h_to_h": {
+          "precision": "int8",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.3300433465701644e-07,
+          "max_absolute_weight_error": 0.003378620371222496,
+          "original_mean_square": 0.0009583979845046997
+        },
+        "gpt_neox.layers.5.attention.query_key_value": {
+          "precision": "int8",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.3987768170409254e-06,
+          "max_absolute_weight_error": 0.007889404892921448,
+          "original_mean_square": 0.02079697512090206
+        },
+        "gpt_neox.layers.5.attention.dense": {
+          "precision": "int8",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 1.6819889481212158e-08,
+          "max_absolute_weight_error": 0.00035599805414676666,
+          "original_mean_square": 0.0002607826900202781
+        },
+        "gpt_neox.layers.5.mlp.dense_h_to_4h": {
+          "precision": "int8",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 4.911270323759709e-08,
+          "max_absolute_weight_error": 0.0020660683512687683,
+          "original_mean_square": 0.0008395552868023515
+        },
+        "gpt_neox.layers.5.mlp.dense_4h_to_h": {
+          "precision": "int8",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.3988628211336618e-07,
+          "max_absolute_weight_error": 0.0035301856696605682,
+          "original_mean_square": 0.0012753906194120646
+        },
+        "lm_head": {
+          "precision": "int8",
+          "shape": [
+            50304,
+            512
+          ],
+          "mean_squared_weight_error": 2.0079467333289358e-07,
+          "max_absolute_weight_error": 0.0015177130699157715,
+          "original_mean_square": 0.013107222504913807
+        }
+      },
+      "checkpoint_sha256": "b93cd0cc17574f12b598f193aceaec20b8a5cd0b658d6d1d0318121e8554aac2",
+      "checkpoint_bytes": 148139848,
+      "state_tensor_sha256": {
+        "gpt_neox.embed_in.weight": "ad5374e53dc57b9779607f15acd90126d75c6da9ee2530d8dca6450d5edc0f14",
+        "gpt_neox.layers.0.input_layernorm.weight": "e10efaaba4e068cd29e5d9e92b5b735aa6c286f0ab9014946af2dda6e1cb9d2c",
+        "gpt_neox.layers.0.input_layernorm.bias": "31987888c3565391150f9caae7ea3aafa37be5fcdde80982b0c99321653112d4",
+        "gpt_neox.layers.0.post_attention_layernorm.weight": "5672ce58d8b84b6c438f8983d975f94842770bc8d07e752f408949d1e9e3cb92",
+        "gpt_neox.layers.0.post_attention_layernorm.bias": "c55621d8d70225a54a2c404403cdfd5495badf4f059411f750a84473374e421f",
+        "gpt_neox.layers.0.attention.query_key_value.packed_weight": "afd87b99f9dc5be2260d6204c1facd3294b8e9fecdc165b0014f794bda154f21",
+        "gpt_neox.layers.0.attention.query_key_value.scale": "01afab70994a7e7b17ff25601adb2a76abc3f64aed954c79c874dd91e4d09683",
+        "gpt_neox.layers.0.attention.query_key_value.bias": "7ea3e9e24ade1d07580b62eb0ba2da0dffa478b125a9ba0b4d94b9e4799521ff",
+        "gpt_neox.layers.0.attention.dense.packed_weight": "4b89fab0cba8b9a79b930272f2f99d4538d352628580480e83d9ce07e68d5360",
+        "gpt_neox.layers.0.attention.dense.scale": "0e8811a7c3f803f3dab8d31d6cdaba2984508207c7c11b166e495116f11fd443",
+        "gpt_neox.layers.0.attention.dense.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.packed_weight": "2a012b667ffc96ace23d9197e794f78ed8754aaa065f6c254c4f12b09f3c572d",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.scale": "023594312f8fa8e92d24c31526a5b375374ac85b4e70c0bdda86754673805188",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.bias": "bf9239d460529184442f9d8a91198f850d1c9130bee80cfb9d02996301787dc2",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.packed_weight": "6ba61d5f0f314fc9552bd2d1e87164a686b2dba286a7038823bb9ec53f342bee",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.scale": "8cbacb1b725ce56b17a5bd0614b542bc571720c4fbea580df574c7b3c11854ef",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.1.input_layernorm.weight": "e2bd69a2cf18fee7209d059ea1823cbdad5b6e93411d5bdcd0052c5ec906d21f",
+        "gpt_neox.layers.1.input_layernorm.bias": "536f69a2d1c662fe32ab915a8369afdb9434a535f0d8001ddec6592d76733559",
+        "gpt_neox.layers.1.post_attention_layernorm.weight": "d17d6b4009a90eae06b94e7623d40898bfc4929584929ce4e99d1899919ff9a9",
+        "gpt_neox.layers.1.post_attention_layernorm.bias": "19f2afad47cb05a167cadb972f1bdd8f898fff2ddf9f7521ef4f176b8c429527",
+        "gpt_neox.layers.1.attention.query_key_value.packed_weight": "fed2c55be71b00beba5874c3f9bcc52d19515767d0e1409ca55e7516a82cd599",
+        "gpt_neox.layers.1.attention.query_key_value.scale": "161b26a51b1b114df300ed9b20b189788024ab709fc9ca2a5be7c459144cbc37",
+        "gpt_neox.layers.1.attention.query_key_value.bias": "c28a4820284ad176c1df97b18c1b70e781de1a2e9f14c16d8f253c5b468d29af",
+        "gpt_neox.layers.1.attention.dense.packed_weight": "54581dfe48cf7e63fa42be8d518137d75c1b8b1d22d4ba63a5b959be80922e0f",
+        "gpt_neox.layers.1.attention.dense.scale": "42d39e152c878342c67f6afcb2b003d37a8d09e92e0ba7ed0540b58d23bb9e9f",
+        "gpt_neox.layers.1.attention.dense.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.packed_weight": "644f0ca14aa9c7b7de189d0fa72c26330f7536f5ffde09105095c718796f1b15",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.scale": "38df5b72ca11043f46454361f66fcf16704215dd251133ce21135b65fdaa2013",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.bias": "aaec245f2eb485d3694e40fb85389c8c524dec2bfcebbd41ca3edd96a7fdaec3",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.packed_weight": "e13cad9dcd045caf0a71fb9b4d8ec5a6d5f522d7159b9c078e5a1acd9c6726c4",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.scale": "b7b8850552053a60866cd5bd0a7c2c2e69eeb692006bb4ac7642aec65acf6c7f",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.2.input_layernorm.weight": "a91d0bd3bf0fd3f0b6b270beb1794421a6a39e74716ea4c0a482baeeadfbdcea",
+        "gpt_neox.layers.2.input_layernorm.bias": "65c27f6e6c35ea61ab7c1948809c6c7849419b083791778e7872d75548e04e9d",
+        "gpt_neox.layers.2.post_attention_layernorm.weight": "6b4886da757336f83c3212220070d78eb0f6db2ab37fe54079edb15f2ac25a25",
+        "gpt_neox.layers.2.post_attention_layernorm.bias": "dca7ec054644bf19e87623660fbe17da9a8229f3fd87667bdc65e8861b85d7e9",
+        "gpt_neox.layers.2.attention.query_key_value.packed_weight": "272b91203ca8e6d3049c951cce4e3d4202409a04f7e9d06b7a3b59574589f9eb",
+        "gpt_neox.layers.2.attention.query_key_value.scale": "373e6ecb8592fbacdd63d8c5b3b8f13fa451f04eb7d8eb0ed943c8f36be58561",
+        "gpt_neox.layers.2.attention.query_key_value.bias": "919ca059b51a40b9a2b088035b8733c99aa244e60022aeb47221ee5f87148a48",
+        "gpt_neox.layers.2.attention.dense.packed_weight": "da9941784e31a4ef030e019554816e05a6ebf200e14b565d57bba9423c9e9ec3",
+        "gpt_neox.layers.2.attention.dense.scale": "7ef86fc2e85d5a81cac3935ba11ec4ffc55292737c448390e061189af1348706",
+        "gpt_neox.layers.2.attention.dense.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.packed_weight": "6266e40e464b9dc5d874111d0fa1dda8b9a43b5bae0b22bba1e470538abd2fba",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.scale": "0b650fc63db31ce12f9a8e329db5d23901f154ac17f285f987524058b5675efe",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.bias": "9c569bd213d6524fbde85bc07721e2f246bb4401602665d4a9e091ecf75e6e3e",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.packed_weight": "3eed0ba01d8d20bc8cc3ec6f1f8f992bd2f87120da06b0e86216ab130c4c741c",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.scale": "74af9ccf9356b148510873731988dea732d9f76c0954c64d9fdd978bf590fd90",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.3.input_layernorm.weight": "451cedd0c9daad6b91090cc623ea3352a051ae11b74e66ff7c0f46c22a3f06fc",
+        "gpt_neox.layers.3.input_layernorm.bias": "91b33998e4c850d78bd0927fdcec16173fdfa64a6f4ae96f639eae5c8a295a36",
+        "gpt_neox.layers.3.post_attention_layernorm.weight": "8e09b1230192b2fdd6f54a948c708531f90d51ebe8d2cb38b6390840319ef4bd",
+        "gpt_neox.layers.3.post_attention_layernorm.bias": "0daf3f87aaadac23c4727a7c8ee04dad6a1012ae3bbdc32eb5b414044ec20782",
+        "gpt_neox.layers.3.attention.query_key_value.packed_weight": "100b4c3013f8fe3412991221ce9016aeecb200ed2a8b4c176d98bbe2ec9d1e25",
+        "gpt_neox.layers.3.attention.query_key_value.scale": "2ca8d012a20c2922a009fe22365d70f454b7224f3295767599520c5e6989d1dc",
+        "gpt_neox.layers.3.attention.query_key_value.bias": "1ce4cab7b80e85bde36b612b96258e35d77f7fa0030ede48b5f188e58ebbbb25",
+        "gpt_neox.layers.3.attention.dense.packed_weight": "f84e907190fb85732bd2a4676aadceed51ac4a3f52a9f82ea27f4877326ee1e6",
+        "gpt_neox.layers.3.attention.dense.scale": "e8ab4abb989f8e701391df0826311aece51d939454ba09a6c0b6977c8dcbc7b7",
+        "gpt_neox.layers.3.attention.dense.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.packed_weight": "5b3368ca5ef981e62a9c2cc54ee57ddf4a23caca0c6133dd4fb2c94e3ad6dc96",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.scale": "74b5dfb3b28beee2d3b51e52b66e165b2d483e84f898043ab20cbaa72e573ee1",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.bias": "f4db9c35cd7a4db3f6c7ddcd5ae02d58c8070b0119fcbf122b8d73507911753a",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.packed_weight": "17e4a39129341ca3221fc3053c0f2257fbf55ae641264fa2c441a5cd3fdacdf4",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.scale": "2e6b929b280c5c96177dbe6efc3c854ede7acd87cdd3caf726b13dd5ba0e1626",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.4.input_layernorm.weight": "1a3fa3d309f736c8fcf07e47073255f2ed3ad1778297318e4ecce113167cdb64",
+        "gpt_neox.layers.4.input_layernorm.bias": "3f82b8aab93cf60c9ac4c0317565ed76b5c9b2be1d68fafb0949c910be3a7c73",
+        "gpt_neox.layers.4.post_attention_layernorm.weight": "1f5bf1d55f30b3392141754997b3cf2faba4a7e53ef18fb95cdadca9161cf15d",
+        "gpt_neox.layers.4.post_attention_layernorm.bias": "5074c1c20e3430c6768cb5e8c7ff655ff5aa8c067a37f8abe26bec482ca4d314",
+        "gpt_neox.layers.4.attention.query_key_value.packed_weight": "573787dd2a68fd421d27a0b3d7038e479b3bfc4d107f1b79225771f846e1e1cf",
+        "gpt_neox.layers.4.attention.query_key_value.scale": "6802a5705783581d595c7df10772696417fe1a509217e2013ca8a9981993a861",
+        "gpt_neox.layers.4.attention.query_key_value.bias": "897961c8476cbb53d97eea146a9100209fed0b20ad169db66215f39dca0588ba",
+        "gpt_neox.layers.4.attention.dense.packed_weight": "19db22f07604bfb0e08a817f048d492f1e38cd752dc0e9fb80e015cec1fa5cee",
+        "gpt_neox.layers.4.attention.dense.scale": "32ba72a1308ccbd81d613b16c838b6f7203f3995c83a269156f86e05de24e4a5",
+        "gpt_neox.layers.4.attention.dense.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.packed_weight": "57c293b059a3a7fa6f15f87db9d37d6d0006d92a6a5f80714556e74fe9a13556",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.scale": "a2cc35156da96e253c70c299fc9116acd336eca825fdb5556c34f0cc410da51f",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.bias": "41492310718217c6b9f1eeb6a1d65937d46bafe85f5930614d1d1a5ea05f8664",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.packed_weight": "1ecf6c722c924a35003008c235467d4a6ed843f997dd0b3c75258bed8e4b1c55",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.scale": "7a8c68133c114aa60111b257fa5d0bf804bb6338ddfbcc084918030994d9044b",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.5.input_layernorm.weight": "a300cec162475c15d6f9369478792a00df15360617e61abe243e5e4739b7f5d7",
+        "gpt_neox.layers.5.input_layernorm.bias": "c9f988e74050e6bad9b6b6e6f4a3550755e118a15308dd83b9657cfcd7e0fa8d",
+        "gpt_neox.layers.5.post_attention_layernorm.weight": "7d18bc09c50dd95cd58e26dc0fe978b57cfdb1b5dcd4f9f8ec658ca5ebec59ed",
+        "gpt_neox.layers.5.post_attention_layernorm.bias": "b75a3deec4c4213b7ffee54549a120c0272b218348638f8909200d569d9380bc",
+        "gpt_neox.layers.5.attention.query_key_value.packed_weight": "14a919406ebc9512688edf36ad254498446ea6dff94aa695b264f6c2138c5c82",
+        "gpt_neox.layers.5.attention.query_key_value.scale": "162550619b00ba359c0354736beca3d1cf6ae2a5c492f0989d7ac98768747fec",
+        "gpt_neox.layers.5.attention.query_key_value.bias": "f6e25816afaa1fc881727a01f903d668b674ccc2ff2476de4f84f8fbeecbaed1",
+        "gpt_neox.layers.5.attention.dense.packed_weight": "166dfda79aac6b9f999abac2e8244d67b6e421a94f4bc3706c08019e7b68e544",
+        "gpt_neox.layers.5.attention.dense.scale": "6efb4a90b4f24daebecb985d40aa19cce47a72c8106d7ed165ef0875640cb87b",
+        "gpt_neox.layers.5.attention.dense.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.packed_weight": "147f9997a616bba9c795e94e0fa1532eb956a3a3bdcd35c47084a56572adae97",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.scale": "35ad62b403bc534120025ebbe9b84b83cd1dbb1c6bc6ad2e5c8c9b952dd893c3",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.bias": "ec29d09d8e8dbd2aa6209b9a5e59af3ec428709f22831612ef25e0b82277a885",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.packed_weight": "406d84e07a141e850232dedf02598109fe2438077ecab347de9a401bcd048204",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.scale": "053bd1e571725ab74d114397e19b3ff2ca6a8dd2e588b567e40d8f90dfca1572",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.final_layer_norm.weight": "ca919f50d8ce5eae362e199b3e095757c954bba5bbf242d65ac7958640bb158d",
+        "gpt_neox.final_layer_norm.bias": "2336bb47a21b0e217d69a32131d5360d7313a0bf1b1cf34af973baf86086e1cb",
+        "lm_head.packed_weight": "2c9302506caae867c8d8d9c07ad5956a3e045dc848463e0386fbcea1400adebb",
+        "lm_head.scale": "cf2dd744c68a7fa1acbba6c022e6abb32b73fc9c3800f491e146f3a885b5ab3d"
+      },
+      "roundtrip_tensor_hashes_match": true,
+      "explicit_shifted_loss_verified": true,
+      "roundtrip_cpu_logits_exact": true,
+      "cpu_device_parity_passed": true,
+      "cpu_device_max_absolute_logit_difference": 0.01611328125
+    },
+    {
+      "method": "uniform_nf4",
+      "negative_log_likelihood": 45039.56444835663,
+      "predicted_tokens": 3090,
+      "perplexity": 2139132.2726761294,
+      "persistent_tensor_bytes": 125813312,
+      "per_document": [
+        {
+          "row": 187,
+          "negative_log_likelihood": 2546.377372741699,
+          "predicted_tokens": 168
+        },
+        {
+          "row": 1162,
+          "negative_log_likelihood": 2556.0908794403076,
+          "predicted_tokens": 175
+        },
+        {
+          "row": 2823,
+          "negative_log_likelihood": 2740.65380859375,
+          "predicted_tokens": 192
+        },
+        {
+          "row": 3298,
+          "negative_log_likelihood": 2438.842851638794,
+          "predicted_tokens": 167
+        },
+        {
+          "row": 533,
+          "negative_log_likelihood": 2118.0308198928833,
+          "predicted_tokens": 139
+        },
+        {
+          "row": 4327,
+          "negative_log_likelihood": 4101.22891998291,
+          "predicted_tokens": 278
+        },
+        {
+          "row": 1868,
+          "negative_log_likelihood": 3614.988703727722,
+          "predicted_tokens": 271
+        },
+        {
+          "row": 1512,
+          "negative_log_likelihood": 2206.6079483032227,
+          "predicted_tokens": 152
+        },
+        {
+          "row": 2713,
+          "negative_log_likelihood": 5092.29806137085,
+          "predicted_tokens": 316
+        },
+        {
+          "row": 2828,
+          "negative_log_likelihood": 2282.5707511901855,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 3406,
+          "negative_log_likelihood": 3067.2909240722656,
+          "predicted_tokens": 224
+        },
+        {
+          "row": 360,
+          "negative_log_likelihood": 2359.4146013259888,
+          "predicted_tokens": 155
+        },
+        {
+          "row": 1838,
+          "negative_log_likelihood": 1950.2249145507812,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 2492,
+          "negative_log_likelihood": 1869.163595199585,
+          "predicted_tokens": 133
+        },
+        {
+          "row": 2178,
+          "negative_log_likelihood": 3939.2495498657227,
+          "predicted_tokens": 268
+        },
+        {
+          "row": 2527,
+          "negative_log_likelihood": 2156.530746459961,
+          "predicted_tokens": 168
+        }
+      ],
+      "weight_residuals": {
+        "gpt_neox.layers.0.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.3533436685975175e-05,
+          "max_absolute_weight_error": 0.03503349423408508,
+          "original_mean_square": 0.0012736289063468575
+        },
+        "gpt_neox.layers.0.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 5.0003618525806814e-06,
+          "max_absolute_weight_error": 0.05078125,
+          "original_mean_square": 0.00044106182758696377
+        },
+        "gpt_neox.layers.0.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 9.80522145255236e-06,
+          "max_absolute_weight_error": 0.023457594215869904,
+          "original_mean_square": 0.0009698549401946366
+        },
+        "gpt_neox.layers.0.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 5.397248969529755e-06,
+          "max_absolute_weight_error": 0.03398303687572479,
+          "original_mean_square": 0.0003980378096457571
+        },
+        "gpt_neox.layers.1.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.3345343177206814e-05,
+          "max_absolute_weight_error": 0.03022134304046631,
+          "original_mean_square": 0.001255410723388195
+        },
+        "gpt_neox.layers.1.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 5.555376901611453e-06,
+          "max_absolute_weight_error": 0.023216672241687775,
+          "original_mean_square": 0.000520296220201999
+        },
+        "gpt_neox.layers.1.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 1.036255980579881e-05,
+          "max_absolute_weight_error": 0.076171875,
+          "original_mean_square": 0.0010121852392330766
+        },
+        "gpt_neox.layers.1.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.529113797005266e-05,
+          "max_absolute_weight_error": 0.1455078125,
+          "original_mean_square": 0.0004274568345863372
+        },
+        "gpt_neox.layers.2.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.1113108485005796e-05,
+          "max_absolute_weight_error": 0.033447265625,
+          "original_mean_square": 0.0010487082181498408
+        },
+        "gpt_neox.layers.2.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 8.499822797602974e-06,
+          "max_absolute_weight_error": 0.0296630859375,
+          "original_mean_square": 0.0007218120736069977
+        },
+        "gpt_neox.layers.2.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 1.0612833648337983e-05,
+          "max_absolute_weight_error": 0.1801692247390747,
+          "original_mean_square": 0.0010899963090196252
+        },
+        "gpt_neox.layers.2.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 6.915631729498273e-06,
+          "max_absolute_weight_error": 0.04193153977394104,
+          "original_mean_square": 0.00048641033936291933
+        },
+        "gpt_neox.layers.3.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 8.65423062350601e-05,
+          "max_absolute_weight_error": 0.2609211206436157,
+          "original_mean_square": 0.00963981356471777
+        },
+        "gpt_neox.layers.3.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 2.5347384507767856e-05,
+          "max_absolute_weight_error": 0.041015625,
+          "original_mean_square": 0.0013207843294367194
+        },
+        "gpt_neox.layers.3.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 9.478093488723971e-06,
+          "max_absolute_weight_error": 0.0284423828125,
+          "original_mean_square": 0.0009109352249652147
+        },
+        "gpt_neox.layers.3.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.6438894817838445e-05,
+          "max_absolute_weight_error": 0.04345703125,
+          "original_mean_square": 0.0007368855294771492
+        },
+        "gpt_neox.layers.4.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 0.00045232471893541515,
+          "max_absolute_weight_error": 0.3938647508621216,
+          "original_mean_square": 0.04723944142460823
+        },
+        "gpt_neox.layers.4.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 2.938562374765752e-06,
+          "max_absolute_weight_error": 0.013325564563274384,
+          "original_mean_square": 0.0002546762698329985
+        },
+        "gpt_neox.layers.4.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 8.94063850864768e-06,
+          "max_absolute_weight_error": 0.029052734375,
+          "original_mean_square": 0.0008475808426737785
+        },
+        "gpt_neox.layers.4.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.8295242625754327e-05,
+          "max_absolute_weight_error": 0.07076248526573181,
+          "original_mean_square": 0.0009583979845046997
+        },
+        "gpt_neox.layers.5.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 0.00024246326938737184,
+          "max_absolute_weight_error": 0.275390625,
+          "original_mean_square": 0.02079697512090206
+        },
+        "gpt_neox.layers.5.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 2.9002085284446366e-06,
+          "max_absolute_weight_error": 0.010883908718824387,
+          "original_mean_square": 0.0002607826900202781
+        },
+        "gpt_neox.layers.5.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 8.901253750082105e-06,
+          "max_absolute_weight_error": 0.051031798124313354,
+          "original_mean_square": 0.0008395552868023515
+        },
+        "gpt_neox.layers.5.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 2.029858842433896e-05,
+          "max_absolute_weight_error": 0.07580077648162842,
+          "original_mean_square": 0.0012753906194120646
+        },
+        "lm_head": {
+          "precision": "int4",
+          "shape": [
+            50304,
+            512
+          ],
+          "mean_squared_weight_error": 9.594506263965741e-05,
+          "max_absolute_weight_error": 0.04443359375,
+          "original_mean_square": 0.013107222504913807
+        }
+      },
+      "checkpoint_sha256": "8bff36a120d617d4b986f54777481084896ed7715ad19f1ca952ba6467b88f13",
+      "checkpoint_bytes": 125824800,
+      "state_tensor_sha256": {
+        "gpt_neox.embed_in.weight": "ad5374e53dc57b9779607f15acd90126d75c6da9ee2530d8dca6450d5edc0f14",
+        "gpt_neox.layers.0.input_layernorm.weight": "e10efaaba4e068cd29e5d9e92b5b735aa6c286f0ab9014946af2dda6e1cb9d2c",
+        "gpt_neox.layers.0.input_layernorm.bias": "31987888c3565391150f9caae7ea3aafa37be5fcdde80982b0c99321653112d4",
+        "gpt_neox.layers.0.post_attention_layernorm.weight": "5672ce58d8b84b6c438f8983d975f94842770bc8d07e752f408949d1e9e3cb92",
+        "gpt_neox.layers.0.post_attention_layernorm.bias": "c55621d8d70225a54a2c404403cdfd5495badf4f059411f750a84473374e421f",
+        "gpt_neox.layers.0.attention.query_key_value.packed_weight": "9e69faa8d0c5560dcc341c93c52d0789b289847437fa6c866129a6f783437da2",
+        "gpt_neox.layers.0.attention.query_key_value.scale": "6f7e2b8c0413d6fd469ae06280715d05181ee277ab91ad7d1b0fc7c5d4582a4a",
+        "gpt_neox.layers.0.attention.query_key_value.bias": "7ea3e9e24ade1d07580b62eb0ba2da0dffa478b125a9ba0b4d94b9e4799521ff",
+        "gpt_neox.layers.0.attention.dense.packed_weight": "c0e826b697bf1a70e5e4aace7e556a7514c7fc9b04b5f5d3971ddbe8bb886f5f",
+        "gpt_neox.layers.0.attention.dense.scale": "4959514bb616ad42ddfafb495d86a24cf3657090e3ccc62218e736dd45ad134b",
+        "gpt_neox.layers.0.attention.dense.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.packed_weight": "65c7946a887ec8b4ec19b13a27c04348996a6bf2294474b0819de44605ef1143",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.scale": "f759c84a91773aa758dea14f977115f30d0d32bab42c929006c0c7b8ddbfebdd",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.bias": "bf9239d460529184442f9d8a91198f850d1c9130bee80cfb9d02996301787dc2",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.packed_weight": "11e7c933766658611f4e3105cd85627f8b81f5e3147606332c6faed3dcd0a3a3",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.scale": "a20de889e60f7e3aa9dad393939ebf9058c4fa4d83d0f253d53634be691ed0b6",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.1.input_layernorm.weight": "e2bd69a2cf18fee7209d059ea1823cbdad5b6e93411d5bdcd0052c5ec906d21f",
+        "gpt_neox.layers.1.input_layernorm.bias": "536f69a2d1c662fe32ab915a8369afdb9434a535f0d8001ddec6592d76733559",
+        "gpt_neox.layers.1.post_attention_layernorm.weight": "d17d6b4009a90eae06b94e7623d40898bfc4929584929ce4e99d1899919ff9a9",
+        "gpt_neox.layers.1.post_attention_layernorm.bias": "19f2afad47cb05a167cadb972f1bdd8f898fff2ddf9f7521ef4f176b8c429527",
+        "gpt_neox.layers.1.attention.query_key_value.packed_weight": "c25283b642bfc159e7f425fccca25701c81487524c8572e89f1416a7f5f73ed4",
+        "gpt_neox.layers.1.attention.query_key_value.scale": "1917345ab605001212c6af184708f4cdf3def07cec6655da050905799e860507",
+        "gpt_neox.layers.1.attention.query_key_value.bias": "c28a4820284ad176c1df97b18c1b70e781de1a2e9f14c16d8f253c5b468d29af",
+        "gpt_neox.layers.1.attention.dense.packed_weight": "bbb126f4e2ecfa9f2bdd53d20b1c06a40a824a8c7d2a37b3053e0cbfa4d76fc6",
+        "gpt_neox.layers.1.attention.dense.scale": "4e2f910168327cdb8d65741666200f167749bef3c5bf46db06ffde7438f301bc",
+        "gpt_neox.layers.1.attention.dense.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.packed_weight": "c4e2a75b7e5733dedd66d38ea065561f0da88c53eb377ad6e13f455e365e55f1",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.scale": "b26fac266a6fb85882f8564b1c9ab7d16447dd89adcf69bfb0a9f6567cfb595e",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.bias": "aaec245f2eb485d3694e40fb85389c8c524dec2bfcebbd41ca3edd96a7fdaec3",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.packed_weight": "1b823380ed0700164c6603841eb504279585240f565114e1348d81d9037bf985",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.scale": "6ec70ef05403c05949a05a63a24b7f8a62c0d2a8b3a043c54c30a3010d690239",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.2.input_layernorm.weight": "a91d0bd3bf0fd3f0b6b270beb1794421a6a39e74716ea4c0a482baeeadfbdcea",
+        "gpt_neox.layers.2.input_layernorm.bias": "65c27f6e6c35ea61ab7c1948809c6c7849419b083791778e7872d75548e04e9d",
+        "gpt_neox.layers.2.post_attention_layernorm.weight": "6b4886da757336f83c3212220070d78eb0f6db2ab37fe54079edb15f2ac25a25",
+        "gpt_neox.layers.2.post_attention_layernorm.bias": "dca7ec054644bf19e87623660fbe17da9a8229f3fd87667bdc65e8861b85d7e9",
+        "gpt_neox.layers.2.attention.query_key_value.packed_weight": "aa2f13845a85ff37ea371046fa16dd866f500056b8a24ee670848ebc5ebb8c4b",
+        "gpt_neox.layers.2.attention.query_key_value.scale": "d73cab1fc59b7b5446d97d00b6056b034aa86374f98ee5aa64f223ce0259a8fe",
+        "gpt_neox.layers.2.attention.query_key_value.bias": "919ca059b51a40b9a2b088035b8733c99aa244e60022aeb47221ee5f87148a48",
+        "gpt_neox.layers.2.attention.dense.packed_weight": "60f46aa0d1ffc111cca7cd44d5ec90093c67b9ac5e140b40416c942dd6aedea9",
+        "gpt_neox.layers.2.attention.dense.scale": "0a5fdd05cd5aa385aba04711dfa9e0e0cc0d33153a09991f5ca02ce9dad87d65",
+        "gpt_neox.layers.2.attention.dense.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.packed_weight": "3e71d76b6f091ec132781e48a9ff977c39f41f5068695437506c71759191532e",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.scale": "5af5eab041e8394f5665e28db35aaf1b9301df18f67ba28b9d80b9dd56b6f370",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.bias": "9c569bd213d6524fbde85bc07721e2f246bb4401602665d4a9e091ecf75e6e3e",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.packed_weight": "243bbf2ed25cc35760a713002feded272939488a04a909b62954d4b8c4d90e88",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.scale": "70d85da3f35513205e39f233ef5024e6e89d0b003643b172babd68a0bd888645",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.3.input_layernorm.weight": "451cedd0c9daad6b91090cc623ea3352a051ae11b74e66ff7c0f46c22a3f06fc",
+        "gpt_neox.layers.3.input_layernorm.bias": "91b33998e4c850d78bd0927fdcec16173fdfa64a6f4ae96f639eae5c8a295a36",
+        "gpt_neox.layers.3.post_attention_layernorm.weight": "8e09b1230192b2fdd6f54a948c708531f90d51ebe8d2cb38b6390840319ef4bd",
+        "gpt_neox.layers.3.post_attention_layernorm.bias": "0daf3f87aaadac23c4727a7c8ee04dad6a1012ae3bbdc32eb5b414044ec20782",
+        "gpt_neox.layers.3.attention.query_key_value.packed_weight": "8ae9c041d17f4111256d7000b24d6f5865098653b683931086aec058c65377d2",
+        "gpt_neox.layers.3.attention.query_key_value.scale": "cf66e2dcd353cdacd6a7768c03305ba22cde5a85b22eba8c4f072677bb12811d",
+        "gpt_neox.layers.3.attention.query_key_value.bias": "1ce4cab7b80e85bde36b612b96258e35d77f7fa0030ede48b5f188e58ebbbb25",
+        "gpt_neox.layers.3.attention.dense.packed_weight": "a0d89b1620056254593e26bd9e339544c2838bb7f1525b7d133c9271f826a359",
+        "gpt_neox.layers.3.attention.dense.scale": "6919b80068470b5f30ba63d90103428b47a6360ec65d5f4279b7b01e55cd2172",
+        "gpt_neox.layers.3.attention.dense.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.packed_weight": "c35d51d391f0f5ecbaad4bd64fd84197a4438cd257b9e6e7f7b46e702da95f3d",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.scale": "c3f58f569fc8484f8c9fe7b0ca46eeb6dc1715bfb23d13618267fce1b89529ab",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.bias": "f4db9c35cd7a4db3f6c7ddcd5ae02d58c8070b0119fcbf122b8d73507911753a",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.packed_weight": "f58f4624dac7451b8b60d8f3857036e55f0aca9adcf9cbd1665cb3adf98aa955",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.scale": "09255e156708821884691e15ddd6ee48d1bbff7adafa883b005d82debdbf663b",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.4.input_layernorm.weight": "1a3fa3d309f736c8fcf07e47073255f2ed3ad1778297318e4ecce113167cdb64",
+        "gpt_neox.layers.4.input_layernorm.bias": "3f82b8aab93cf60c9ac4c0317565ed76b5c9b2be1d68fafb0949c910be3a7c73",
+        "gpt_neox.layers.4.post_attention_layernorm.weight": "1f5bf1d55f30b3392141754997b3cf2faba4a7e53ef18fb95cdadca9161cf15d",
+        "gpt_neox.layers.4.post_attention_layernorm.bias": "5074c1c20e3430c6768cb5e8c7ff655ff5aa8c067a37f8abe26bec482ca4d314",
+        "gpt_neox.layers.4.attention.query_key_value.packed_weight": "6fe08c0a271658374defbdf408eb4ac44247672adeb84645298201de9f8987b9",
+        "gpt_neox.layers.4.attention.query_key_value.scale": "63dee91b69f7376c168332f97bfad328ab4f72492396428528c8bed0ccba63ba",
+        "gpt_neox.layers.4.attention.query_key_value.bias": "897961c8476cbb53d97eea146a9100209fed0b20ad169db66215f39dca0588ba",
+        "gpt_neox.layers.4.attention.dense.packed_weight": "f07b64decc80d1eb5d010c2ce2935898137d07cf50328765b54e4a0974ea95fe",
+        "gpt_neox.layers.4.attention.dense.scale": "10e02d127e73546b2d01a7343d0664ba3ef1f596cc7b925879c6f9e803e127b4",
+        "gpt_neox.layers.4.attention.dense.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.packed_weight": "52f0befd950123bf8355de9b5c05f78f950a7d17c74beee2e3730204d0315ab5",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.scale": "66d88826f0b9464db1677b22f8ba8d733b5ed3585d8788ae9acc81b51da4b6b8",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.bias": "41492310718217c6b9f1eeb6a1d65937d46bafe85f5930614d1d1a5ea05f8664",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.packed_weight": "8c775ca20370abdf8d0777e708fce031e8d0486cb74d75e6c4892f829c41d42a",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.scale": "cafa3d1f93b7e8d116d5ae82e9d733940eb8d2f2c7ed2d680d5afb5c99ae61b9",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.5.input_layernorm.weight": "a300cec162475c15d6f9369478792a00df15360617e61abe243e5e4739b7f5d7",
+        "gpt_neox.layers.5.input_layernorm.bias": "c9f988e74050e6bad9b6b6e6f4a3550755e118a15308dd83b9657cfcd7e0fa8d",
+        "gpt_neox.layers.5.post_attention_layernorm.weight": "7d18bc09c50dd95cd58e26dc0fe978b57cfdb1b5dcd4f9f8ec658ca5ebec59ed",
+        "gpt_neox.layers.5.post_attention_layernorm.bias": "b75a3deec4c4213b7ffee54549a120c0272b218348638f8909200d569d9380bc",
+        "gpt_neox.layers.5.attention.query_key_value.packed_weight": "0cb8561be35d7c31f6e730eb2f11f85751512d989398e54c56d2f4bb768a6c74",
+        "gpt_neox.layers.5.attention.query_key_value.scale": "5d18386c850e3815cc49dde0121aac0035848fb9cf78e7337ce12169ad0a54f9",
+        "gpt_neox.layers.5.attention.query_key_value.bias": "f6e25816afaa1fc881727a01f903d668b674ccc2ff2476de4f84f8fbeecbaed1",
+        "gpt_neox.layers.5.attention.dense.packed_weight": "442f865660c47f2d3219ed9e5223dbd902dbc17212af675d803148686db22491",
+        "gpt_neox.layers.5.attention.dense.scale": "39157ddbd570a3496bf14e2c7eccf8d9f8c30f95c59944f9dfffd054133decd2",
+        "gpt_neox.layers.5.attention.dense.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.packed_weight": "fd6f821f33bdf70f931b2121dad74c84d04b206de2c3d695723d348c71efbebb",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.scale": "0e1e67bb0e3e32414d5003544da586df09322bac2eae667897c6aeb8a81e5abb",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.bias": "ec29d09d8e8dbd2aa6209b9a5e59af3ec428709f22831612ef25e0b82277a885",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.packed_weight": "117d5b4eec03f8c58d0c5f4dac2261e5928b6ef0f7f16c608a190f48a51babae",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.scale": "43c69403dbb320b3266f3d3add4f0a04444433fd8374c5479a1a151460ae7978",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.final_layer_norm.weight": "ca919f50d8ce5eae362e199b3e095757c954bba5bbf242d65ac7958640bb158d",
+        "gpt_neox.final_layer_norm.bias": "2336bb47a21b0e217d69a32131d5360d7313a0bf1b1cf34af973baf86086e1cb",
+        "lm_head.packed_weight": "c661677d0cdd94987063f3acbe5565afa2f8232dad86506d4c0b36e9d56d9dc1",
+        "lm_head.scale": "2dd89d4d14c52c3360143bf6c55b1967aea6ebd0e523419574dd9b88c3ad158d"
+      },
+      "roundtrip_tensor_hashes_match": true,
+      "explicit_shifted_loss_verified": true,
+      "roundtrip_cpu_logits_exact": true,
+      "cpu_device_parity_passed": true,
+      "cpu_device_max_absolute_logit_difference": 0.01849365234375
+    },
+    {
+      "method": "nf4_body_int8_head",
+      "negative_log_likelihood": 14466.11806511879,
+      "predicted_tokens": 3090,
+      "perplexity": 107.94173673015179,
+      "persistent_tensor_bytes": 138691136,
+      "per_document": [
+        {
+          "row": 187,
+          "negative_log_likelihood": 798.5169410705566,
+          "predicted_tokens": 168
+        },
+        {
+          "row": 1162,
+          "negative_log_likelihood": 673.1343567371368,
+          "predicted_tokens": 175
+        },
+        {
+          "row": 2823,
+          "negative_log_likelihood": 912.2989196777344,
+          "predicted_tokens": 192
+        },
+        {
+          "row": 3298,
+          "negative_log_likelihood": 761.4890933036804,
+          "predicted_tokens": 167
+        },
+        {
+          "row": 533,
+          "negative_log_likelihood": 651.5737013816833,
+          "predicted_tokens": 139
+        },
+        {
+          "row": 4327,
+          "negative_log_likelihood": 1388.015480041504,
+          "predicted_tokens": 278
+        },
+        {
+          "row": 1868,
+          "negative_log_likelihood": 1240.822961807251,
+          "predicted_tokens": 271
+        },
+        {
+          "row": 1512,
+          "negative_log_likelihood": 695.9550895690918,
+          "predicted_tokens": 152
+        },
+        {
+          "row": 2713,
+          "negative_log_likelihood": 1782.838662147522,
+          "predicted_tokens": 316
+        },
+        {
+          "row": 2828,
+          "negative_log_likelihood": 725.6160917282104,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 3406,
+          "negative_log_likelihood": 1016.6364593505859,
+          "predicted_tokens": 224
+        },
+        {
+          "row": 360,
+          "negative_log_likelihood": 804.5483088493347,
+          "predicted_tokens": 155
+        },
+        {
+          "row": 1838,
+          "negative_log_likelihood": 638.4358329772949,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 2492,
+          "negative_log_likelihood": 618.84219789505,
+          "predicted_tokens": 133
+        },
+        {
+          "row": 2178,
+          "negative_log_likelihood": 1161.4737873077393,
+          "predicted_tokens": 268
+        },
+        {
+          "row": 2527,
+          "negative_log_likelihood": 595.9201812744141,
+          "predicted_tokens": 168
+        }
+      ],
+      "weight_residuals": {
+        "gpt_neox.layers.0.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.3533436685975175e-05,
+          "max_absolute_weight_error": 0.03503349423408508,
+          "original_mean_square": 0.0012736289063468575
+        },
+        "gpt_neox.layers.0.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 5.0003618525806814e-06,
+          "max_absolute_weight_error": 0.05078125,
+          "original_mean_square": 0.00044106182758696377
+        },
+        "gpt_neox.layers.0.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 9.80522145255236e-06,
+          "max_absolute_weight_error": 0.023457594215869904,
+          "original_mean_square": 0.0009698549401946366
+        },
+        "gpt_neox.layers.0.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 5.397248969529755e-06,
+          "max_absolute_weight_error": 0.03398303687572479,
+          "original_mean_square": 0.0003980378096457571
+        },
+        "gpt_neox.layers.1.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.3345343177206814e-05,
+          "max_absolute_weight_error": 0.03022134304046631,
+          "original_mean_square": 0.001255410723388195
+        },
+        "gpt_neox.layers.1.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 5.555376901611453e-06,
+          "max_absolute_weight_error": 0.023216672241687775,
+          "original_mean_square": 0.000520296220201999
+        },
+        "gpt_neox.layers.1.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 1.036255980579881e-05,
+          "max_absolute_weight_error": 0.076171875,
+          "original_mean_square": 0.0010121852392330766
+        },
+        "gpt_neox.layers.1.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.529113797005266e-05,
+          "max_absolute_weight_error": 0.1455078125,
+          "original_mean_square": 0.0004274568345863372
+        },
+        "gpt_neox.layers.2.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 1.1113108485005796e-05,
+          "max_absolute_weight_error": 0.033447265625,
+          "original_mean_square": 0.0010487082181498408
+        },
+        "gpt_neox.layers.2.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 8.499822797602974e-06,
+          "max_absolute_weight_error": 0.0296630859375,
+          "original_mean_square": 0.0007218120736069977
+        },
+        "gpt_neox.layers.2.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 1.0612833648337983e-05,
+          "max_absolute_weight_error": 0.1801692247390747,
+          "original_mean_square": 0.0010899963090196252
+        },
+        "gpt_neox.layers.2.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 6.915631729498273e-06,
+          "max_absolute_weight_error": 0.04193153977394104,
+          "original_mean_square": 0.00048641033936291933
+        },
+        "gpt_neox.layers.3.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 8.65423062350601e-05,
+          "max_absolute_weight_error": 0.2609211206436157,
+          "original_mean_square": 0.00963981356471777
+        },
+        "gpt_neox.layers.3.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 2.5347384507767856e-05,
+          "max_absolute_weight_error": 0.041015625,
+          "original_mean_square": 0.0013207843294367194
+        },
+        "gpt_neox.layers.3.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 9.478093488723971e-06,
+          "max_absolute_weight_error": 0.0284423828125,
+          "original_mean_square": 0.0009109352249652147
+        },
+        "gpt_neox.layers.3.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.6438894817838445e-05,
+          "max_absolute_weight_error": 0.04345703125,
+          "original_mean_square": 0.0007368855294771492
+        },
+        "gpt_neox.layers.4.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 0.00045232471893541515,
+          "max_absolute_weight_error": 0.3938647508621216,
+          "original_mean_square": 0.04723944142460823
+        },
+        "gpt_neox.layers.4.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 2.938562374765752e-06,
+          "max_absolute_weight_error": 0.013325564563274384,
+          "original_mean_square": 0.0002546762698329985
+        },
+        "gpt_neox.layers.4.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 8.94063850864768e-06,
+          "max_absolute_weight_error": 0.029052734375,
+          "original_mean_square": 0.0008475808426737785
+        },
+        "gpt_neox.layers.4.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 1.8295242625754327e-05,
+          "max_absolute_weight_error": 0.07076248526573181,
+          "original_mean_square": 0.0009583979845046997
+        },
+        "gpt_neox.layers.5.attention.query_key_value": {
+          "precision": "int4",
+          "shape": [
+            1536,
+            512
+          ],
+          "mean_squared_weight_error": 0.00024246326938737184,
+          "max_absolute_weight_error": 0.275390625,
+          "original_mean_square": 0.02079697512090206
+        },
+        "gpt_neox.layers.5.attention.dense": {
+          "precision": "int4",
+          "shape": [
+            512,
+            512
+          ],
+          "mean_squared_weight_error": 2.9002085284446366e-06,
+          "max_absolute_weight_error": 0.010883908718824387,
+          "original_mean_square": 0.0002607826900202781
+        },
+        "gpt_neox.layers.5.mlp.dense_h_to_4h": {
+          "precision": "int4",
+          "shape": [
+            2048,
+            512
+          ],
+          "mean_squared_weight_error": 8.901253750082105e-06,
+          "max_absolute_weight_error": 0.051031798124313354,
+          "original_mean_square": 0.0008395552868023515
+        },
+        "gpt_neox.layers.5.mlp.dense_4h_to_h": {
+          "precision": "int4",
+          "shape": [
+            512,
+            2048
+          ],
+          "mean_squared_weight_error": 2.029858842433896e-05,
+          "max_absolute_weight_error": 0.07580077648162842,
+          "original_mean_square": 0.0012753906194120646
+        },
+        "lm_head": {
+          "precision": "int8",
+          "shape": [
+            50304,
+            512
+          ],
+          "mean_squared_weight_error": 2.0079467333289358e-07,
+          "max_absolute_weight_error": 0.0015177130699157715,
+          "original_mean_square": 0.013107222504913807
+        }
+      },
+      "checkpoint_sha256": "b4845466fbdeae145d236852a4bd351db75290a07c7340d3ff727460aaab905e",
+      "checkpoint_bytes": 138702624,
+      "state_tensor_sha256": {
+        "gpt_neox.embed_in.weight": "ad5374e53dc57b9779607f15acd90126d75c6da9ee2530d8dca6450d5edc0f14",
+        "gpt_neox.layers.0.input_layernorm.weight": "e10efaaba4e068cd29e5d9e92b5b735aa6c286f0ab9014946af2dda6e1cb9d2c",
+        "gpt_neox.layers.0.input_layernorm.bias": "31987888c3565391150f9caae7ea3aafa37be5fcdde80982b0c99321653112d4",
+        "gpt_neox.layers.0.post_attention_layernorm.weight": "5672ce58d8b84b6c438f8983d975f94842770bc8d07e752f408949d1e9e3cb92",
+        "gpt_neox.layers.0.post_attention_layernorm.bias": "c55621d8d70225a54a2c404403cdfd5495badf4f059411f750a84473374e421f",
+        "gpt_neox.layers.0.attention.query_key_value.packed_weight": "9e69faa8d0c5560dcc341c93c52d0789b289847437fa6c866129a6f783437da2",
+        "gpt_neox.layers.0.attention.query_key_value.scale": "6f7e2b8c0413d6fd469ae06280715d05181ee277ab91ad7d1b0fc7c5d4582a4a",
+        "gpt_neox.layers.0.attention.query_key_value.bias": "7ea3e9e24ade1d07580b62eb0ba2da0dffa478b125a9ba0b4d94b9e4799521ff",
+        "gpt_neox.layers.0.attention.dense.packed_weight": "c0e826b697bf1a70e5e4aace7e556a7514c7fc9b04b5f5d3971ddbe8bb886f5f",
+        "gpt_neox.layers.0.attention.dense.scale": "4959514bb616ad42ddfafb495d86a24cf3657090e3ccc62218e736dd45ad134b",
+        "gpt_neox.layers.0.attention.dense.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.packed_weight": "65c7946a887ec8b4ec19b13a27c04348996a6bf2294474b0819de44605ef1143",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.scale": "f759c84a91773aa758dea14f977115f30d0d32bab42c929006c0c7b8ddbfebdd",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.bias": "bf9239d460529184442f9d8a91198f850d1c9130bee80cfb9d02996301787dc2",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.packed_weight": "11e7c933766658611f4e3105cd85627f8b81f5e3147606332c6faed3dcd0a3a3",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.scale": "a20de889e60f7e3aa9dad393939ebf9058c4fa4d83d0f253d53634be691ed0b6",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.1.input_layernorm.weight": "e2bd69a2cf18fee7209d059ea1823cbdad5b6e93411d5bdcd0052c5ec906d21f",
+        "gpt_neox.layers.1.input_layernorm.bias": "536f69a2d1c662fe32ab915a8369afdb9434a535f0d8001ddec6592d76733559",
+        "gpt_neox.layers.1.post_attention_layernorm.weight": "d17d6b4009a90eae06b94e7623d40898bfc4929584929ce4e99d1899919ff9a9",
+        "gpt_neox.layers.1.post_attention_layernorm.bias": "19f2afad47cb05a167cadb972f1bdd8f898fff2ddf9f7521ef4f176b8c429527",
+        "gpt_neox.layers.1.attention.query_key_value.packed_weight": "c25283b642bfc159e7f425fccca25701c81487524c8572e89f1416a7f5f73ed4",
+        "gpt_neox.layers.1.attention.query_key_value.scale": "1917345ab605001212c6af184708f4cdf3def07cec6655da050905799e860507",
+        "gpt_neox.layers.1.attention.query_key_value.bias": "c28a4820284ad176c1df97b18c1b70e781de1a2e9f14c16d8f253c5b468d29af",
+        "gpt_neox.layers.1.attention.dense.packed_weight": "bbb126f4e2ecfa9f2bdd53d20b1c06a40a824a8c7d2a37b3053e0cbfa4d76fc6",
+        "gpt_neox.layers.1.attention.dense.scale": "4e2f910168327cdb8d65741666200f167749bef3c5bf46db06ffde7438f301bc",
+        "gpt_neox.layers.1.attention.dense.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.packed_weight": "c4e2a75b7e5733dedd66d38ea065561f0da88c53eb377ad6e13f455e365e55f1",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.scale": "b26fac266a6fb85882f8564b1c9ab7d16447dd89adcf69bfb0a9f6567cfb595e",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.bias": "aaec245f2eb485d3694e40fb85389c8c524dec2bfcebbd41ca3edd96a7fdaec3",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.packed_weight": "1b823380ed0700164c6603841eb504279585240f565114e1348d81d9037bf985",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.scale": "6ec70ef05403c05949a05a63a24b7f8a62c0d2a8b3a043c54c30a3010d690239",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.2.input_layernorm.weight": "a91d0bd3bf0fd3f0b6b270beb1794421a6a39e74716ea4c0a482baeeadfbdcea",
+        "gpt_neox.layers.2.input_layernorm.bias": "65c27f6e6c35ea61ab7c1948809c6c7849419b083791778e7872d75548e04e9d",
+        "gpt_neox.layers.2.post_attention_layernorm.weight": "6b4886da757336f83c3212220070d78eb0f6db2ab37fe54079edb15f2ac25a25",
+        "gpt_neox.layers.2.post_attention_layernorm.bias": "dca7ec054644bf19e87623660fbe17da9a8229f3fd87667bdc65e8861b85d7e9",
+        "gpt_neox.layers.2.attention.query_key_value.packed_weight": "aa2f13845a85ff37ea371046fa16dd866f500056b8a24ee670848ebc5ebb8c4b",
+        "gpt_neox.layers.2.attention.query_key_value.scale": "d73cab1fc59b7b5446d97d00b6056b034aa86374f98ee5aa64f223ce0259a8fe",
+        "gpt_neox.layers.2.attention.query_key_value.bias": "919ca059b51a40b9a2b088035b8733c99aa244e60022aeb47221ee5f87148a48",
+        "gpt_neox.layers.2.attention.dense.packed_weight": "60f46aa0d1ffc111cca7cd44d5ec90093c67b9ac5e140b40416c942dd6aedea9",
+        "gpt_neox.layers.2.attention.dense.scale": "0a5fdd05cd5aa385aba04711dfa9e0e0cc0d33153a09991f5ca02ce9dad87d65",
+        "gpt_neox.layers.2.attention.dense.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.packed_weight": "3e71d76b6f091ec132781e48a9ff977c39f41f5068695437506c71759191532e",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.scale": "5af5eab041e8394f5665e28db35aaf1b9301df18f67ba28b9d80b9dd56b6f370",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.bias": "9c569bd213d6524fbde85bc07721e2f246bb4401602665d4a9e091ecf75e6e3e",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.packed_weight": "243bbf2ed25cc35760a713002feded272939488a04a909b62954d4b8c4d90e88",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.scale": "70d85da3f35513205e39f233ef5024e6e89d0b003643b172babd68a0bd888645",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.3.input_layernorm.weight": "451cedd0c9daad6b91090cc623ea3352a051ae11b74e66ff7c0f46c22a3f06fc",
+        "gpt_neox.layers.3.input_layernorm.bias": "91b33998e4c850d78bd0927fdcec16173fdfa64a6f4ae96f639eae5c8a295a36",
+        "gpt_neox.layers.3.post_attention_layernorm.weight": "8e09b1230192b2fdd6f54a948c708531f90d51ebe8d2cb38b6390840319ef4bd",
+        "gpt_neox.layers.3.post_attention_layernorm.bias": "0daf3f87aaadac23c4727a7c8ee04dad6a1012ae3bbdc32eb5b414044ec20782",
+        "gpt_neox.layers.3.attention.query_key_value.packed_weight": "8ae9c041d17f4111256d7000b24d6f5865098653b683931086aec058c65377d2",
+        "gpt_neox.layers.3.attention.query_key_value.scale": "cf66e2dcd353cdacd6a7768c03305ba22cde5a85b22eba8c4f072677bb12811d",
+        "gpt_neox.layers.3.attention.query_key_value.bias": "1ce4cab7b80e85bde36b612b96258e35d77f7fa0030ede48b5f188e58ebbbb25",
+        "gpt_neox.layers.3.attention.dense.packed_weight": "a0d89b1620056254593e26bd9e339544c2838bb7f1525b7d133c9271f826a359",
+        "gpt_neox.layers.3.attention.dense.scale": "6919b80068470b5f30ba63d90103428b47a6360ec65d5f4279b7b01e55cd2172",
+        "gpt_neox.layers.3.attention.dense.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.packed_weight": "c35d51d391f0f5ecbaad4bd64fd84197a4438cd257b9e6e7f7b46e702da95f3d",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.scale": "c3f58f569fc8484f8c9fe7b0ca46eeb6dc1715bfb23d13618267fce1b89529ab",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.bias": "f4db9c35cd7a4db3f6c7ddcd5ae02d58c8070b0119fcbf122b8d73507911753a",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.packed_weight": "f58f4624dac7451b8b60d8f3857036e55f0aca9adcf9cbd1665cb3adf98aa955",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.scale": "09255e156708821884691e15ddd6ee48d1bbff7adafa883b005d82debdbf663b",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.4.input_layernorm.weight": "1a3fa3d309f736c8fcf07e47073255f2ed3ad1778297318e4ecce113167cdb64",
+        "gpt_neox.layers.4.input_layernorm.bias": "3f82b8aab93cf60c9ac4c0317565ed76b5c9b2be1d68fafb0949c910be3a7c73",
+        "gpt_neox.layers.4.post_attention_layernorm.weight": "1f5bf1d55f30b3392141754997b3cf2faba4a7e53ef18fb95cdadca9161cf15d",
+        "gpt_neox.layers.4.post_attention_layernorm.bias": "5074c1c20e3430c6768cb5e8c7ff655ff5aa8c067a37f8abe26bec482ca4d314",
+        "gpt_neox.layers.4.attention.query_key_value.packed_weight": "6fe08c0a271658374defbdf408eb4ac44247672adeb84645298201de9f8987b9",
+        "gpt_neox.layers.4.attention.query_key_value.scale": "63dee91b69f7376c168332f97bfad328ab4f72492396428528c8bed0ccba63ba",
+        "gpt_neox.layers.4.attention.query_key_value.bias": "897961c8476cbb53d97eea146a9100209fed0b20ad169db66215f39dca0588ba",
+        "gpt_neox.layers.4.attention.dense.packed_weight": "f07b64decc80d1eb5d010c2ce2935898137d07cf50328765b54e4a0974ea95fe",
+        "gpt_neox.layers.4.attention.dense.scale": "10e02d127e73546b2d01a7343d0664ba3ef1f596cc7b925879c6f9e803e127b4",
+        "gpt_neox.layers.4.attention.dense.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.packed_weight": "52f0befd950123bf8355de9b5c05f78f950a7d17c74beee2e3730204d0315ab5",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.scale": "66d88826f0b9464db1677b22f8ba8d733b5ed3585d8788ae9acc81b51da4b6b8",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.bias": "41492310718217c6b9f1eeb6a1d65937d46bafe85f5930614d1d1a5ea05f8664",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.packed_weight": "8c775ca20370abdf8d0777e708fce031e8d0486cb74d75e6c4892f829c41d42a",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.scale": "cafa3d1f93b7e8d116d5ae82e9d733940eb8d2f2c7ed2d680d5afb5c99ae61b9",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.5.input_layernorm.weight": "a300cec162475c15d6f9369478792a00df15360617e61abe243e5e4739b7f5d7",
+        "gpt_neox.layers.5.input_layernorm.bias": "c9f988e74050e6bad9b6b6e6f4a3550755e118a15308dd83b9657cfcd7e0fa8d",
+        "gpt_neox.layers.5.post_attention_layernorm.weight": "7d18bc09c50dd95cd58e26dc0fe978b57cfdb1b5dcd4f9f8ec658ca5ebec59ed",
+        "gpt_neox.layers.5.post_attention_layernorm.bias": "b75a3deec4c4213b7ffee54549a120c0272b218348638f8909200d569d9380bc",
+        "gpt_neox.layers.5.attention.query_key_value.packed_weight": "0cb8561be35d7c31f6e730eb2f11f85751512d989398e54c56d2f4bb768a6c74",
+        "gpt_neox.layers.5.attention.query_key_value.scale": "5d18386c850e3815cc49dde0121aac0035848fb9cf78e7337ce12169ad0a54f9",
+        "gpt_neox.layers.5.attention.query_key_value.bias": "f6e25816afaa1fc881727a01f903d668b674ccc2ff2476de4f84f8fbeecbaed1",
+        "gpt_neox.layers.5.attention.dense.packed_weight": "442f865660c47f2d3219ed9e5223dbd902dbc17212af675d803148686db22491",
+        "gpt_neox.layers.5.attention.dense.scale": "39157ddbd570a3496bf14e2c7eccf8d9f8c30f95c59944f9dfffd054133decd2",
+        "gpt_neox.layers.5.attention.dense.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.packed_weight": "fd6f821f33bdf70f931b2121dad74c84d04b206de2c3d695723d348c71efbebb",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.scale": "0e1e67bb0e3e32414d5003544da586df09322bac2eae667897c6aeb8a81e5abb",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.bias": "ec29d09d8e8dbd2aa6209b9a5e59af3ec428709f22831612ef25e0b82277a885",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.packed_weight": "117d5b4eec03f8c58d0c5f4dac2261e5928b6ef0f7f16c608a190f48a51babae",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.scale": "43c69403dbb320b3266f3d3add4f0a04444433fd8374c5479a1a151460ae7978",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.final_layer_norm.weight": "ca919f50d8ce5eae362e199b3e095757c954bba5bbf242d65ac7958640bb158d",
+        "gpt_neox.final_layer_norm.bias": "2336bb47a21b0e217d69a32131d5360d7313a0bf1b1cf34af973baf86086e1cb",
+        "lm_head.packed_weight": "2c9302506caae867c8d8d9c07ad5956a3e045dc848463e0386fbcea1400adebb",
+        "lm_head.scale": "cf2dd744c68a7fa1acbba6c022e6abb32b73fc9c3800f491e146f3a885b5ab3d"
+      },
+      "roundtrip_tensor_hashes_match": true,
+      "explicit_shifted_loss_verified": true,
+      "roundtrip_cpu_logits_exact": true,
+      "cpu_device_parity_passed": true,
+      "cpu_device_max_absolute_logit_difference": 0.0185546875
+    },
+    {
+      "method": "fp32_body_nf4_head",
+      "negative_log_likelihood": 43728.041776657104,
+      "predicted_tokens": 3090,
+      "perplexity": 1399282.0346279526,
+      "persistent_tensor_bytes": 191763008,
+      "per_document": [
+        {
+          "row": 187,
+          "negative_log_likelihood": 2460.76318359375,
+          "predicted_tokens": 168
+        },
+        {
+          "row": 1162,
+          "negative_log_likelihood": 2417.842221260071,
+          "predicted_tokens": 175
+        },
+        {
+          "row": 2823,
+          "negative_log_likelihood": 2710.2705688476562,
+          "predicted_tokens": 192
+        },
+        {
+          "row": 3298,
+          "negative_log_likelihood": 2356.3618202209473,
+          "predicted_tokens": 167
+        },
+        {
+          "row": 533,
+          "negative_log_likelihood": 2103.523373603821,
+          "predicted_tokens": 139
+        },
+        {
+          "row": 4327,
+          "negative_log_likelihood": 4030.288857460022,
+          "predicted_tokens": 278
+        },
+        {
+          "row": 1868,
+          "negative_log_likelihood": 3505.982172012329,
+          "predicted_tokens": 271
+        },
+        {
+          "row": 1512,
+          "negative_log_likelihood": 2106.9276733398438,
+          "predicted_tokens": 152
+        },
+        {
+          "row": 2713,
+          "negative_log_likelihood": 5036.879541397095,
+          "predicted_tokens": 316
+        },
+        {
+          "row": 2828,
+          "negative_log_likelihood": 2187.1781787872314,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 3406,
+          "negative_log_likelihood": 2975.7651977539062,
+          "predicted_tokens": 224
+        },
+        {
+          "row": 360,
+          "negative_log_likelihood": 2304.9902629852295,
+          "predicted_tokens": 155
+        },
+        {
+          "row": 1838,
+          "negative_log_likelihood": 1839.0229358673096,
+          "predicted_tokens": 142
+        },
+        {
+          "row": 2492,
+          "negative_log_likelihood": 1807.6650981903076,
+          "predicted_tokens": 133
+        },
+        {
+          "row": 2178,
+          "negative_log_likelihood": 3833.1934995651245,
+          "predicted_tokens": 268
+        },
+        {
+          "row": 2527,
+          "negative_log_likelihood": 2051.387191772461,
+          "predicted_tokens": 168
+        }
+      ],
+      "weight_residuals": {
+        "lm_head": {
+          "precision": "int4",
+          "shape": [
+            50304,
+            512
+          ],
+          "mean_squared_weight_error": 9.594506263965741e-05,
+          "max_absolute_weight_error": 0.04443359375,
+          "original_mean_square": 0.013107222504913807
+        }
+      },
+      "checkpoint_sha256": "c525cb29d13710a8ca29c128c1bb915e1c5394ba87c0038de056a5952b994574",
+      "checkpoint_bytes": 191771680,
+      "state_tensor_sha256": {
+        "gpt_neox.embed_in.weight": "ad5374e53dc57b9779607f15acd90126d75c6da9ee2530d8dca6450d5edc0f14",
+        "gpt_neox.layers.0.input_layernorm.weight": "e10efaaba4e068cd29e5d9e92b5b735aa6c286f0ab9014946af2dda6e1cb9d2c",
+        "gpt_neox.layers.0.input_layernorm.bias": "31987888c3565391150f9caae7ea3aafa37be5fcdde80982b0c99321653112d4",
+        "gpt_neox.layers.0.post_attention_layernorm.weight": "5672ce58d8b84b6c438f8983d975f94842770bc8d07e752f408949d1e9e3cb92",
+        "gpt_neox.layers.0.post_attention_layernorm.bias": "c55621d8d70225a54a2c404403cdfd5495badf4f059411f750a84473374e421f",
+        "gpt_neox.layers.0.attention.query_key_value.weight": "3c96d50c9abdecc097e9b82eeb778e527265067631df5b11ab3a0a77f42e3cea",
+        "gpt_neox.layers.0.attention.query_key_value.bias": "7ea3e9e24ade1d07580b62eb0ba2da0dffa478b125a9ba0b4d94b9e4799521ff",
+        "gpt_neox.layers.0.attention.dense.weight": "71bf38e21c9f56d8f866e6474bf3e9849da3b5e51f87847a9c98ccc53b9bdeea",
+        "gpt_neox.layers.0.attention.dense.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.weight": "0f7389adc3f940ebe62d58d6c8af3795db247bbdef539e05afe1b11d81f710e9",
+        "gpt_neox.layers.0.mlp.dense_h_to_4h.bias": "bf9239d460529184442f9d8a91198f850d1c9130bee80cfb9d02996301787dc2",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.weight": "93c9876dfd8941b3c3e26cbdeb396a0223476254ef9917047fa367e4cb0709eb",
+        "gpt_neox.layers.0.mlp.dense_4h_to_h.bias": "c75640606fbb2b1da77074b3f07c2339f957547761fd66c23185406989a2c23c",
+        "gpt_neox.layers.1.input_layernorm.weight": "e2bd69a2cf18fee7209d059ea1823cbdad5b6e93411d5bdcd0052c5ec906d21f",
+        "gpt_neox.layers.1.input_layernorm.bias": "536f69a2d1c662fe32ab915a8369afdb9434a535f0d8001ddec6592d76733559",
+        "gpt_neox.layers.1.post_attention_layernorm.weight": "d17d6b4009a90eae06b94e7623d40898bfc4929584929ce4e99d1899919ff9a9",
+        "gpt_neox.layers.1.post_attention_layernorm.bias": "19f2afad47cb05a167cadb972f1bdd8f898fff2ddf9f7521ef4f176b8c429527",
+        "gpt_neox.layers.1.attention.query_key_value.weight": "e317a799d932900e360559c2e8b99c4f9353025d8b5071c101675139e213cfa8",
+        "gpt_neox.layers.1.attention.query_key_value.bias": "c28a4820284ad176c1df97b18c1b70e781de1a2e9f14c16d8f253c5b468d29af",
+        "gpt_neox.layers.1.attention.dense.weight": "16626996cd5b8358a0334c56a34fe5c9841c1f321140bbcf234f24bf201cc104",
+        "gpt_neox.layers.1.attention.dense.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.weight": "96cb87fc28a2c762a1dc950bc34ac582f672b9a8e2bee3c682005b8a081f915f",
+        "gpt_neox.layers.1.mlp.dense_h_to_4h.bias": "aaec245f2eb485d3694e40fb85389c8c524dec2bfcebbd41ca3edd96a7fdaec3",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.weight": "6bd2938dd9aea502531917e770b701bcfbfb94f39f3fc015d2dd6b985483731f",
+        "gpt_neox.layers.1.mlp.dense_4h_to_h.bias": "a55fac46acb7777db8138fa558fbe70be7fe00f506b28dc351b7347862f31ee0",
+        "gpt_neox.layers.2.input_layernorm.weight": "a91d0bd3bf0fd3f0b6b270beb1794421a6a39e74716ea4c0a482baeeadfbdcea",
+        "gpt_neox.layers.2.input_layernorm.bias": "65c27f6e6c35ea61ab7c1948809c6c7849419b083791778e7872d75548e04e9d",
+        "gpt_neox.layers.2.post_attention_layernorm.weight": "6b4886da757336f83c3212220070d78eb0f6db2ab37fe54079edb15f2ac25a25",
+        "gpt_neox.layers.2.post_attention_layernorm.bias": "dca7ec054644bf19e87623660fbe17da9a8229f3fd87667bdc65e8861b85d7e9",
+        "gpt_neox.layers.2.attention.query_key_value.weight": "615edc4e9caeb83295ab382c3b7ba0e7f00ab04af5d0b18e0424b3209ac57765",
+        "gpt_neox.layers.2.attention.query_key_value.bias": "919ca059b51a40b9a2b088035b8733c99aa244e60022aeb47221ee5f87148a48",
+        "gpt_neox.layers.2.attention.dense.weight": "6c67819562f44211b3ebd898095d09a97a08eab877626431fc97cd33b106099a",
+        "gpt_neox.layers.2.attention.dense.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.weight": "c0459bc32f4bedc9b379f68669b199aeffbe846bf0b03cfeb53a6837d8876331",
+        "gpt_neox.layers.2.mlp.dense_h_to_4h.bias": "9c569bd213d6524fbde85bc07721e2f246bb4401602665d4a9e091ecf75e6e3e",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.weight": "06db5f4f2528235c9720e376a271779d6b8d34a61f795148d78568acfb28b3c5",
+        "gpt_neox.layers.2.mlp.dense_4h_to_h.bias": "86bd032e9631bfec3d734637a1cdb0f209a8e7e74f6c7e34b010fd8d477635eb",
+        "gpt_neox.layers.3.input_layernorm.weight": "451cedd0c9daad6b91090cc623ea3352a051ae11b74e66ff7c0f46c22a3f06fc",
+        "gpt_neox.layers.3.input_layernorm.bias": "91b33998e4c850d78bd0927fdcec16173fdfa64a6f4ae96f639eae5c8a295a36",
+        "gpt_neox.layers.3.post_attention_layernorm.weight": "8e09b1230192b2fdd6f54a948c708531f90d51ebe8d2cb38b6390840319ef4bd",
+        "gpt_neox.layers.3.post_attention_layernorm.bias": "0daf3f87aaadac23c4727a7c8ee04dad6a1012ae3bbdc32eb5b414044ec20782",
+        "gpt_neox.layers.3.attention.query_key_value.weight": "415f77faf0c5cf991be5db792f6024e39b16549a5d262229b57da53ce497f394",
+        "gpt_neox.layers.3.attention.query_key_value.bias": "1ce4cab7b80e85bde36b612b96258e35d77f7fa0030ede48b5f188e58ebbbb25",
+        "gpt_neox.layers.3.attention.dense.weight": "ec7f27c2aaad89f6d6fe546dd970cb4c417da03dee5840a74a3bc59c4a02aa0d",
+        "gpt_neox.layers.3.attention.dense.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.weight": "b6773fb39b01caec1fe7b1e342cf8a13dc6d5f6573ac05a32f1895619f51f51e",
+        "gpt_neox.layers.3.mlp.dense_h_to_4h.bias": "f4db9c35cd7a4db3f6c7ddcd5ae02d58c8070b0119fcbf122b8d73507911753a",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.weight": "0b5f9b4437230e51b1e2b8de989a5413a87ae7d06331e7c308b7466eb8e2b681",
+        "gpt_neox.layers.3.mlp.dense_4h_to_h.bias": "e1b7e824de2321499bc2ceec6d8efa9ea0197661c758a03e134b9ea468537045",
+        "gpt_neox.layers.4.input_layernorm.weight": "1a3fa3d309f736c8fcf07e47073255f2ed3ad1778297318e4ecce113167cdb64",
+        "gpt_neox.layers.4.input_layernorm.bias": "3f82b8aab93cf60c9ac4c0317565ed76b5c9b2be1d68fafb0949c910be3a7c73",
+        "gpt_neox.layers.4.post_attention_layernorm.weight": "1f5bf1d55f30b3392141754997b3cf2faba4a7e53ef18fb95cdadca9161cf15d",
+        "gpt_neox.layers.4.post_attention_layernorm.bias": "5074c1c20e3430c6768cb5e8c7ff655ff5aa8c067a37f8abe26bec482ca4d314",
+        "gpt_neox.layers.4.attention.query_key_value.weight": "ac62ed4ca633911d8a4e2225f51716fc965b97f66abd4f58cc9ca18c68d48e55",
+        "gpt_neox.layers.4.attention.query_key_value.bias": "897961c8476cbb53d97eea146a9100209fed0b20ad169db66215f39dca0588ba",
+        "gpt_neox.layers.4.attention.dense.weight": "610a12a7e0debae2e43cd41598c20cb1293e0fbb3d43006673422bad545d6070",
+        "gpt_neox.layers.4.attention.dense.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.weight": "5e390aa502d260d09558173b462664d8de1ec93797659ebb392a79e6410e6773",
+        "gpt_neox.layers.4.mlp.dense_h_to_4h.bias": "41492310718217c6b9f1eeb6a1d65937d46bafe85f5930614d1d1a5ea05f8664",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.weight": "e4dda39886bdadd3922504e73244f77a9da16e802f1cfcb9bafe0bf6b6943b35",
+        "gpt_neox.layers.4.mlp.dense_4h_to_h.bias": "ebf24f89e9ffe0fa7f1dfb681ff4fc50095245d0b87c8235901e19d69300f370",
+        "gpt_neox.layers.5.input_layernorm.weight": "a300cec162475c15d6f9369478792a00df15360617e61abe243e5e4739b7f5d7",
+        "gpt_neox.layers.5.input_layernorm.bias": "c9f988e74050e6bad9b6b6e6f4a3550755e118a15308dd83b9657cfcd7e0fa8d",
+        "gpt_neox.layers.5.post_attention_layernorm.weight": "7d18bc09c50dd95cd58e26dc0fe978b57cfdb1b5dcd4f9f8ec658ca5ebec59ed",
+        "gpt_neox.layers.5.post_attention_layernorm.bias": "b75a3deec4c4213b7ffee54549a120c0272b218348638f8909200d569d9380bc",
+        "gpt_neox.layers.5.attention.query_key_value.weight": "baa0b96e3441b410c89fb21e59938721b0737a68b205f785f7d2fa65fa7fcdfc",
+        "gpt_neox.layers.5.attention.query_key_value.bias": "f6e25816afaa1fc881727a01f903d668b674ccc2ff2476de4f84f8fbeecbaed1",
+        "gpt_neox.layers.5.attention.dense.weight": "05dbe62ed7156f73edd9639d711a10fa8df3c62bf0c5425a37ddd26d80b7a644",
+        "gpt_neox.layers.5.attention.dense.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.weight": "078ccc1245488164e43f2ed3f7e95197ee673693c87b8200b6ceef2a39a61e7a",
+        "gpt_neox.layers.5.mlp.dense_h_to_4h.bias": "ec29d09d8e8dbd2aa6209b9a5e59af3ec428709f22831612ef25e0b82277a885",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.weight": "31e2b24a3e80f3e70d119204b8112a141c194c6d4e6c2472bf8591ff99bb125d",
+        "gpt_neox.layers.5.mlp.dense_4h_to_h.bias": "5890e3ab60d1591f41b0a583ca751d657f38d338f5301ba96c842c3708846089",
+        "gpt_neox.final_layer_norm.weight": "ca919f50d8ce5eae362e199b3e095757c954bba5bbf242d65ac7958640bb158d",
+        "gpt_neox.final_layer_norm.bias": "2336bb47a21b0e217d69a32131d5360d7313a0bf1b1cf34af973baf86086e1cb",
+        "lm_head.packed_weight": "c661677d0cdd94987063f3acbe5565afa2f8232dad86506d4c0b36e9d56d9dc1",
+        "lm_head.scale": "2dd89d4d14c52c3360143bf6c55b1967aea6ebd0e523419574dd9b88c3ad158d"
+      },
+      "roundtrip_tensor_hashes_match": true,
+      "explicit_shifted_loss_verified": true,
+      "roundtrip_cpu_logits_exact": true,
+      "cpu_device_parity_passed": true,
+      "cpu_device_max_absolute_logit_difference": 0.021728515625
+    }
+  ],
+  "complete": true,
+  "asset_sha256": {
+    "config.json": "002050231a9b1ec3ac77aa6b9b3bbdc4d923f4068a7dd33b8da72a9bd6ad9a43",
+    "model.safetensors": "ebfa4e2f18696ebd83716a0d39fe2c025f2ff8483f72a83ca59c475692fc9d15",
+    "special_tokens_map.json": "6f50ab5a5a509a1c309d6171f339b196a900dc9c99ad0408ff23bb615fdae7ad",
+    "tokenizer.json": "c24618a1b3e6a38167beff1c72cffd126c3a66254347304b50547d12c5f25624",
+    "tokenizer_config.json": "70e38394e494931c6f773ba41e19460dd4436526b852207367f04341b4066d3f",
+    "wikitext-2-raw-v1/test-00000-of-00001.parquet": "5f1bea067869d04849c0f975a2b29c4ff47d867f484f5010ea5e861eab246d91"
+  },
+  "paragraphs": [
+    {
+      "row": 187,
+      "sha256": "bde353e64f0d071242efe8fc451d21c394657e9e3ba5666f3dcdeecb4e2e32e4",
+      "tokens": 169
+    },
+    {
+      "row": 1162,
+      "sha256": "a1e2583c3f6fa988e105b990b857f1daf05260676db7b03c0483509ef6859ea6",
+      "tokens": 176
+    },
+    {
+      "row": 2823,
+      "sha256": "7d68b5306e263461528955d16dfb6bd861d387b4cb70d81561a29d4d2ec1526a",
+      "tokens": 193
+    },
+    {
+      "row": 3298,
+      "sha256": "c3f5e2332f92d6e083c865fd6e899bc00df3dd3ceb9529f55cad0abcfad9636e",
+      "tokens": 168
+    },
+    {
+      "row": 533,
+      "sha256": "4e4e65e175f20a7be705c6c080ca79895ad5201771e766b759491bea7ad1ac26",
+      "tokens": 140
+    },
+    {
+      "row": 4327,
+      "sha256": "52ce404b29645113e9ae8b945bc195e6098b5cda26e1e4f02ce65ab6cfd31773",
+      "tokens": 279
+    },
+    {
+      "row": 1868,
+      "sha256": "5d818afec46f1312be6aa439e4a44546bc32825f135636c80b0835a87fbfd525",
+      "tokens": 272
+    },
+    {
+      "row": 1512,
+      "sha256": "bb709cabee04faac3a050d97c6b67b81f966160807774c12c425fd1144d0a201",
+      "tokens": 153
+    },
+    {
+      "row": 2713,
+      "sha256": "9f06a3a4600a51c202b92a4d81a98b1c3c8e9586c61195774a65c587a9c788b8",
+      "tokens": 317
+    },
+    {
+      "row": 2828,
+      "sha256": "8c2ac0b91eba3729dbee65230280732c9cbd7a0825ddc23900697f6d9b10a0a7",
+      "tokens": 143
+    },
+    {
+      "row": 3406,
+      "sha256": "45c1bc81b04ea6e573c0b1333f115612db9c28446a4562d8b1a6c86fe1cc8e1f",
+      "tokens": 225
+    },
+    {
+      "row": 360,
+      "sha256": "29ae44c19e18c0310b4c34b855e0f260e38224d4c362505abeb6892c0f7951ff",
+      "tokens": 156
+    },
+    {
+      "row": 1838,
+      "sha256": "1564f69a2cd37e5ca2ebb70c3d1a881c68d8c5a5bdc3b82a6b29275001eb21a3",
+      "tokens": 143
+    },
+    {
+      "row": 2492,
+      "sha256": "9c28f069a1029918347f343d031a181df1c0ffccef30c4b9a39b8378e57f6f38",
+      "tokens": 134
+    },
+    {
+      "row": 2178,
+      "sha256": "71af05fc267c032eb2fffb059dee79169626c779e6a2e1bab18d7b251051049a",
+      "tokens": 269
+    },
+    {
+      "row": 2527,
+      "sha256": "1ed998af05059d6bce57fa1668244b7a2bbe67510332c82aa11b8428c1bca2be",
+      "tokens": 169
+    }
+  ],
+  "model_revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "plans": {
+    "fp32": {},
+    "uniform_int8": {
+      "gpt_neox.layers.0.attention.query_key_value": "int8",
+      "gpt_neox.layers.0.attention.dense": "int8",
+      "gpt_neox.layers.0.mlp.dense_h_to_4h": "int8",
+      "gpt_neox.layers.0.mlp.dense_4h_to_h": "int8",
+      "gpt_neox.layers.1.attention.query_key_value": "int8",
+      "gpt_neox.layers.1.attention.dense": "int8",
+      "gpt_neox.layers.1.mlp.dense_h_to_4h": "int8",
+      "gpt_neox.layers.1.mlp.dense_4h_to_h": "int8",
+      "gpt_neox.layers.2.attention.query_key_value": "int8",
+      "gpt_neox.layers.2.attention.dense": "int8",
+      "gpt_neox.layers.2.mlp.dense_h_to_4h": "int8",
+      "gpt_neox.layers.2.mlp.dense_4h_to_h": "int8",
+      "gpt_neox.layers.3.attention.query_key_value": "int8",
+      "gpt_neox.layers.3.attention.dense": "int8",
+      "gpt_neox.layers.3.mlp.dense_h_to_4h": "int8",
+      "gpt_neox.layers.3.mlp.dense_4h_to_h": "int8",
+      "gpt_neox.layers.4.attention.query_key_value": "int8",
+      "gpt_neox.layers.4.attention.dense": "int8",
+      "gpt_neox.layers.4.mlp.dense_h_to_4h": "int8",
+      "gpt_neox.layers.4.mlp.dense_4h_to_h": "int8",
+      "gpt_neox.layers.5.attention.query_key_value": "int8",
+      "gpt_neox.layers.5.attention.dense": "int8",
+      "gpt_neox.layers.5.mlp.dense_h_to_4h": "int8",
+      "gpt_neox.layers.5.mlp.dense_4h_to_h": "int8",
+      "lm_head": "int8"
+    },
+    "uniform_nf4": {
+      "gpt_neox.layers.0.attention.query_key_value": "int4",
+      "gpt_neox.layers.0.attention.dense": "int4",
+      "gpt_neox.layers.0.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.0.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.1.attention.query_key_value": "int4",
+      "gpt_neox.layers.1.attention.dense": "int4",
+      "gpt_neox.layers.1.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.1.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.2.attention.query_key_value": "int4",
+      "gpt_neox.layers.2.attention.dense": "int4",
+      "gpt_neox.layers.2.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.2.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.3.attention.query_key_value": "int4",
+      "gpt_neox.layers.3.attention.dense": "int4",
+      "gpt_neox.layers.3.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.3.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.4.attention.query_key_value": "int4",
+      "gpt_neox.layers.4.attention.dense": "int4",
+      "gpt_neox.layers.4.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.4.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.5.attention.query_key_value": "int4",
+      "gpt_neox.layers.5.attention.dense": "int4",
+      "gpt_neox.layers.5.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.5.mlp.dense_4h_to_h": "int4",
+      "lm_head": "int4"
+    },
+    "nf4_body_int8_head": {
+      "gpt_neox.layers.0.attention.query_key_value": "int4",
+      "gpt_neox.layers.0.attention.dense": "int4",
+      "gpt_neox.layers.0.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.0.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.1.attention.query_key_value": "int4",
+      "gpt_neox.layers.1.attention.dense": "int4",
+      "gpt_neox.layers.1.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.1.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.2.attention.query_key_value": "int4",
+      "gpt_neox.layers.2.attention.dense": "int4",
+      "gpt_neox.layers.2.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.2.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.3.attention.query_key_value": "int4",
+      "gpt_neox.layers.3.attention.dense": "int4",
+      "gpt_neox.layers.3.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.3.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.4.attention.query_key_value": "int4",
+      "gpt_neox.layers.4.attention.dense": "int4",
+      "gpt_neox.layers.4.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.4.mlp.dense_4h_to_h": "int4",
+      "gpt_neox.layers.5.attention.query_key_value": "int4",
+      "gpt_neox.layers.5.attention.dense": "int4",
+      "gpt_neox.layers.5.mlp.dense_h_to_4h": "int4",
+      "gpt_neox.layers.5.mlp.dense_4h_to_h": "int4",
+      "lm_head": "int8"
+    },
+    "fp32_body_nf4_head": {
+      "lm_head": "int4"
+    }
+  },
+  "diagnosis": {
+    "mean_nll": {
+      "fp32": 4.374611498082726,
+      "uniform_int8": 4.39410241020536,
+      "uniform_nf4": 14.575910824710883,
+      "nf4_body_int8_head": 4.6815916068345595,
+      "fp32_body_nf4_head": 14.151469830633367
+    },
+    "nf4_excess_nll": 10.201299326628156,
+    "status": "supported",
+    "head_rescue_fraction": 0.9699077442075901,
+    "head_only_fraction": 0.9583934378859359,
+    "interpretation": "Descriptive controlled interventions; interactions need not add to one"
+  }
+}

@@ -59,6 +59,11 @@ def quantize(
     profile_path: str = typer.Option("profile.json", help="Path to activation profile JSON."),
     out: str = typer.Option("model_compressed/", help="Output directory for the compressed model."),
     default_dtype: str = typer.Option("int8", help="Default dtype for layers not in profile."),
+    protect_output_head: bool = typer.Option(
+        True, "--protect-output-head/--allow-nf4-output-head",
+        help="Keep declared output heads at least INT8; disabling permits a known failure mode.",
+    ),
+    output_head_names: str = typer.Option("lm_head", help="Comma-separated exact output-head module paths."),
 ):
     """Apply activation-aware mixed-precision quantization.
 
@@ -69,7 +74,7 @@ def quantize(
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from compress.profiling.activation_recorder import ActivationProfile
     from compress.profiling.importance import ImportanceScorer
-    from compress.compression.quantization import ActivationAwareQuantizer, QuantizationConfig
+    from compress.compression.quantization import ActivationAwareQuantizer
     from compress.compression.mixed_precision import MixedPrecisionConfig
 
     console.print(f"[bold]Loading model:[/bold] {model}")
@@ -83,7 +88,9 @@ def quantize(
 
     scorer = ImportanceScorer(activation_profile)
     importance = scorer.layer_importance()
-    mp_config = MixedPrecisionConfig.from_importance(importance)
+    head_names = tuple(name.strip() for name in output_head_names.split(",") if name.strip())
+    mp_config = MixedPrecisionConfig.from_importance(
+        importance, protect_output_head=protect_output_head, output_head_names=head_names)
 
     summary = mp_config.summary()
     table = Table(title="Quantization Plan")
@@ -93,9 +100,11 @@ def quantize(
         table.add_row(dtype, str(count))
     console.print(table)
 
-    q_config = QuantizationConfig(layer_dtypes=mp_config.layer_dtypes, default_dtype=default_dtype)
+    q_config = mp_config.to_quantization_config(default_dtype)
     quantizer = ActivationAwareQuantizer(q_config)
     lm = quantizer.quantize_model(lm)
+    lm.config.compress_quantization_policy = q_config.to_dict()
+    lm.config.compress_applied_dtypes = lm._compress_applied_dtypes
 
     import os
     os.makedirs(out, exist_ok=True)

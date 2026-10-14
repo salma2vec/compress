@@ -1,6 +1,8 @@
 import json
 import math
 
+from .quantization import QuantizationConfig
+
 
 class MixedPrecisionConfig:
     """Layer-to-dtype assignment for mixed-precision quantization.
@@ -15,11 +17,20 @@ class MixedPrecisionConfig:
 
     VALID_DTYPES = frozenset({"fp16", "int8", "int4"})
 
-    def __init__(self, layer_dtypes: dict[str, str]):
+    def __init__(self, layer_dtypes: dict[str, str], *, protect_output_head: bool = True,
+                 output_head_names: tuple[str, ...] = ("lm_head",)):
         invalid = {v for v in layer_dtypes.values() if v not in self.VALID_DTYPES}
         if invalid:
             raise ValueError(f"Invalid dtype(s): {invalid}. Must be one of {self.VALID_DTYPES}")
-        self.layer_dtypes = dict(layer_dtypes)
+        config = QuantizationConfig(layer_dtypes, protect_output_head=protect_output_head,
+                                    output_head_names=output_head_names)
+        self.layer_dtypes = {name: config.dtype_for(name) for name in layer_dtypes}
+        self.protect_output_head = protect_output_head
+        self.output_head_names = tuple(output_head_names)
+
+    def to_quantization_config(self, default_dtype="int8") -> QuantizationConfig:
+        return QuantizationConfig(self.layer_dtypes, default_dtype, self.protect_output_head,
+                                  self.output_head_names)
 
     @classmethod
     def from_importance(
@@ -27,6 +38,9 @@ class MixedPrecisionConfig:
         importance: dict[str, float],
         fp16_threshold: float = 0.8,
         int8_threshold: float = 0.5,
+        *,
+        protect_output_head: bool = True,
+        output_head_names: tuple[str, ...] = ("lm_head",),
     ) -> "MixedPrecisionConfig":
         """Build a MixedPrecisionConfig from normalized importance scores.
 
@@ -51,11 +65,15 @@ class MixedPrecisionConfig:
                 layer_dtypes[name] = "int8"
             else:
                 layer_dtypes[name] = "int4"
-        return cls(layer_dtypes)
+        return cls(layer_dtypes, protect_output_head=protect_output_head,
+                   output_head_names=output_head_names)
 
     @classmethod
-    def uniform(cls, layer_names: list[str], dtype: str) -> "MixedPrecisionConfig":
-        """Create a uniform-precision config where all layers use the same dtype.
+    def uniform(cls, layer_names: list[str], dtype: str, *, protect_output_head: bool = True,
+                output_head_names: tuple[str, ...] = ("lm_head",)) -> "MixedPrecisionConfig":
+        """Create a uniform body plan with the declared output-head floor.
+
+        Set protect_output_head=False for an explicitly all-NF4 experiment.
 
         Args:
             layer_names: Names of the layers to include.
@@ -64,7 +82,8 @@ class MixedPrecisionConfig:
         Returns:
             A new MixedPrecisionConfig instance.
         """
-        return cls({name: dtype for name in layer_names})
+        return cls({name: dtype for name in layer_names}, protect_output_head=protect_output_head,
+                   output_head_names=output_head_names)
 
     def to_json(self, path: str):
         """Serialize the config to a JSON file.
@@ -73,7 +92,8 @@ class MixedPrecisionConfig:
             path: Destination file path.
         """
         with open(path, "w") as f:
-            json.dump(self.layer_dtypes, f, indent=2)
+            json.dump({"format_version": 2, "policy": self.to_quantization_config().to_dict()},
+                      f, indent=2)
 
     @classmethod
     def from_json(cls, path: str) -> "MixedPrecisionConfig":
@@ -86,7 +106,15 @@ class MixedPrecisionConfig:
             A new MixedPrecisionConfig instance.
         """
         with open(path) as f:
-            return cls(json.load(f))
+            value = json.load(f)
+        if isinstance(value, dict) and "format_version" in value:
+            if value["format_version"] != 2 or set(value) != {"format_version", "policy"}:
+                raise ValueError("Unsupported precision plan format")
+            config = QuantizationConfig.from_dict(value["policy"])
+            return cls(config.layer_dtypes, protect_output_head=config.protect_output_head,
+                       output_head_names=config.output_head_names)
+        # Historical mapping-only plans retain their recorded assignments.
+        return cls(value, protect_output_head=False)
 
     def summary(self) -> dict[str, int]:
         """Return the count of layers assigned to each dtype.

@@ -49,7 +49,7 @@ def run(report_path, output, device="mps"):
         if method != "fp32":
             plan = {name: "int4" if method == "uniform_nf4" else "int8"
                     for name, module in candidate.named_modules() if isinstance(module, torch.nn.Linear)}
-            candidate = pack_model(candidate, QuantizationConfig(plan))
+            candidate = pack_model(candidate, QuantizationConfig(plan, protect_output_head=False))
         with torch.inference_mode():
             cpu = candidate(input_ids=ids, labels=ids)
             cpu_logits, cpu_loss = cpu.logits.detach().clone(), float(cpu.loss)

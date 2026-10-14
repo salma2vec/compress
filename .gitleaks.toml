@@ -2,17 +2,62 @@
 useDefault = true
 
 # Public asset checksums from the pinned Pythia snapshot, not credentials.
-# Require both this exact report path and one of these three exact hashes.
+# Require one of these two exact report paths and one of these three exact hashes.
 [[rules]]
 id = "generic-api-key"
 
 [[rules.allowlists]]
 description = "Pinned public tokenizer asset SHA256 values"
 condition = "AND"
-paths = ['''^benchmarks/results/pythia70m-wikitext2-mps-seed42\.json$''']
+paths = ['''^benchmarks/results/(pythia70m-wikitext2-mps-seed42|pythia70m-nf4-diagnosis)\.json$''']
 regexTarget = "secret"
 regexes = [
   '''^70e38394e494931c6f773ba41e19460dd4436526b852207367f04341b4066d3f$''',
   '''^6f50ab5a5a509a1c309d6171f339b196a900dc9c99ad0408ff23bb615fdae7ad$''',
   '''^c24618a1b3e6a38167beff1c72cffd126c3a66254347304b50547d12c5f25624$''',
+]
+
+# Exact public tensor checksums flagged because module names contain key_value.
+[[rules.allowlists]]
+description = "Recorded Pythia diagnosis tensor SHA256 values"
+condition = "AND"
+paths = ['''^benchmarks/results/pythia70m-nf4-diagnosis\.json$''']
+regexTarget = "secret"
+regexes = [
+  '''^01afab70994a7e7b17ff25601adb2a76abc3f64aed954c79c874dd91e4d09683$''',
+  '''^0cb8561be35d7c31f6e730eb2f11f85751512d989398e54c56d2f4bb768a6c74$''',
+  '''^100b4c3013f8fe3412991221ce9016aeecb200ed2a8b4c176d98bbe2ec9d1e25$''',
+  '''^14a919406ebc9512688edf36ad254498446ea6dff94aa695b264f6c2138c5c82$''',
+  '''^161b26a51b1b114df300ed9b20b189788024ab709fc9ca2a5be7c459144cbc37$''',
+  '''^162550619b00ba359c0354736beca3d1cf6ae2a5c492f0989d7ac98768747fec$''',
+  '''^1917345ab605001212c6af184708f4cdf3def07cec6655da050905799e860507$''',
+  '''^1ce4cab7b80e85bde36b612b96258e35d77f7fa0030ede48b5f188e58ebbbb25$''',
+  '''^272b91203ca8e6d3049c951cce4e3d4202409a04f7e9d06b7a3b59574589f9eb$''',
+  '''^2ca8d012a20c2922a009fe22365d70f454b7224f3295767599520c5e6989d1dc$''',
+  '''^373e6ecb8592fbacdd63d8c5b3b8f13fa451f04eb7d8eb0ed943c8f36be58561$''',
+  '''^3c96d50c9abdecc097e9b82eeb778e527265067631df5b11ab3a0a77f42e3cea$''',
+  '''^415f77faf0c5cf991be5db792f6024e39b16549a5d262229b57da53ce497f394$''',
+  '''^573787dd2a68fd421d27a0b3d7038e479b3bfc4d107f1b79225771f846e1e1cf$''',
+  '''^5d18386c850e3815cc49dde0121aac0035848fb9cf78e7337ce12169ad0a54f9$''',
+  '''^615edc4e9caeb83295ab382c3b7ba0e7f00ab04af5d0b18e0424b3209ac57765$''',
+  '''^63dee91b69f7376c168332f97bfad328ab4f72492396428528c8bed0ccba63ba$''',
+  '''^6802a5705783581d595c7df10772696417fe1a509217e2013ca8a9981993a861$''',
+  '''^6f7e2b8c0413d6fd469ae06280715d05181ee277ab91ad7d1b0fc7c5d4582a4a$''',
+  '''^6fe08c0a271658374defbdf408eb4ac44247672adeb84645298201de9f8987b9$''',
+  '''^7ea3e9e24ade1d07580b62eb0ba2da0dffa478b125a9ba0b4d94b9e4799521ff$''',
+  '''^897961c8476cbb53d97eea146a9100209fed0b20ad169db66215f39dca0588ba$''',
+  '''^8ae9c041d17f4111256d7000b24d6f5865098653b683931086aec058c65377d2$''',
+  '''^919ca059b51a40b9a2b088035b8733c99aa244e60022aeb47221ee5f87148a48$''',
+  '''^9e69faa8d0c5560dcc341c93c52d0789b289847437fa6c866129a6f783437da2$''',
+  '''^aa2f13845a85ff37ea371046fa16dd866f500056b8a24ee670848ebc5ebb8c4b$''',
+  '''^ac62ed4ca633911d8a4e2225f51716fc965b97f66abd4f58cc9ca18c68d48e55$''',
+  '''^afd87b99f9dc5be2260d6204c1facd3294b8e9fecdc165b0014f794bda154f21$''',
+  '''^baa0b96e3441b410c89fb21e59938721b0737a68b205f785f7d2fa65fa7fcdfc$''',
+  '''^c25283b642bfc159e7f425fccca25701c81487524c8572e89f1416a7f5f73ed4$''',
+  '''^c28a4820284ad176c1df97b18c1b70e781de1a2e9f14c16d8f253c5b468d29af$''',
+  '''^cf66e2dcd353cdacd6a7768c03305ba22cde5a85b22eba8c4f072677bb12811d$''',
+  '''^d73cab1fc59b7b5446d97d00b6056b034aa86374f98ee5aa64f223ce0259a8fe$''',
+  '''^e317a799d932900e360559c2e8b99c4f9353025d8b5071c101675139e213cfa8$''',
+  '''^f6e25816afaa1fc881727a01f903d668b674ccc2ff2476de4f84f8fbeecbaed1$''',
+  '''^fed2c55be71b00beba5874c3f9bcc52d19515767d0e1409ca55e7516a82cd599$''',
 ]
