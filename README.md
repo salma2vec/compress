@@ -27,7 +27,12 @@ portable saved model at 71,062,592 persistent tensor bytes, 74.77% below FP32,
 with perplexity 89.3730 versus 88.0887 for FP32 on 3,098 newly sampled targets.
 The frozen 1.05× quality gate passed. This is storage-and-quality evidence for
 one Pythia-70M sample; dequantization still uses ordinary PyTorch operations, so
-it establishes no latency or peak-memory improvement. A separate
+it establishes no latency or peak-memory improvement. A
+[second-domain check](docs/int8-embedding-second-corpus-results.md) also passed
+the same frozen gate on 50 synthetic incident records (10,568 targets), with a
+1.028395 perplexity ratio and the same exact 71,062,592-byte checkpoint. That
+panel is small and template-generated, so it is engineering evidence rather than
+natural-corpus or model-generalization evidence. A separate
 [matched-storage allocation study](docs/sensitivity-allocation-results.md) failed
 both its score and practical-quality gates and remains a negative result.
 

@@ -1,0 +1,1349 @@
+{
+  "schema_version": 1,
+  "source_commit": "74b45e6e023c398d69b529dfadbf609ea7ac68d3",
+  "harness_sha256": "ffc299bf27c4668fc06226b46938fb59da450f334c6a1f79692867c12e713a3f",
+  "protocol_sha256": "f00c99856fc9836e028cfba605874e987d075bac18b7d82a04f7fd1e66fdd0f0",
+  "manifest_sha256": "9e5d903b1a6cbcaafe0c216e36fd623fa55a31913c2e542f14cbcbca37d35ce9",
+  "raw_report_sha256": "aaa95b69c39323cfbdd2d65ec4faaf7b2836c575719f7e0b65eed588d102b013",
+  "independent_replay_sha256": "0918d1caf97f456b7736009106639a5b120a360b36782300962237554c2de396",
+  "device_contract": {
+    "requested": "cpu",
+    "actual": "cpu",
+    "quantization": "cpu",
+    "accelerator_fallback": "not_applicable",
+    "threads": 1,
+    "checkpoint": "safetensors; validated schema before model mutation"
+  },
+  "scope": "Complete 50-record, small template-generated synthetic incident test split on one Pythia-70M model; second-domain engineering check only, not natural-corpus or model-generalization evidence",
+  "corpus": {
+    "split_sha256": {
+      "train": "3014df001b1f289e8de40fda5e3dabd905476df47d963799bfc027707a165ae6",
+      "dev": "5ae6462f637ad769e3c6a501c5b51107b94bba59bc1bd85982eddc220b04b7c4",
+      "test": "50d447a3a4d00ea3996b889ec3e3a2e1ed2807a6bb9a786eb0010d1d492ca70e"
+    },
+    "generator_commit": "3813eae295e9dd9b411fedba10df0791ee66e3a8",
+    "generator_sha256": "c46f726b99ad59096800f7e5911c60e2ffd2d17068a49983b2f5d48884ec82d5",
+    "license": "MIT",
+    "license_sha256": "06dcddbb6908a0c6dd4a9e8ec822eea41d5a460a53089fecccc8a68049e99241",
+    "generator_command": "generate_dataset(200, 50, 50, seed=0)",
+    "reproduced_all_splits_exactly": true,
+    "preexposure_compress_head": "4db95a451e05a5a80776ba58891b7306144157ba",
+    "preexposure_report_sha256": "3de11f5335275b3a241672c0d2fef5c97d2c1b142bdd61443c9702bd31a797d2",
+    "prior_compress_hash_matches": 0,
+    "exact_wikitext_hash_overlap": 0,
+    "wikitext_rows_compared": 41076,
+    "wikitext_unique_row_hashes_compared": 24326,
+    "input_fields": [
+      "title",
+      "narrative",
+      "logs",
+      "metrics",
+      "recent_deploys",
+      "config_diff"
+    ],
+    "documents": [
+      {
+        "row": 0,
+        "incident_id": "test-0",
+        "sha256": "4f1d273c5604af335fc742acc1863c27114256a6218628ace87d3b71c5888e8e",
+        "tokens": 219
+      },
+      {
+        "row": 1,
+        "incident_id": "test-1",
+        "sha256": "a2bf64186ef2613f8e3a7d451b4cd23de87fc5cf98c24d2723b4562b62ab6b26",
+        "tokens": 240
+      },
+      {
+        "row": 2,
+        "incident_id": "test-2",
+        "sha256": "bd4d45ca4d75a61277c0cba1f4abf08de4f334dccc6b1407536f953801121ee5",
+        "tokens": 278
+      },
+      {
+        "row": 3,
+        "incident_id": "test-3",
+        "sha256": "29265eb1194460eb4253c6ca433ad54b1adb2a8df272e4a69d1842a23bd1e6f7",
+        "tokens": 247
+      },
+      {
+        "row": 4,
+        "incident_id": "test-4",
+        "sha256": "f97966ba3126e0de8eccae1b099976ce4d24143bacb9b254ca1775d4f84c87bf",
+        "tokens": 183
+      },
+      {
+        "row": 5,
+        "incident_id": "test-5",
+        "sha256": "7bd8a4fdb8cd486dfa0bfcbb1f7acd30107cdd109cf5e21fcfec21c24d41d965",
+        "tokens": 159
+      },
+      {
+        "row": 6,
+        "incident_id": "test-6",
+        "sha256": "799065186bdd126bfde2650bb6d37f7676f9558f294f67db88e10c1d00de1a4b",
+        "tokens": 237
+      },
+      {
+        "row": 7,
+        "incident_id": "test-7",
+        "sha256": "35896e90eb13a5332404dc9b835fa31c5896358c36fd1074b0a42a0ffd9d8172",
+        "tokens": 169
+      },
+      {
+        "row": 8,
+        "incident_id": "test-8",
+        "sha256": "bd44e6a8ab35c0e5b6239fe1df8ba7582ed925e577de8bafe82c8634839ff64a",
+        "tokens": 220
+      },
+      {
+        "row": 9,
+        "incident_id": "test-9",
+        "sha256": "ade7deacbbcc0f2479ae4608c6133012e1afc859a69fac7ea76430196b1d7d44",
+        "tokens": 210
+      },
+      {
+        "row": 10,
+        "incident_id": "test-10",
+        "sha256": "0ded0d1aab3251ecb7657d26ef7cb6647c5bea8e3378a8eeda0c7259b18082b9",
+        "tokens": 144
+      },
+      {
+        "row": 11,
+        "incident_id": "test-11",
+        "sha256": "40e6155a693aba8c89e9cc0d1097ad07d31b0e9627e9d0143eeb0012cc57c3af",
+        "tokens": 219
+      },
+      {
+        "row": 12,
+        "incident_id": "test-12",
+        "sha256": "7d3e4b9d219b74d71a8a6a9db3b7d2eac8d2d023e000300b46bc087aab9ee0c8",
+        "tokens": 199
+      },
+      {
+        "row": 13,
+        "incident_id": "test-13",
+        "sha256": "65f79595a2753354e38dbe0a83659764dd211dd5f0f14f54f41817b2affd27af",
+        "tokens": 177
+      },
+      {
+        "row": 14,
+        "incident_id": "test-14",
+        "sha256": "f3b527bab1ec0baface722704c7ee7561966aee7a8772d0bb7a6d36b28bc5eee",
+        "tokens": 302
+      },
+      {
+        "row": 15,
+        "incident_id": "test-15",
+        "sha256": "7908e8016c9f032bd629d890ce0db1f5be5583d53b9d8fd472be30a83e693d9d",
+        "tokens": 205
+      },
+      {
+        "row": 16,
+        "incident_id": "test-16",
+        "sha256": "02d0d25e54c831056c9fa399be491488f539ab3108c694ab468eac93f9808300",
+        "tokens": 245
+      },
+      {
+        "row": 17,
+        "incident_id": "test-17",
+        "sha256": "08c7f92fc5ac4c5a73b91d2e322520ed8bbd109a0727b29c71343f9d5ec04e2b",
+        "tokens": 141
+      },
+      {
+        "row": 18,
+        "incident_id": "test-18",
+        "sha256": "174e355bcad36702c88a03e27bbb695fad0cf59a6d85f813faec04dd70d90c99",
+        "tokens": 228
+      },
+      {
+        "row": 19,
+        "incident_id": "test-19",
+        "sha256": "d855867c8cf98953fef01004e3459b34ab4ea523c4235c62674d06c10959b012",
+        "tokens": 229
+      },
+      {
+        "row": 20,
+        "incident_id": "test-20",
+        "sha256": "e1e8d380d1f777bfc7e011247734e5c89e6ff1ce9ed857928682641aec8a3961",
+        "tokens": 183
+      },
+      {
+        "row": 21,
+        "incident_id": "test-21",
+        "sha256": "93df4a51b4f45cf151207ac00cb2ac03e93279f5281c6c4226db3f4eaf7ec636",
+        "tokens": 181
+      },
+      {
+        "row": 22,
+        "incident_id": "test-22",
+        "sha256": "5a6f6d7237260233c45e9839cf8ce624c2f07d867220356a41c89860ebe21d26",
+        "tokens": 211
+      },
+      {
+        "row": 23,
+        "incident_id": "test-23",
+        "sha256": "7db3f656e5446ada736b0335febb8927173a893237618c0ec30369d01d91bc08",
+        "tokens": 206
+      },
+      {
+        "row": 24,
+        "incident_id": "test-24",
+        "sha256": "ace55666f7d4571fa0fd2b6a4d624f4adbc52c8f4af57006bdae31cdeedec4e2",
+        "tokens": 206
+      },
+      {
+        "row": 25,
+        "incident_id": "test-25",
+        "sha256": "5c792d7677390fb80b9b1472486d96860d76bf68c57bdffda66f83b740e97d5c",
+        "tokens": 246
+      },
+      {
+        "row": 26,
+        "incident_id": "test-26",
+        "sha256": "4c1ed8d53261ece66bbcb85b19497c49f0bf248a3db27a16e4696e6672245031",
+        "tokens": 131
+      },
+      {
+        "row": 27,
+        "incident_id": "test-27",
+        "sha256": "124b916a3c0f68b02a27571fc1f6b14373d5db89b95f0f0e7128aa16cef60db3",
+        "tokens": 187
+      },
+      {
+        "row": 28,
+        "incident_id": "test-28",
+        "sha256": "85309809e373d648096a2313a9aab4dde5045c180ff053dbad944554408cb2a8",
+        "tokens": 273
+      },
+      {
+        "row": 29,
+        "incident_id": "test-29",
+        "sha256": "7c075641d742c70010321a3365bbd537051c9cd54fe5f199f39d8b18c52afe8b",
+        "tokens": 168
+      },
+      {
+        "row": 30,
+        "incident_id": "test-30",
+        "sha256": "7a55a2589361ac5ff677c8117ca9d28ab59bf26f56aabd9ff57b487bbc7f8265",
+        "tokens": 204
+      },
+      {
+        "row": 31,
+        "incident_id": "test-31",
+        "sha256": "b54537e0a7d2309324d2980f64394dce23d4143b117823c3a9062683753a4356",
+        "tokens": 176
+      },
+      {
+        "row": 32,
+        "incident_id": "test-32",
+        "sha256": "99060af85b037b958cb1a728674e4c7610097cbb728288d72d83a4fb13bd09c6",
+        "tokens": 273
+      },
+      {
+        "row": 33,
+        "incident_id": "test-33",
+        "sha256": "4b468728fce9f9db7555782ee4ec9f4723acf8d6aac4ada1c65bbe4902b8027e",
+        "tokens": 174
+      },
+      {
+        "row": 34,
+        "incident_id": "test-34",
+        "sha256": "a8fef85e5fb604cbcc0e9d6c46fc6afca2e42e329511c11c2a77e32c611bc523",
+        "tokens": 259
+      },
+      {
+        "row": 35,
+        "incident_id": "test-35",
+        "sha256": "254787578ed84b32ebe5a81479f24547c767be35f93f7fcb50deb9c6cb192d5d",
+        "tokens": 231
+      },
+      {
+        "row": 36,
+        "incident_id": "test-36",
+        "sha256": "851998423ac7a3bd3e5f387d5da92e5c273f397ee7cd05598106717cfc803ced",
+        "tokens": 226
+      },
+      {
+        "row": 37,
+        "incident_id": "test-37",
+        "sha256": "f8f629ee394f4791e9ec80bec291ef2f6be2e048887c8b6e15443d5e8eaabca2",
+        "tokens": 270
+      },
+      {
+        "row": 38,
+        "incident_id": "test-38",
+        "sha256": "aac0b555737b5a3b0dce63a9d302efc9fcb8bbea8318c78ba57a492f8bc28ad2",
+        "tokens": 183
+      },
+      {
+        "row": 39,
+        "incident_id": "test-39",
+        "sha256": "2f11b4fecfb5b67d79d3d949504a2cbfca265f807598b1ba04f26ad1d492bd8b",
+        "tokens": 181
+      },
+      {
+        "row": 40,
+        "incident_id": "test-40",
+        "sha256": "3cb760a0ed9ecee9f992529bb3c9067b16b3454052452acccf04b6805a0a4cad",
+        "tokens": 218
+      },
+      {
+        "row": 41,
+        "incident_id": "test-41",
+        "sha256": "26b85678f0005c7a19a4250a25d061b952b5b0a2ef6f689eaa008c4094072a4f",
+        "tokens": 205
+      },
+      {
+        "row": 42,
+        "incident_id": "test-42",
+        "sha256": "17c1eade7ed19a4c4e81a1af6031f1754cbd13dfe970ccfdfae8129090a1c19b",
+        "tokens": 204
+      },
+      {
+        "row": 43,
+        "incident_id": "test-43",
+        "sha256": "4874bb969017e2de534ed3a5cf96da81aef7832cdd070f031406859ec333b02e",
+        "tokens": 253
+      },
+      {
+        "row": 44,
+        "incident_id": "test-44",
+        "sha256": "5e7de5b8513e6d4800c4268178cdcdcef5a907b7a8279717b66495170277d965",
+        "tokens": 246
+      },
+      {
+        "row": 45,
+        "incident_id": "test-45",
+        "sha256": "60c4d664f66dccdcfe7a923ddad57836589d2434f34bbf5ab33d1cf256387181",
+        "tokens": 251
+      },
+      {
+        "row": 46,
+        "incident_id": "test-46",
+        "sha256": "aa46832e6f90f64eb08f5bd79d4a81c67df5ecf288fce83d72f62cc116ed9181",
+        "tokens": 171
+      },
+      {
+        "row": 47,
+        "incident_id": "test-47",
+        "sha256": "484d7413282205df233ea1aa55b5fd2753f35b210ef8c2f9fc517ed79bdcc30f",
+        "tokens": 163
+      },
+      {
+        "row": 48,
+        "incident_id": "test-48",
+        "sha256": "f8e83e99dcafef735aaa533c49920322582feb0be049f0f6b52c08766156de92",
+        "tokens": 220
+      },
+      {
+        "row": 49,
+        "incident_id": "test-49",
+        "sha256": "ec544351ac519aa52560928e42bbbcab2d8c3a2871382b92ef7540ddd5ff2745",
+        "tokens": 267
+      }
+    ],
+    "scope": "Small template-generated synthetic incident test split; not natural-corpus evidence"
+  },
+  "model_asset_sha256": {
+    "config.json": "002050231a9b1ec3ac77aa6b9b3bbdc4d923f4068a7dd33b8da72a9bd6ad9a43",
+    "model.safetensors": "ebfa4e2f18696ebd83716a0d39fe2c025f2ff8483f72a83ca59c475692fc9d15",
+    "special_tokens_map.json": "6f50ab5a5a509a1c309d6171f339b196a900dc9c99ad0408ff23bb615fdae7ad",
+    "tokenizer.json": "c24618a1b3e6a38167beff1c72cffd126c3a66254347304b50547d12c5f25624",
+    "tokenizer_config.json": "70e38394e494931c6f773ba41e19460dd4436526b852207367f04341b4066d3f"
+  },
+  "protocol": {
+    "version": 1,
+    "corpus": "patchy synthetic incident test split",
+    "generator_seed": 0,
+    "split_sizes": {
+      "train": 200,
+      "dev": 50,
+      "test": 50
+    },
+    "documents": 50,
+    "evaluation_context": 256,
+    "evaluation_stride": 128,
+    "maximum_fp32_ppl_ratio": 1.05,
+    "expected_candidate_tensor_bytes": 71062592,
+    "method_order": [
+      "fp32",
+      "linear_int8",
+      "linear_embedding_int8"
+    ],
+    "device": "cpu",
+    "threads": 1
+  },
+  "results": {
+    "fp32": {
+      "persistent_tensor_bytes": 281706560,
+      "negative_log_likelihood": 47967.525255441666,
+      "mean_nll": 4.53894069411825,
+      "perplexity": 93.59160545186475,
+      "predicted_tokens": 10568,
+      "checkpoint_sha256": "9bf4382f636fdd3a1fd7cb12148cd724dc221ceb6e45aadb87a0f2445c5f348d",
+      "checkpoint_format_version": "fp32",
+      "tensor_hash_aggregate": "20b75d183d53e1be533ead2cca44e2c944ba4bcc265a7b783a846e848f610844",
+      "checkpoint_tensor_roundtrip": true,
+      "cpu_logits_exact_roundtrip": true,
+      "shifted_loss_verified": true,
+      "per_document": [
+        {
+          "row": 0,
+          "incident_id": "test-0",
+          "nll": 1047.8650159835815,
+          "tokens": 218
+        },
+        {
+          "row": 1,
+          "incident_id": "test-1",
+          "nll": 1031.3220520019531,
+          "tokens": 239
+        },
+        {
+          "row": 2,
+          "incident_id": "test-2",
+          "nll": 1265.2594237327576,
+          "tokens": 277
+        },
+        {
+          "row": 3,
+          "incident_id": "test-3",
+          "nll": 1070.6740522384644,
+          "tokens": 246
+        },
+        {
+          "row": 4,
+          "incident_id": "test-4",
+          "nll": 821.2123937606812,
+          "tokens": 182
+        },
+        {
+          "row": 5,
+          "incident_id": "test-5",
+          "nll": 688.1206665039062,
+          "tokens": 158
+        },
+        {
+          "row": 6,
+          "incident_id": "test-6",
+          "nll": 1018.2329940795898,
+          "tokens": 236
+        },
+        {
+          "row": 7,
+          "incident_id": "test-7",
+          "nll": 716.2053909301758,
+          "tokens": 168
+        },
+        {
+          "row": 8,
+          "incident_id": "test-8",
+          "nll": 1028.0189480781555,
+          "tokens": 219
+        },
+        {
+          "row": 9,
+          "incident_id": "test-9",
+          "nll": 982.4048013687134,
+          "tokens": 209
+        },
+        {
+          "row": 10,
+          "incident_id": "test-10",
+          "nll": 660.9136419296265,
+          "tokens": 143
+        },
+        {
+          "row": 11,
+          "incident_id": "test-11",
+          "nll": 1052.6290674209595,
+          "tokens": 218
+        },
+        {
+          "row": 12,
+          "incident_id": "test-12",
+          "nll": 962.3821821212769,
+          "tokens": 198
+        },
+        {
+          "row": 13,
+          "incident_id": "test-13",
+          "nll": 817.7545623779297,
+          "tokens": 176
+        },
+        {
+          "row": 14,
+          "incident_id": "test-14",
+          "nll": 1310.8670501708984,
+          "tokens": 301
+        },
+        {
+          "row": 15,
+          "incident_id": "test-15",
+          "nll": 906.191328048706,
+          "tokens": 204
+        },
+        {
+          "row": 16,
+          "incident_id": "test-16",
+          "nll": 1142.0676040649414,
+          "tokens": 244
+        },
+        {
+          "row": 17,
+          "incident_id": "test-17",
+          "nll": 647.6835823059082,
+          "tokens": 140
+        },
+        {
+          "row": 18,
+          "incident_id": "test-18",
+          "nll": 1071.7729048728943,
+          "tokens": 227
+        },
+        {
+          "row": 19,
+          "incident_id": "test-19",
+          "nll": 1083.0089149475098,
+          "tokens": 228
+        },
+        {
+          "row": 20,
+          "incident_id": "test-20",
+          "nll": 776.9476823806763,
+          "tokens": 182
+        },
+        {
+          "row": 21,
+          "incident_id": "test-21",
+          "nll": 886.772289276123,
+          "tokens": 180
+        },
+        {
+          "row": 22,
+          "incident_id": "test-22",
+          "nll": 965.7034778594971,
+          "tokens": 210
+        },
+        {
+          "row": 23,
+          "incident_id": "test-23",
+          "nll": 947.5160074234009,
+          "tokens": 205
+        },
+        {
+          "row": 24,
+          "incident_id": "test-24",
+          "nll": 894.5953345298767,
+          "tokens": 205
+        },
+        {
+          "row": 25,
+          "incident_id": "test-25",
+          "nll": 1086.1047649383545,
+          "tokens": 245
+        },
+        {
+          "row": 26,
+          "incident_id": "test-26",
+          "nll": 611.2665891647339,
+          "tokens": 130
+        },
+        {
+          "row": 27,
+          "incident_id": "test-27",
+          "nll": 755.0666856765747,
+          "tokens": 186
+        },
+        {
+          "row": 28,
+          "incident_id": "test-28",
+          "nll": 1236.218620300293,
+          "tokens": 272
+        },
+        {
+          "row": 29,
+          "incident_id": "test-29",
+          "nll": 759.6562080383301,
+          "tokens": 167
+        },
+        {
+          "row": 30,
+          "incident_id": "test-30",
+          "nll": 991.4576754570007,
+          "tokens": 203
+        },
+        {
+          "row": 31,
+          "incident_id": "test-31",
+          "nll": 846.4417695999146,
+          "tokens": 175
+        },
+        {
+          "row": 32,
+          "incident_id": "test-32",
+          "nll": 1260.6696982383728,
+          "tokens": 272
+        },
+        {
+          "row": 33,
+          "incident_id": "test-33",
+          "nll": 770.9090099334717,
+          "tokens": 173
+        },
+        {
+          "row": 34,
+          "incident_id": "test-34",
+          "nll": 1149.9848828315735,
+          "tokens": 258
+        },
+        {
+          "row": 35,
+          "incident_id": "test-35",
+          "nll": 1038.4077453613281,
+          "tokens": 230
+        },
+        {
+          "row": 36,
+          "incident_id": "test-36",
+          "nll": 986.6762280464172,
+          "tokens": 225
+        },
+        {
+          "row": 37,
+          "incident_id": "test-37",
+          "nll": 1199.5268731117249,
+          "tokens": 269
+        },
+        {
+          "row": 38,
+          "incident_id": "test-38",
+          "nll": 844.195930480957,
+          "tokens": 182
+        },
+        {
+          "row": 39,
+          "incident_id": "test-39",
+          "nll": 715.748291015625,
+          "tokens": 180
+        },
+        {
+          "row": 40,
+          "incident_id": "test-40",
+          "nll": 949.8002767562866,
+          "tokens": 217
+        },
+        {
+          "row": 41,
+          "incident_id": "test-41",
+          "nll": 955.0662631988525,
+          "tokens": 204
+        },
+        {
+          "row": 42,
+          "incident_id": "test-42",
+          "nll": 919.4159998893738,
+          "tokens": 203
+        },
+        {
+          "row": 43,
+          "incident_id": "test-43",
+          "nll": 1102.9247760772705,
+          "tokens": 252
+        },
+        {
+          "row": 44,
+          "incident_id": "test-44",
+          "nll": 1134.9536633491516,
+          "tokens": 245
+        },
+        {
+          "row": 45,
+          "incident_id": "test-45",
+          "nll": 1112.8391027450562,
+          "tokens": 250
+        },
+        {
+          "row": 46,
+          "incident_id": "test-46",
+          "nll": 717.4217700958252,
+          "tokens": 170
+        },
+        {
+          "row": 47,
+          "incident_id": "test-47",
+          "nll": 801.5396089553833,
+          "tokens": 162
+        },
+        {
+          "row": 48,
+          "incident_id": "test-48",
+          "nll": 1023.2417106628418,
+          "tokens": 219
+        },
+        {
+          "row": 49,
+          "incident_id": "test-49",
+          "nll": 1201.8697431087494,
+          "tokens": 266
+        }
+      ]
+    },
+    "linear_int8": {
+      "persistent_tensor_bytes": 148128320,
+      "negative_log_likelihood": 48286.95889258385,
+      "mean_nll": 4.5691671927123245,
+      "perplexity": 96.46374060530303,
+      "predicted_tokens": 10568,
+      "checkpoint_sha256": "88fdeb8bd2681c512ce7faa085c2e173b2f24b631c97beee13afc97cfb74bd8c",
+      "checkpoint_format_version": "1",
+      "tensor_hash_aggregate": "afeefeae0671b1c829aca6989a4560b95351b9d8ebfb798ee6afd1cd4718b408",
+      "checkpoint_tensor_roundtrip": true,
+      "cpu_logits_exact_roundtrip": true,
+      "shifted_loss_verified": true,
+      "per_document": [
+        {
+          "row": 0,
+          "incident_id": "test-0",
+          "nll": 1052.8531847000122,
+          "tokens": 218
+        },
+        {
+          "row": 1,
+          "incident_id": "test-1",
+          "nll": 1038.2748866081238,
+          "tokens": 239
+        },
+        {
+          "row": 2,
+          "incident_id": "test-2",
+          "nll": 1277.277428150177,
+          "tokens": 277
+        },
+        {
+          "row": 3,
+          "incident_id": "test-3",
+          "nll": 1081.3714027404785,
+          "tokens": 246
+        },
+        {
+          "row": 4,
+          "incident_id": "test-4",
+          "nll": 828.130669593811,
+          "tokens": 182
+        },
+        {
+          "row": 5,
+          "incident_id": "test-5",
+          "nll": 693.6938123703003,
+          "tokens": 158
+        },
+        {
+          "row": 6,
+          "incident_id": "test-6",
+          "nll": 1024.0695476531982,
+          "tokens": 236
+        },
+        {
+          "row": 7,
+          "incident_id": "test-7",
+          "nll": 721.283317565918,
+          "tokens": 168
+        },
+        {
+          "row": 8,
+          "incident_id": "test-8",
+          "nll": 1037.6519522666931,
+          "tokens": 219
+        },
+        {
+          "row": 9,
+          "incident_id": "test-9",
+          "nll": 989.0055136680603,
+          "tokens": 209
+        },
+        {
+          "row": 10,
+          "incident_id": "test-10",
+          "nll": 665.142984867096,
+          "tokens": 143
+        },
+        {
+          "row": 11,
+          "incident_id": "test-11",
+          "nll": 1058.5274267196655,
+          "tokens": 218
+        },
+        {
+          "row": 12,
+          "incident_id": "test-12",
+          "nll": 968.1558666229248,
+          "tokens": 198
+        },
+        {
+          "row": 13,
+          "incident_id": "test-13",
+          "nll": 824.5400161743164,
+          "tokens": 176
+        },
+        {
+          "row": 14,
+          "incident_id": "test-14",
+          "nll": 1322.9245705604553,
+          "tokens": 301
+        },
+        {
+          "row": 15,
+          "incident_id": "test-15",
+          "nll": 910.5042972564697,
+          "tokens": 204
+        },
+        {
+          "row": 16,
+          "incident_id": "test-16",
+          "nll": 1148.071756362915,
+          "tokens": 244
+        },
+        {
+          "row": 17,
+          "incident_id": "test-17",
+          "nll": 650.6916618347168,
+          "tokens": 140
+        },
+        {
+          "row": 18,
+          "incident_id": "test-18",
+          "nll": 1079.0557537078857,
+          "tokens": 227
+        },
+        {
+          "row": 19,
+          "incident_id": "test-19",
+          "nll": 1091.5112743377686,
+          "tokens": 228
+        },
+        {
+          "row": 20,
+          "incident_id": "test-20",
+          "nll": 780.3117046356201,
+          "tokens": 182
+        },
+        {
+          "row": 21,
+          "incident_id": "test-21",
+          "nll": 891.5391540527344,
+          "tokens": 180
+        },
+        {
+          "row": 22,
+          "incident_id": "test-22",
+          "nll": 971.9647693634033,
+          "tokens": 210
+        },
+        {
+          "row": 23,
+          "incident_id": "test-23",
+          "nll": 956.3360381126404,
+          "tokens": 205
+        },
+        {
+          "row": 24,
+          "incident_id": "test-24",
+          "nll": 897.772946357727,
+          "tokens": 205
+        },
+        {
+          "row": 25,
+          "incident_id": "test-25",
+          "nll": 1095.277988910675,
+          "tokens": 245
+        },
+        {
+          "row": 26,
+          "incident_id": "test-26",
+          "nll": 617.0942831039429,
+          "tokens": 130
+        },
+        {
+          "row": 27,
+          "incident_id": "test-27",
+          "nll": 761.5480098724365,
+          "tokens": 186
+        },
+        {
+          "row": 28,
+          "incident_id": "test-28",
+          "nll": 1247.3564772605896,
+          "tokens": 272
+        },
+        {
+          "row": 29,
+          "incident_id": "test-29",
+          "nll": 765.6241340637207,
+          "tokens": 167
+        },
+        {
+          "row": 30,
+          "incident_id": "test-30",
+          "nll": 998.7568211555481,
+          "tokens": 203
+        },
+        {
+          "row": 31,
+          "incident_id": "test-31",
+          "nll": 848.5921859741211,
+          "tokens": 175
+        },
+        {
+          "row": 32,
+          "incident_id": "test-32",
+          "nll": 1269.8337972164154,
+          "tokens": 272
+        },
+        {
+          "row": 33,
+          "incident_id": "test-33",
+          "nll": 774.3489608764648,
+          "tokens": 173
+        },
+        {
+          "row": 34,
+          "incident_id": "test-34",
+          "nll": 1158.3061308860779,
+          "tokens": 258
+        },
+        {
+          "row": 35,
+          "incident_id": "test-35",
+          "nll": 1044.8392724990845,
+          "tokens": 230
+        },
+        {
+          "row": 36,
+          "incident_id": "test-36",
+          "nll": 991.8052554130554,
+          "tokens": 225
+        },
+        {
+          "row": 37,
+          "incident_id": "test-37",
+          "nll": 1209.7018055915833,
+          "tokens": 269
+        },
+        {
+          "row": 38,
+          "incident_id": "test-38",
+          "nll": 853.0611267089844,
+          "tokens": 182
+        },
+        {
+          "row": 39,
+          "incident_id": "test-39",
+          "nll": 722.810525894165,
+          "tokens": 180
+        },
+        {
+          "row": 40,
+          "incident_id": "test-40",
+          "nll": 953.7217216491699,
+          "tokens": 217
+        },
+        {
+          "row": 41,
+          "incident_id": "test-41",
+          "nll": 962.2374572753906,
+          "tokens": 204
+        },
+        {
+          "row": 42,
+          "incident_id": "test-42",
+          "nll": 921.921905040741,
+          "tokens": 203
+        },
+        {
+          "row": 43,
+          "incident_id": "test-43",
+          "nll": 1107.5713577270508,
+          "tokens": 252
+        },
+        {
+          "row": 44,
+          "incident_id": "test-44",
+          "nll": 1140.1319360733032,
+          "tokens": 245
+        },
+        {
+          "row": 45,
+          "incident_id": "test-45",
+          "nll": 1119.8458671569824,
+          "tokens": 250
+        },
+        {
+          "row": 46,
+          "incident_id": "test-46",
+          "nll": 718.9960813522339,
+          "tokens": 170
+        },
+        {
+          "row": 47,
+          "incident_id": "test-47",
+          "nll": 802.3824577331543,
+          "tokens": 162
+        },
+        {
+          "row": 48,
+          "incident_id": "test-48",
+          "nll": 1031.236563205719,
+          "tokens": 219
+        },
+        {
+          "row": 49,
+          "incident_id": "test-49",
+          "nll": 1209.2948336601257,
+          "tokens": 266
+        }
+      ]
+    },
+    "linear_embedding_int8": {
+      "persistent_tensor_bytes": 71062592,
+      "negative_log_likelihood": 48263.420560359955,
+      "mean_nll": 4.566939871343675,
+      "perplexity": 96.24912395340579,
+      "predicted_tokens": 10568,
+      "checkpoint_sha256": "a40f65e2a9246b582655e493fe46e0cb1e816dad37bfecc5e7ce784d1ae986eb",
+      "checkpoint_format_version": "2",
+      "tensor_hash_aggregate": "ed7252d5ec567ea0cba17c0ad2942ef4328b2fc2f2228571a287b2154112bd3a",
+      "checkpoint_tensor_roundtrip": true,
+      "cpu_logits_exact_roundtrip": true,
+      "shifted_loss_verified": true,
+      "per_document": [
+        {
+          "row": 0,
+          "incident_id": "test-0",
+          "nll": 1051.458896636963,
+          "tokens": 218
+        },
+        {
+          "row": 1,
+          "incident_id": "test-1",
+          "nll": 1038.3840641975403,
+          "tokens": 239
+        },
+        {
+          "row": 2,
+          "incident_id": "test-2",
+          "nll": 1277.5628371238708,
+          "tokens": 277
+        },
+        {
+          "row": 3,
+          "incident_id": "test-3",
+          "nll": 1080.3089990615845,
+          "tokens": 246
+        },
+        {
+          "row": 4,
+          "incident_id": "test-4",
+          "nll": 827.126314163208,
+          "tokens": 182
+        },
+        {
+          "row": 5,
+          "incident_id": "test-5",
+          "nll": 692.3987884521484,
+          "tokens": 158
+        },
+        {
+          "row": 6,
+          "incident_id": "test-6",
+          "nll": 1023.5940933227539,
+          "tokens": 236
+        },
+        {
+          "row": 7,
+          "incident_id": "test-7",
+          "nll": 721.2471885681152,
+          "tokens": 168
+        },
+        {
+          "row": 8,
+          "incident_id": "test-8",
+          "nll": 1036.883053779602,
+          "tokens": 219
+        },
+        {
+          "row": 9,
+          "incident_id": "test-9",
+          "nll": 988.598307132721,
+          "tokens": 209
+        },
+        {
+          "row": 10,
+          "incident_id": "test-10",
+          "nll": 664.2713413238525,
+          "tokens": 143
+        },
+        {
+          "row": 11,
+          "incident_id": "test-11",
+          "nll": 1058.2063236236572,
+          "tokens": 218
+        },
+        {
+          "row": 12,
+          "incident_id": "test-12",
+          "nll": 967.6982431411743,
+          "tokens": 198
+        },
+        {
+          "row": 13,
+          "incident_id": "test-13",
+          "nll": 823.7935180664062,
+          "tokens": 176
+        },
+        {
+          "row": 14,
+          "incident_id": "test-14",
+          "nll": 1322.4639444351196,
+          "tokens": 301
+        },
+        {
+          "row": 15,
+          "incident_id": "test-15",
+          "nll": 910.6725826263428,
+          "tokens": 204
+        },
+        {
+          "row": 16,
+          "incident_id": "test-16",
+          "nll": 1146.5541095733643,
+          "tokens": 244
+        },
+        {
+          "row": 17,
+          "incident_id": "test-17",
+          "nll": 650.8117580413818,
+          "tokens": 140
+        },
+        {
+          "row": 18,
+          "incident_id": "test-18",
+          "nll": 1078.0882863998413,
+          "tokens": 227
+        },
+        {
+          "row": 19,
+          "incident_id": "test-19",
+          "nll": 1091.6222763061523,
+          "tokens": 228
+        },
+        {
+          "row": 20,
+          "incident_id": "test-20",
+          "nll": 780.1672086715698,
+          "tokens": 182
+        },
+        {
+          "row": 21,
+          "incident_id": "test-21",
+          "nll": 890.7350063323975,
+          "tokens": 180
+        },
+        {
+          "row": 22,
+          "incident_id": "test-22",
+          "nll": 971.4005041122437,
+          "tokens": 210
+        },
+        {
+          "row": 23,
+          "incident_id": "test-23",
+          "nll": 955.1162934303284,
+          "tokens": 205
+        },
+        {
+          "row": 24,
+          "incident_id": "test-24",
+          "nll": 897.2942566871643,
+          "tokens": 205
+        },
+        {
+          "row": 25,
+          "incident_id": "test-25",
+          "nll": 1094.6716666221619,
+          "tokens": 245
+        },
+        {
+          "row": 26,
+          "incident_id": "test-26",
+          "nll": 616.7225980758667,
+          "tokens": 130
+        },
+        {
+          "row": 27,
+          "incident_id": "test-27",
+          "nll": 761.4956817626953,
+          "tokens": 186
+        },
+        {
+          "row": 28,
+          "incident_id": "test-28",
+          "nll": 1246.5046663284302,
+          "tokens": 272
+        },
+        {
+          "row": 29,
+          "incident_id": "test-29",
+          "nll": 765.3964667320251,
+          "tokens": 167
+        },
+        {
+          "row": 30,
+          "incident_id": "test-30",
+          "nll": 998.3483338356018,
+          "tokens": 203
+        },
+        {
+          "row": 31,
+          "incident_id": "test-31",
+          "nll": 847.9489803314209,
+          "tokens": 175
+        },
+        {
+          "row": 32,
+          "incident_id": "test-32",
+          "nll": 1270.0422489643097,
+          "tokens": 272
+        },
+        {
+          "row": 33,
+          "incident_id": "test-33",
+          "nll": 773.4179468154907,
+          "tokens": 173
+        },
+        {
+          "row": 34,
+          "incident_id": "test-34",
+          "nll": 1157.9494743347168,
+          "tokens": 258
+        },
+        {
+          "row": 35,
+          "incident_id": "test-35",
+          "nll": 1044.5908641815186,
+          "tokens": 230
+        },
+        {
+          "row": 36,
+          "incident_id": "test-36",
+          "nll": 992.0078158378601,
+          "tokens": 225
+        },
+        {
+          "row": 37,
+          "incident_id": "test-37",
+          "nll": 1209.9252433776855,
+          "tokens": 269
+        },
+        {
+          "row": 38,
+          "incident_id": "test-38",
+          "nll": 852.7934837341309,
+          "tokens": 182
+        },
+        {
+          "row": 39,
+          "incident_id": "test-39",
+          "nll": 722.8240871429443,
+          "tokens": 180
+        },
+        {
+          "row": 40,
+          "incident_id": "test-40",
+          "nll": 953.6415295600891,
+          "tokens": 217
+        },
+        {
+          "row": 41,
+          "incident_id": "test-41",
+          "nll": 961.3533267974854,
+          "tokens": 204
+        },
+        {
+          "row": 42,
+          "incident_id": "test-42",
+          "nll": 921.536358833313,
+          "tokens": 203
+        },
+        {
+          "row": 43,
+          "incident_id": "test-43",
+          "nll": 1107.2591743469238,
+          "tokens": 252
+        },
+        {
+          "row": 44,
+          "incident_id": "test-44",
+          "nll": 1139.7570443153381,
+          "tokens": 245
+        },
+        {
+          "row": 45,
+          "incident_id": "test-45",
+          "nll": 1119.242548942566,
+          "tokens": 250
+        },
+        {
+          "row": 46,
+          "incident_id": "test-46",
+          "nll": 718.3907890319824,
+          "tokens": 170
+        },
+        {
+          "row": 47,
+          "incident_id": "test-47",
+          "nll": 801.5644826889038,
+          "tokens": 162
+        },
+        {
+          "row": 48,
+          "incident_id": "test-48",
+          "nll": 1030.598825454712,
+          "tokens": 219
+        },
+        {
+          "row": 49,
+          "incident_id": "test-49",
+          "nll": 1208.9787271022797,
+          "tokens": 266
+        }
+      ]
+    }
+  },
+  "independent_replay_checks": {
+    "complete_no_error": true,
+    "method_order_exact": true,
+    "fifty_documents_per_method": true,
+    "document_identity_and_tokens_match": true,
+    "per_document_arithmetic_exact": true,
+    "checkpoint_correctness_gates": true,
+    "tensor_hashes_match_first_corpus_methods": true
+  },
+  "acceptance": {
+    "maximum_fp32_perplexity_ratio": 1.05,
+    "observed_fp32_perplexity_ratio": 1.0283948382839507,
+    "candidate_tensor_bytes_exact": true,
+    "practical_gate": true,
+    "storage_reduction_vs_fp32": 0.7477425019850443,
+    "storage_reduction_vs_linear_int8": 0.5202632960395419
+  },
+  "limitations": [
+    "synthetic corpus",
+    "50 template-generated records",
+    "one corpus generator",
+    "one small model",
+    "no tied embeddings",
+    "no latency, peak-memory, energy, or natural-corpus claim"
+  ]
+}
