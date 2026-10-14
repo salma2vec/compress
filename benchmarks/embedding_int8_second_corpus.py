@@ -161,13 +161,15 @@ def _validate_reproduction(corpus_file, reproduced_dir):
 
 def _wikitext_overlap(document_hashes, wikitext_train, wikitext_test):
     row_hashes = set()
+    rows_compared = 0
     for path in (wikitext_train, wikitext_test):
         rows = parquet.read_table(path)["text"].to_pylist()
+        rows_compared += len(rows)
         row_hashes.update(hashlib.sha256(text.encode()).hexdigest() for text in rows)
     overlap = set(document_hashes) & row_hashes
     if overlap:
         raise ValueError("Synthetic incident document exactly matches a WikiText row")
-    return len(row_hashes)
+    return {"rows": rows_compared, "unique_hashes": len(row_hashes)}
 
 
 def prepare(
@@ -196,8 +198,8 @@ def prepare(
     }:
         raise ValueError("Pre-source-freeze exposure report changed")
     records, documents, hashes = _load_corpus(corpus_file)
-    compared_hashes = _wikitext_overlap(hashes, wikitext_train, wikitext_test)
-    if compared_hashes != preexposure["wikitext_rows_compared"]:
+    wikitext_comparison = _wikitext_overlap(hashes, wikitext_train, wikitext_test)
+    if wikitext_comparison["rows"] != preexposure["wikitext_rows_compared"]:
         raise ValueError("WikiText comparison population changed")
     tokenizer = AutoTokenizer.from_pretrained(
         model_dir, local_files_only=True, trust_remote_code=False
@@ -231,7 +233,8 @@ def prepare(
             "preexposure_report_sha256": file_hash(preexposure_report),
             "prior_compress_hash_matches": 0,
             "exact_wikitext_hash_overlap": 0,
-            "wikitext_unique_row_hashes_compared": compared_hashes,
+            "wikitext_rows_compared": wikitext_comparison["rows"],
+            "wikitext_unique_row_hashes_compared": wikitext_comparison["unique_hashes"],
             "input_fields": list(INPUT_FIELDS),
             "documents": rows,
             "scope": "Small template-generated synthetic incident test split; not natural-corpus evidence",
@@ -267,9 +270,12 @@ def validate_manifest(
     if file_hash(preexposure_report) != manifest["corpus"]["preexposure_report_sha256"]:
         raise ValueError("Pre-source-freeze exposure report changed")
     records, documents, hashes = _load_corpus(corpus_file)
-    if _wikitext_overlap(hashes, wikitext_train, wikitext_test) != manifest["corpus"][
-        "wikitext_unique_row_hashes_compared"
-    ]:
+    comparison = _wikitext_overlap(hashes, wikitext_train, wikitext_test)
+    expected_comparison = {
+        "rows": manifest["corpus"]["wikitext_rows_compared"],
+        "unique_hashes": manifest["corpus"]["wikitext_unique_row_hashes_compared"],
+    }
+    if comparison != expected_comparison:
         raise ValueError("WikiText comparison population changed")
     tokenizer = AutoTokenizer.from_pretrained(
         model_dir, local_files_only=True, trust_remote_code=False
