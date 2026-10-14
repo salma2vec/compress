@@ -6,6 +6,7 @@ import torch
 from torch import nn
 
 from benchmarks.article_holdout import article_ids, select_article_holdout
+from benchmarks.embedding_int8_validation import quality_gate as embedding_quality_gate
 from benchmarks.sensitivity_allocation import PROTOCOL, quality_gate
 from compress.compression.packed import PackedLinear, pack_model, tensor_bytes
 from compress.compression.sensitivity import equal_shape_plan, module_sensitivity, shifted_loss
@@ -146,3 +147,39 @@ def test_worse_seed_is_not_dropped_and_byte_or_target_mismatch_fails():
     records[0]["methods"]["magnitude"]["predicted_tokens"] -= 1
     with pytest.raises(ValueError, match="scored targets"):
         quality_gate(records, 2.0)
+
+
+def embedding_results(candidate_loss=2.02, candidate_bytes=71_062_592):
+    return {
+        name: {
+            "mean_nll": loss,
+            "predicted_tokens": 100,
+            "persistent_tensor_bytes": candidate_bytes if name == "linear_embedding_int8" else 100,
+            "checkpoint_tensor_roundtrip": True,
+            "cpu_logits_exact_roundtrip": True,
+            "shifted_loss_verified": True,
+        }
+        for name, loss in {"fp32": 2.0, "linear_int8": 2.01,
+                           "linear_embedding_int8": candidate_loss}.items()
+    }
+
+
+def test_embedding_quality_gate_requires_quality_exact_bytes_and_all_methods():
+    assert embedding_quality_gate(embedding_results())["practical_gate"]
+    assert not embedding_quality_gate(embedding_results(candidate_loss=2.06))["practical_gate"]
+    assert not embedding_quality_gate(embedding_results(candidate_bytes=71_062_591))["practical_gate"]
+    incomplete = embedding_results()
+    del incomplete["linear_int8"]
+    with pytest.raises(ValueError, match="every frozen method"):
+        embedding_quality_gate(incomplete)
+
+
+def test_embedding_quality_gate_rejects_target_or_correctness_mismatch():
+    mismatched = embedding_results()
+    mismatched["linear_int8"]["predicted_tokens"] -= 1
+    with pytest.raises(ValueError, match="identical positive"):
+        embedding_quality_gate(mismatched)
+    failed = embedding_results()
+    failed["linear_embedding_int8"]["cpu_logits_exact_roundtrip"] = False
+    with pytest.raises(ValueError, match="correctness"):
+        embedding_quality_gate(failed)
