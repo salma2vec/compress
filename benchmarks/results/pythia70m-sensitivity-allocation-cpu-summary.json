@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "source_commit": "f5ba3a9dfba7e86c3dea5ed8dd0448ee6dfee4ea",
+  "raw_report_sha256": "b89f5abc4ad58c7ff776a8a84a4ecab675f18f97ac0bbeb9a86bb598ff4d2c03",
+  "independent_replay_sha256": "7df1d2742e3dc86e73bf7a5f5b23f3b88e3ea7a3eacf2d1ca0b086a7b96d7ab5",
+  "device": "cpu",
+  "threads": 1,
+  "evaluation": {
+    "articles": 16,
+    "paragraphs": 32,
+    "predicted_tokens_per_policy": 6654,
+    "declared_cells": 25,
+    "unique_precision_policies": 9,
+    "mixed_policy_tensor_bytes": 143409728
+  },
+  "references": {
+    "fp32": {"persistent_tensor_bytes": 281706560, "perplexity": 70.65047792493975},
+    "uniform_int8": {"persistent_tensor_bytes": 148128320, "perplexity": 71.60028695870986},
+    "nf4_body_int8_head": {"persistent_tensor_bytes": 138691136, "perplexity": 100.32203725857747}
+  },
+  "per_seed": [
+    {"seed": 42, "sensitivity_perplexity": 76.11899089942384, "nll_gain_over_magnitude": 0.004599496054870755, "nll_gain_over_median_shuffle": 0.08643898703796093, "fp32_perplexity_ratio": 1.0774023493555687, "score_pass": false, "practical_pass": false},
+    {"seed": 142, "sensitivity_perplexity": 78.26491573854317, "nll_gain_over_magnitude": -0.02320214603482551, "nll_gain_over_median_shuffle": 0.05863734494826467, "fp32_perplexity_ratio": 1.1077761685022587, "score_pass": false, "practical_pass": false},
+    {"seed": 242, "sensitivity_perplexity": 76.29065828610777, "nll_gain_over_magnitude": 0.002346784888640485, "nll_gain_over_median_shuffle": 0.08418627587173066, "fp32_perplexity_ratio": 1.0798321614633695, "score_pass": false, "practical_pass": false},
+    {"seed": 342, "sensitivity_perplexity": 76.57606311622823, "nll_gain_over_magnitude": -0.0013872542680832822, "nll_gain_over_median_shuffle": 0.0804522367150069, "fp32_perplexity_ratio": 1.083871834491819, "score_pass": false, "practical_pass": false},
+    {"seed": 442, "sensitivity_perplexity": 76.85565804398153, "nll_gain_over_magnitude": -0.005031810102070544, "nll_gain_over_median_shuffle": 0.07680768088101964, "fp32_perplexity_ratio": 1.0878292730819779, "score_pass": false, "practical_pass": false}
+  ],
+  "correctness": {
+    "all_checkpoint_tensor_roundtrips": true,
+    "all_cpu_logits_exact_roundtrips": true,
+    "all_shifted_losses_verified": true,
+    "all_target_counts_verified": true,
+    "independent_raw_arithmetic_replay": true,
+    "identical_comparators_reused_by_exact_assignment_hash": true
+  },
+  "acceptance": {
+    "score_passing_seeds": 0,
+    "practical_passing_seeds": 0,
+    "no_large_nll_regression": false,
+    "score_gate": false,
+    "practical_gate": false
+  }
+}

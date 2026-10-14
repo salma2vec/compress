@@ -22,6 +22,15 @@ A measured [CPU reference run](docs/reference-run.md) is included with its raw r
 
 A [pretrained Pythia-70M / WikiText-2 experiment](docs/pretrained-validation.md) adds real held-out text, exact-storage shuffled controls, saved/reloaded checkpoints and Apple MPS evaluation. It retains a severe uniform-NF4 failure and explicitly distinguishes its small paragraph sample from the standard full-test benchmark.
 
+A later [fresh-panel CPU validation](docs/int8-embedding-results.md) demonstrates a
+portable saved model at 71,062,592 persistent tensor bytes, 74.77% below FP32,
+with perplexity 89.3730 versus 88.0887 for FP32 on 3,098 newly sampled targets.
+The frozen 1.05× quality gate passed. This is storage-and-quality evidence for
+one Pythia-70M sample; dequantization still uses ordinary PyTorch operations, so
+it establishes no latency or peak-memory improvement. A separate
+[matched-storage allocation study](docs/sensitivity-allocation-results.md) failed
+both its score and practical-quality gates and remains a negative result.
+
 ## Two quantization paths
 
 | Path | Representation | Purpose |
@@ -47,7 +56,17 @@ save_packed(model, 'model.safetensors')
 restored = load_packed(build_model(), 'model.safetensors')
 ```
 
-Packed conversion is inference-only and modifies the model in place. It rejects tied linear weights and `nn.MultiheadAttention`, which reads child weights directly. Models using GPT-2-style `Conv1D`, custom weight access, shared module aliases, or other fused projection APIs require an adapter; use the simulation path for those architectures. Validate outputs before deploying a new model family.
+Packed conversion is inference-only and modifies the model in place. Pass
+`pack_embeddings=True` to store ordinary untied `nn.Embedding` weights in
+rowwise INT8 and dequantize only requested rows. Version-2 safetensors archives
+record embedding precision and padding semantics; old linear-only version-1
+archives load unchanged. Embedding subclasses, `max_norm`, tied weights and
+architectures that access a child `.weight` directly require an adapter. The
+backend also rejects tied linear weights and `nn.MultiheadAttention`, which reads
+child weights directly. Models using GPT-2-style `Conv1D`, custom weight access,
+shared module aliases, or other fused projection APIs require an adapter; use the
+simulation path for those architectures. Validate outputs before deploying a new
+model family.
 
 For models with an ordinary, **untied** `nn.Embedding`, opt into INT8 input
 embedding storage as well:

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "source_commit": "6424abee7a066b893d38bcdc07d2b3f3a999feaa",
+  "harness_sha256": "af153cdbb1a30d1e3b512a3abce0569d8b5f0a47debb604b97d457db4ed6fb90",
+  "protocol_sha256": "7d04c2894272cc28f9947192fcea0b724b37749d57eeb6dcc5b7711309960450",
+  "manifest_sha256": "a1a6925faa13d9628835e17a5b0b57069a6125f53d429ce0b2ff9f2ae569b4bd",
+  "raw_report_sha256": "561eaf425472d14459efdcbbe29deb19d4945d6a08a568b9a34b69245c2b739c",
+  "independent_replay_sha256": "4e091826bcf83f3eb2aa6c4f2a903198f2bd5b4f3a0835b4bb7ef5d764b52169",
+  "device": "cpu",
+  "threads": 1,
+  "scope": "One Pythia-70M model and fresh sampled WikiText-2 articles; storage and quality only",
+  "panel": {
+    "seed": 1043,
+    "articles": 8,
+    "paragraphs": 16,
+    "predicted_tokens": 3098,
+    "rows": [3272, 3292, 1282, 1307, 1242, 1252, 2757, 2746, 800, 882, 3779, 3780, 3959, 3908, 98, 106]
+  },
+  "results": {
+    "fp32": {
+      "persistent_tensor_bytes": 281706560,
+      "mean_nll": 4.478343979707451,
+      "perplexity": 88.08867518796065,
+      "checkpoint_sha256": "9bf4382f636fdd3a1fd7cb12148cd724dc221ceb6e45aadb87a0f2445c5f348d"
+    },
+    "linear_int8": {
+      "persistent_tensor_bytes": 148128320,
+      "mean_nll": 4.491650139077238,
+      "perplexity": 89.2686300629119,
+      "checkpoint_sha256": "88fdeb8bd2681c512ce7faa085c2e173b2f24b631c97beee13afc97cfb74bd8c",
+      "checkpoint_format_version": "1"
+    },
+    "linear_embedding_int8": {
+      "persistent_tensor_bytes": 71062592,
+      "mean_nll": 4.492818914512575,
+      "perplexity": 89.37302604071878,
+      "checkpoint_sha256": "26025317dab54804d7fc56a4e213d93dc9272c8f435158459d7897250b8a4516",
+      "checkpoint_format_version": "2"
+    }
+  },
+  "correctness": {
+    "checkpoint_tensor_roundtrip": true,
+    "cpu_logits_exact_roundtrip": true,
+    "shifted_loss_verified": true,
+    "target_counts_verified": true,
+    "independent_raw_arithmetic_replay": true
+  },
+  "acceptance": {
+    "maximum_fp32_perplexity_ratio": 1.05,
+    "observed_fp32_perplexity_ratio": 1.0145802039821536,
+    "expected_candidate_tensor_bytes": 71062592,
+    "candidate_tensor_bytes_exact": true,
+    "practical_gate": true
+  }
+}
