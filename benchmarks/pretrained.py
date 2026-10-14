@@ -108,8 +108,11 @@ def run(output, device="cpu", seed=42, calibration_count=32, evaluation_count=16
     torch.set_num_threads(1)
     source = snapshot_download(MODEL, revision=MODEL_REVISION,
                                allow_patterns=["*.json", "*.safetensors"], token=False)
-    tokenizer = AutoTokenizer.from_pretrained(source, local_files_only=True, trust_remote_code=False)
-    model = AutoModelForCausalLM.from_pretrained(
+    # source is returned by snapshot_download at the immutable MODEL_REVISION.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+        source, local_files_only=True, trust_remote_code=False
+    )
+    model = AutoModelForCausalLM.from_pretrained(  # nosec B615
         source, local_files_only=True, use_safetensors=True, trust_remote_code=False,
         dtype=torch.float32, attn_implementation="eager",
     ).eval()

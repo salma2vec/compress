@@ -1,8 +1,11 @@
 import json
+import os
+
 import typer
 from rich.console import Console
 from rich.table import Table
-from typing import Optional
+
+from compress.huggingface_security import GPT2_REVISION, secure_pretrained_kwargs
 
 app = typer.Typer(
     help="compress: activation-aware compression for transformer models.",
@@ -14,6 +17,9 @@ console = Console()
 @app.command()
 def profile(
     model: str = typer.Option("gpt2", help="HuggingFace model name or local path."),
+    revision: str = typer.Option(
+        GPT2_REVISION, help="Immutable 40-character Hub commit; ignored for local paths."
+    ),
     data: str = typer.Option("", help="Path to a text file (one sample per line). Uses synthetic data if empty."),
     out: str = typer.Option("profile.json", help="Output path for the activation profile."),
     n_batches: int = typer.Option(50, help="Number of calibration inputs to process."),
@@ -23,16 +29,22 @@ def profile(
     Attaches forward hooks to all attention and MLP layers, runs calibration
     inputs through the model, and saves a JSON activation profile.
     """
-    import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
+
     from compress.profiling.activation_recorder import ActivationRecorder
     from compress.profiling.calibration_data import build_calibration_set
 
     console.print(f"[bold]Loading model:[/bold] {model}")
-    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=False)
+    loader = secure_pretrained_kwargs(model, revision)
+    # Loader arguments are either an immutable commit or forced local-only.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+        model, trust_remote_code=False, **loader
+    )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True, trust_remote_code=False)
+    lm = AutoModelForCausalLM.from_pretrained(  # nosec B615
+        model, use_safetensors=True, trust_remote_code=False, **loader
+    )
 
     if data:
         with open(data) as f:
@@ -56,6 +68,9 @@ def profile(
 @app.command()
 def quantize(
     model: str = typer.Option("gpt2", help="HuggingFace model name or local path."),
+    revision: str = typer.Option(
+        GPT2_REVISION, help="Immutable 40-character Hub commit; ignored for local paths."
+    ),
     profile_path: str = typer.Option("profile.json", help="Path to activation profile JSON."),
     out: str = typer.Option("model_compressed/", help="Output directory for the compressed model."),
     default_dtype: str = typer.Option("int8", help="Default dtype for layers not in profile."),
@@ -70,16 +85,22 @@ def quantize(
     Loads an activation profile, computes per-layer importance scores, assigns
     heuristic dtypes (fp16/int8/int4), and saves the compressed model weights.
     """
-    import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    from compress.compression.mixed_precision import MixedPrecisionConfig
+    from compress.compression.quantization import ActivationAwareQuantizer
     from compress.profiling.activation_recorder import ActivationProfile
     from compress.profiling.importance import ImportanceScorer
-    from compress.compression.quantization import ActivationAwareQuantizer
-    from compress.compression.mixed_precision import MixedPrecisionConfig
 
     console.print(f"[bold]Loading model:[/bold] {model}")
-    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=False)
-    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True, trust_remote_code=False)
+    loader = secure_pretrained_kwargs(model, revision)
+    # Loader arguments are either an immutable commit or forced local-only.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+        model, trust_remote_code=False, **loader
+    )
+    lm = AutoModelForCausalLM.from_pretrained(  # nosec B615
+        model, use_safetensors=True, trust_remote_code=False, **loader
+    )
 
     console.print(f"Loading profile from {profile_path}")
     with open(profile_path) as f:
@@ -106,7 +127,6 @@ def quantize(
     lm.config.compress_quantization_policy = q_config.to_dict()
     lm.config.compress_applied_dtypes = lm._compress_applied_dtypes
 
-    import os
     os.makedirs(out, exist_ok=True)
     lm.save_pretrained(out)
     tokenizer.save_pretrained(out)
@@ -116,22 +136,31 @@ def quantize(
 @app.command()
 def evaluate(
     model: str = typer.Option("gpt2", help="Model name or path to compressed model directory."),
+    revision: str = typer.Option(
+        GPT2_REVISION, help="Immutable 40-character Hub commit; ignored for local paths."
+    ),
     data: str = typer.Option("", help="Path to evaluation text file (one sample per line)."),
     n_samples: int = typer.Option(50, help="Number of evaluation samples."),
     n_tokens: int = typer.Option(20, help="Tokens to generate per latency run."),
 ):
     """Evaluate a compressed model's perplexity and inference latency."""
-    import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from compress.evaluation.perplexity import compute_perplexity
+
     from compress.evaluation.latency import measure_latency
+    from compress.evaluation.perplexity import compute_perplexity
     from compress.profiling.calibration_data import build_calibration_set
 
     console.print(f"[bold]Loading model:[/bold] {model}")
-    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=False)
+    loader = secure_pretrained_kwargs(model, revision)
+    # Loader arguments are either an immutable commit or forced local-only.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+        model, trust_remote_code=False, **loader
+    )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True, trust_remote_code=False)
+    lm = AutoModelForCausalLM.from_pretrained(  # nosec B615
+        model, use_safetensors=True, trust_remote_code=False, **loader
+    )
 
     if data:
         with open(data) as f:
@@ -156,11 +185,15 @@ def evaluate(
 @app.command()
 def benchmark(
     model: str = typer.Option("gpt2", help="HuggingFace model name to benchmark."),
+    revision: str = typer.Option(
+        GPT2_REVISION, help="Immutable 40-character Hub commit; ignored for local paths."
+    ),
     data: str = typer.Option("", help="Optional path to calibration data file."),
 ):
     """Run the full compression benchmark suite and print a comparison table."""
     from benchmarks.gpt2_compression import run_benchmark
-    run_benchmark(model_name=model, data_path=data)
+
+    run_benchmark(model_name=model, model_revision=revision, data_path=data)
 
 
 if __name__ == "__main__":

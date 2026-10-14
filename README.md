@@ -99,6 +99,7 @@ The historical benchmark explicitly opts out for its uniform-NF4 control.
 - Generation latency synchronizes CUDA/MPS and counts tokens actually emitted, including early stopping. Raw samples accompany the summary.
 - The offline comparison includes FP32, uniform INT8, uniform NF4, mixed precision and a mixed assignment shuffled within equal-shaped layer groups. The latter preserves the same stored-byte budget.
 - Checkpoints use safetensors. Hugging Face CLI model loading also requires safetensors and does not enable remote model code.
+- Remote Hugging Face model identifiers require an immutable 40-character `--revision` commit; local model paths are forced to `local_files_only`, and the optional WikiText calibration source is pinned to an immutable dataset commit.
 - Packed checkpoint names, shapes, dtypes, finite values and quantization scales are checked before changing the caller's model. This detects malformed archives; it does not authenticate weights or make arbitrary model Python safe. Load only architectures you trust and bound artifact sizes in services that accept uploads.
 
 ## Hugging Face simulation workflow

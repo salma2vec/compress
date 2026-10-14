@@ -204,7 +204,8 @@ def run(model_dir, dataset_file, pilot_path, output, device="cpu"):
     try:
         pilot = json.loads(Path(pilot_path).read_text())
         report["asset_sha256"] = validate_assets(model_dir, dataset_file, pilot)
-        tokenizer = AutoTokenizer.from_pretrained(
+        # model_dir is a hash-validated local snapshot and remote access is disabled.
+        tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
             str(model_dir), local_files_only=True, trust_remote_code=False
         )
         rows = parquet.read_table(dataset_file)["text"]
@@ -221,7 +222,7 @@ def run(model_dir, dataset_file, pilot_path, output, device="cpu"):
                 raise ValueError("Paragraph token count differs from recorded pilot")
             texts.append(text)
         report["paragraphs"] = selected
-        model = AutoModelForCausalLM.from_pretrained(
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
             str(model_dir), local_files_only=True, use_safetensors=True,
             trust_remote_code=False, dtype=torch.float32, attn_implementation="eager",
         ).eval()

@@ -1,5 +1,4 @@
 import random
-from typing import Optional
 
 
 def build_calibration_set(
@@ -27,7 +26,12 @@ def build_calibration_set(
 
     try:
         from datasets import load_dataset
-        ds = load_dataset("wikitext", "wikitext-103-raw-v1", split="train")
+        ds = load_dataset(
+            "Salesforce/wikitext",
+            "wikitext-103-raw-v1",
+            split="train",
+            revision="b08601e04326c79dfdd32d625aee71d232d685c3",
+        )
         texts = [row["text"] for row in ds if len(row["text"]) > min_length]
         if len(texts) >= n:
             return rng.sample(texts, n)

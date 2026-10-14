@@ -79,7 +79,8 @@ def prepare(model_dir, train_file, test_file, pilot_path, allocation_manifest_pa
     if file_hash(train_file) != pilot["asset_sha256"][train_key]:
         raise ValueError("Cached training asset changed")
     assets[train_key] = file_hash(train_file)
-    tokenizer = AutoTokenizer.from_pretrained(
+    # model_dir is a hash-validated local snapshot and remote access is disabled.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
         model_dir, local_files_only=True, trust_remote_code=False
     )
     train_rows = parquet.read_table(train_file)["text"].to_pylist()
@@ -143,7 +144,8 @@ def validate_manifest(
         if file_hash(path) != expected:
             raise ValueError(f"Changed cached asset: {name}")
     test_rows = parquet.read_table(test_file)["text"].to_pylist()
-    tokenizer = AutoTokenizer.from_pretrained(
+    # model_dir is a hash-validated local snapshot and remote access is disabled.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
         model_dir, local_files_only=True, trust_remote_code=False
     )
     holdout = manifest.get("holdout", {})
@@ -260,10 +262,11 @@ def run(
         )
         torch.set_num_threads(1)
         torch.manual_seed(42)
-        tokenizer = AutoTokenizer.from_pretrained(
+        # model_dir was hash-validated by validate_manifest; remote access is disabled.
+        tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
             model_dir, local_files_only=True, trust_remote_code=False
         )
-        model = AutoModelForCausalLM.from_pretrained(
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
             model_dir,
             local_files_only=True,
             use_safetensors=True,

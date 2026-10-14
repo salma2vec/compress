@@ -63,7 +63,10 @@ def prepare(model_dir, train_file, test_file, pilot_path, output):
     if file_hash(train_file) != pilot["asset_sha256"][train_key]:
         raise ValueError("Calibration asset changed")
     assets[train_key] = file_hash(train_file)
-    tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False)
+    # model_dir is a hash-validated local snapshot and remote access is disabled.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+        model_dir, local_files_only=True, trust_remote_code=False
+    )
     train_rows = parquet.read_table(train_file)["text"].to_pylist()
     test_rows = parquet.read_table(test_file)["text"].to_pylist()
     calibration = {str(seed): select_paragraphs(train_rows, tokenizer,
@@ -181,8 +184,11 @@ def run(model_dir, train_file, test_file, manifest_file, output, device="cpu"):
         train_rows, test_rows = validate_manifest(manifest, model_dir, train_file, test_file)
         torch.set_num_threads(1)
         torch.manual_seed(42)
-        tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False)
-        model = AutoModelForCausalLM.from_pretrained(
+        # model_dir was hash-validated by validate_assets; remote access is disabled.
+        tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+            model_dir, local_files_only=True, trust_remote_code=False
+        )
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
             model_dir, local_files_only=True, use_safetensors=True, trust_remote_code=False,
             dtype=torch.float32, attn_implementation="eager",
         ).eval()

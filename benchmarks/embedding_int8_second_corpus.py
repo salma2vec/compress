@@ -201,7 +201,8 @@ def prepare(
     wikitext_comparison = _wikitext_overlap(hashes, wikitext_train, wikitext_test)
     if wikitext_comparison["rows"] != preexposure["wikitext_rows_compared"]:
         raise ValueError("WikiText comparison population changed")
-    tokenizer = AutoTokenizer.from_pretrained(
+    # model_dir is a hash-validated local snapshot and remote access is disabled.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
         model_dir, local_files_only=True, trust_remote_code=False
     )
     rows = []
@@ -277,7 +278,8 @@ def validate_manifest(
     }
     if comparison != expected_comparison:
         raise ValueError("WikiText comparison population changed")
-    tokenizer = AutoTokenizer.from_pretrained(
+    # model_dir is a hash-validated local snapshot and remote access is disabled.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
         model_dir, local_files_only=True, trust_remote_code=False
     )
     rows = manifest["corpus"].get("documents")
@@ -392,10 +394,11 @@ def run(
         )
         torch.set_num_threads(1)
         torch.manual_seed(42)
-        tokenizer = AutoTokenizer.from_pretrained(
+        # model_dir was hash-validated by validate_manifest; remote access is disabled.
+        tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
             model_dir, local_files_only=True, trust_remote_code=False
         )
-        model = AutoModelForCausalLM.from_pretrained(
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
             model_dir,
             local_files_only=True,
             use_safetensors=True,

@@ -15,13 +15,21 @@ or:
 """
 
 import random
-import copy
-import torch
-from rich.table import Table
+
 from rich.console import Console
+from rich.table import Table
+
+from compress.huggingface_security import GPT2_REVISION, secure_pretrained_kwargs
 
 
-def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20, model_name: str = "gpt2", data_path: str = ""):
+def run_benchmark(
+    n_cal: int = 200,
+    n_test: int = 20,
+    n_batches: int = 20,
+    model_name: str = "gpt2",
+    model_revision: str = GPT2_REVISION,
+    data_path: str = "",
+):
     """Execute the full benchmark suite and print results to stdout.
 
     Args:
@@ -39,7 +47,11 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20, model
         return
 
     console.print("Loading tokenizer...")
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=False)
+    loader = secure_pretrained_kwargs(model_name, model_revision)
+    # Loader arguments are either an immutable commit or forced local-only.
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+        model_name, trust_remote_code=False, **loader
+    )
     tokenizer.pad_token = tokenizer.eos_token
 
     # Synthetic calibration corpus — deterministic, no external data dependency
@@ -85,12 +97,17 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20, model
         console.print(f"  Running: [bold]{name}[/bold]")
 
         console.print("    Loading model...")
-        model = AutoModelForCausalLM.from_pretrained(model_name, use_safetensors=True, trust_remote_code=False)
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
+            model_name, use_safetensors=True, trust_remote_code=False, **loader
+        )
 
         if quant_mode is not None:
+            from compress.compression.quantization import (
+                ActivationAwareQuantizer,
+                QuantizationConfig,
+            )
             from compress.profiling.activation_recorder import ActivationRecorder
             from compress.profiling.importance import ImportanceScorer
-            from compress.compression.quantization import ActivationAwareQuantizer, QuantizationConfig
 
             console.print("    Profiling activations...")
             recorder = ActivationRecorder(model)
@@ -113,13 +130,13 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20, model
             if keep_frac is not None:
                 from compress.compression.pruning import HeadPruner
                 pruner = HeadPruner(keep_fraction=keep_frac)
-                console.print(f"    Ablating weights in low-score attention modules...")
+                console.print("    Ablating weights in low-score attention modules...")
                 model = pruner.prune_heads(model, importance)
                 report = pruner.pruning_report()
                 console.print(f"    Pruned {report['n_pruned']} layers")
 
-        from compress.evaluation.perplexity import compute_perplexity
         from compress.evaluation.latency import measure_latency
+        from compress.evaluation.perplexity import compute_perplexity
 
         console.print("    Evaluating perplexity...")
         ppl = compute_perplexity(model, tokenizer, test_texts)
