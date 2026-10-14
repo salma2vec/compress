@@ -20,6 +20,8 @@ Python 3.11+ and PyTorch 2.6+ are required. The offline benchmark needs no downl
 
 A measured [CPU reference run](docs/reference-run.md) is included with its raw report.
 
+A [pretrained Pythia-70M / WikiText-2 experiment](docs/pretrained-validation.md) adds real held-out text, exact-storage shuffled controls, saved/reloaded checkpoints and Apple MPS evaluation. It retains a severe uniform-NF4 failure and explicitly distinguishes its small paragraph sample from the standard full-test benchmark.
+
 ## Two quantization paths
 
 | Path | Representation | Purpose |

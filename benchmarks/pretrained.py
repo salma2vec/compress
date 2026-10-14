@@ -14,6 +14,7 @@ import random
 import statistics
 import tempfile
 import time
+from importlib.metadata import version
 from pathlib import Path
 
 import pyarrow.parquet as parquet
@@ -132,6 +133,9 @@ def run(output, device="cpu", seed=42, calibration_count=32, evaluation_count=16
                           for p in Path(source).iterdir() if p.is_file()}},
         "python": platform.python_version(), "torch": torch.__version__,
         "transformers": transformers.__version__, "platform": platform.platform(),
+        "package_versions": {name: version(name) for name in
+                             ("torch", "transformers", "safetensors", "pyarrow", "huggingface-hub", "numpy")},
+        "harness_sha256": digest(Path(__file__).read_bytes()),
         "device": device, "threads": 1, "seed": seed, "dtype": "float32",
         "mps_cpu_fallback_enabled": False, "attention": "eager", "use_cache": False,
         "calibration_context": 128, "evaluation_context": 256, "evaluation_stride": 128,
@@ -215,6 +219,7 @@ def run(output, device="cpu", seed=42, calibration_count=32, evaluation_count=16
             })
             (output / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
             print(f"{name}: perplexity={math.exp(total_nll / count):.4f}, tensor_bytes={stored_bytes}", flush=True)
+            checkpoint.unlink()  # Metrics/hashes are retained; bound temporary disk use.
             del candidate
             gc.collect()
             if device == "mps":

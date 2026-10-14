@@ -1,0 +1,16 @@
+{
+  "run_source_commit": "0da9b3ac7a9621361033168cd9acac7a2f18e9a7",
+  "harness_sha256": "6cdaacaadca69c12bcb670a2bcace61df0feedacc91a97abd9ed36f50de3a692",
+  "report_sha256": "90b398e64a1419b629a27d11ba93953a5a028feffbbfe67479991499c6fac0d6",
+  "package_versions": {
+    "torch": "2.14.1",
+    "transformers": "5.19.0",
+    "safetensors": "0.8.0",
+    "pyarrow": "26.0.0",
+    "huggingface-hub": "2.2.0",
+    "numpy": "2.4.6"
+  },
+  "hardware": "Apple M1, 7 GPU cores, 8 GiB unified memory",
+  "source_notes": "Source/package provenance recorded after run from unchanged executed source snapshot and installed environment. Raw metrics are unchanged. Later harness changes only bound temporary disk use and add provenance fields.",
+  "parity_notes": "Supplementary CPU/MPS diagnostic on first held-out 128-token window. The public device_parity module makes the same diagnostic reusable with explicit paths."
+}

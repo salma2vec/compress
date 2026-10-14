@@ -1,0 +1,33 @@
+{
+  "model_revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "row": 187,
+  "tokens": 128,
+  "device": "mps",
+  "mps_cpu_fallback_enabled": false,
+  "atol": 0.0001,
+  "rtol": 0.0001,
+  "results": [
+    {
+      "method": "fp32",
+      "cpu_loss": 4.766875743865967,
+      "mps_loss": 4.766829490661621,
+      "max_abs_logit_difference": 0.0242919921875,
+      "logits_allclose": true
+    },
+    {
+      "method": "uniform_int8",
+      "cpu_loss": 4.769513130187988,
+      "mps_loss": 4.769495487213135,
+      "max_abs_logit_difference": 0.01611328125,
+      "logits_allclose": true
+    },
+    {
+      "method": "uniform_nf4",
+      "cpu_loss": 15.539417266845703,
+      "mps_loss": 15.53934097290039,
+      "max_abs_logit_difference": 0.01849365234375,
+      "logits_allclose": true
+    }
+  ]
+}
