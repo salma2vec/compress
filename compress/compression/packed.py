@@ -56,21 +56,58 @@ class PackedLinear(nn.Module):
         return torch.nn.functional.linear(inputs, weight, bias)
 
 
-def _prepare_packed_modules(model: nn.Module, config: QuantizationConfig):
+class PackedEmbedding(nn.Module):
+    """Inference-only row-scaled INT8 lookup; dequantize only requested rows.
+
+    This is opt-in and supports ordinary untied nn.Embedding modules. Renormalizing
+    max_norm embeddings and architectures accessing child .weight are unsupported.
+    """
+
+    def __init__(self, embedding: nn.Embedding):
+        super().__init__()
+        if type(embedding) is not nn.Embedding:
+            raise ValueError("Custom embedding subclasses require an explicit adapter")
+        if embedding.max_norm is not None:
+            raise ValueError("Embedding max_norm mutates weights and is unsupported")
+        if not embedding.weight.is_floating_point():
+            raise ValueError("Embedding weights must be floating point")
+        self.num_embeddings = embedding.num_embeddings
+        self.embedding_dim = embedding.embedding_dim
+        self.padding_idx = embedding.padding_idx
+        self.precision = "int8"
+        quantized, scale, _ = Int8Quantizer.quantize_tensor(embedding.weight.detach())
+        self.register_buffer("packed_weight", quantized)
+        self.register_buffer("scale", scale)
+        # An empty buffer preserves output dtype across state_dict and .to(dtype).
+        self.register_buffer("output_type", embedding.weight.detach().new_empty(0))
+
+    def forward(self, indices):
+        rows = torch.nn.functional.embedding(indices, self.packed_weight)
+        scales = torch.nn.functional.embedding(indices, self.scale[:, None])
+        return (rows.float() * scales).to(self.output_type.dtype)
+
+
+def _prepare_packed_modules(model: nn.Module, config: QuantizationConfig, pack_embeddings=False):
     """Construct every replacement before changing the supplied model."""
     QuantizationConfig.from_dict(config.to_dict())
-    modules = [(name, module) for name, module in model.named_modules() if isinstance(module, nn.Linear)]
+    if type(pack_embeddings) is not bool:
+        raise ValueError("pack_embeddings must be boolean")
+    kinds = (nn.Linear, nn.Embedding) if pack_embeddings else (nn.Linear,)
+    modules = [(name, module) for name, module in model.named_modules() if isinstance(module, kinds)]
     if not modules:
-        raise ValueError("No nn.Linear modules found")
+        raise ValueError("No supported modules found")
     parameter_ids = [id(p) for _, p in model.named_parameters(remove_duplicate=False)]
     for name, module in modules:
         if parameter_ids.count(id(module.weight)) > 1:
-            raise ValueError(f"Tied/shared linear weight is unsupported: {name}")
+            raise ValueError(f"Tied/shared weight is unsupported: {name}")
+        if isinstance(module, nn.Embedding) and config.layer_dtypes.get(name, "int8") != "int8":
+            raise ValueError("Packed embeddings require an explicit INT8 assignment")
         parent_name, _, leaf = name.rpartition('.')
         parent = model.get_submodule(parent_name) if parent_name else model
         if isinstance(parent, nn.MultiheadAttention):
             raise ValueError("MultiheadAttention accesses out_proj.weight directly; use fake quantization")
-    return [(name, PackedLinear(module, config.dtype_for(name)))
+    return [(name, PackedEmbedding(module) if isinstance(module, nn.Embedding)
+             else PackedLinear(module, config.dtype_for(name)))
             for name, module in modules]
 
 
@@ -84,13 +121,17 @@ def _install_packed_modules(model, replacements):
     return model
 
 
-def pack_model(model: nn.Module, config: QuantizationConfig):
+def pack_model(model: nn.Module, config: QuantizationConfig, *, pack_embeddings=False):
     """Replace ordinary nn.Linear modules in place; reject tied/shared weights.
 
     Some architectures directly access child .weight (e.g. MultiheadAttention).
     Such modules cannot use this portable backend; the caller must exclude them.
+
+    With pack_embeddings=True, ordinary untied nn.Embedding modules also use INT8
+    storage, independently of the linear precision default. Their explicit config
+    entries, if present, must be int8. Existing default packing is unchanged.
     """
-    model = _install_packed_modules(model, _prepare_packed_modules(model, config))
+    model = _install_packed_modules(model, _prepare_packed_modules(model, config, pack_embeddings))
     model._compress_quantization_policy = config.to_dict()
     return model
 
@@ -102,7 +143,9 @@ def tensor_bytes(model):
 
 def save_packed(model, path):
     spec = {name: module.precision for name, module in model.named_modules() if isinstance(module, PackedLinear)}
-    if not spec:
+    embeddings = {name: {"precision": module.precision, "padding_idx": module.padding_idx}
+                  for name, module in model.named_modules() if isinstance(module, PackedEmbedding)}
+    if not spec and not embeddings:
         raise ValueError("Model has no packed layers")
     policy = getattr(model, "_compress_quantization_policy", None)
     if policy is None:
@@ -110,9 +153,14 @@ def save_packed(model, path):
     config = QuantizationConfig.from_dict(policy)
     if any(config.dtype_for(name) != precision for name, precision in spec.items()):
         raise ValueError("Packed layers no longer match recorded quantization policy")
+    if any(config.layer_dtypes.get(name, "int8") != "int8" for name in embeddings):
+        raise ValueError("Packed embeddings no longer match recorded quantization policy")
     state = {name: tensor.detach().cpu().contiguous().clone() for name, tensor in model.state_dict().items()}
-    save_file(state, str(path), metadata={"format_version": "1", "layers": json.dumps(spec),
-                                       "quantization_policy": json.dumps(policy)})
+    metadata = {"format_version": "2" if embeddings else "1", "layers": json.dumps(spec),
+                "quantization_policy": json.dumps(policy)}
+    if embeddings:
+        metadata["embeddings"] = json.dumps(embeddings)
+    save_file(state, str(path), metadata=metadata)
 
 
 def load_packed(model, path):
@@ -123,8 +171,16 @@ def load_packed(model, path):
     """
     with safe_open(str(path), framework="pt", device="cpu") as handle:
         metadata = handle.metadata() or {}
-        if metadata.get("format_version") != "1":
+        archive_version = metadata.get("format_version")
+        if archive_version not in {"1", "2"}:
             raise ValueError("Unsupported packed checkpoint version")
+        embeddings = json.loads(metadata.get("embeddings", "null")) if archive_version == "2" else {}
+        if not isinstance(embeddings, dict) or not all(isinstance(name, str) for name in embeddings):
+            raise ValueError("Checkpoint embeddings must be a name-to-spec mapping")
+        if archive_version == "2" and not embeddings:
+            raise ValueError("Version 2 requires packed embedding metadata")
+        if archive_version == "1" and "embeddings" in metadata:
+            raise ValueError("Version 1 cannot describe packed embeddings")
         layers = json.loads(metadata.get("layers", "null"))
         if not isinstance(layers, dict) or not all(isinstance(name, str) for name in layers):
             raise ValueError("Checkpoint layers must be a name-to-precision mapping")
@@ -139,10 +195,23 @@ def load_packed(model, path):
     expected = {name for name, module in model.named_modules() if isinstance(module, nn.Linear)}
     if set(layers) != expected:
         raise ValueError("Checkpoint linear layers do not match model architecture")
+    if embeddings:
+        expected_embeddings = {name: module for name, module in model.named_modules()
+                               if isinstance(module, nn.Embedding)}
+        if set(embeddings) != set(expected_embeddings):
+            raise ValueError("Checkpoint embeddings do not match model architecture")
+        for name, module in expected_embeddings.items():
+            entry = embeddings[name]
+            if (not isinstance(entry, dict) or set(entry) != {"precision", "padding_idx"}
+                    or entry["precision"] != "int8"
+                    or (entry["padding_idx"] is not None and type(entry["padding_idx"]) is not int)
+                    or entry["padding_idx"] != module.padding_idx
+                    or config.layer_dtypes.get(name, "int8") != "int8"):
+                raise ValueError("Checkpoint embedding policy differs from model architecture")
     # Restore the archive exactly, including old intentionally unprotected NF4
     # experiments. New packing defaults must never silently change old weights.
     replacements = _prepare_packed_modules(
-        model, QuantizationConfig(layers, protect_output_head=False)
+        model, QuantizationConfig(layers, protect_output_head=False), bool(embeddings)
     )
     expected_state = dict(model.state_dict())
     for name, packed in replacements:

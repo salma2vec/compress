@@ -49,6 +49,24 @@ restored = load_packed(build_model(), 'model.safetensors')
 
 Packed conversion is inference-only and modifies the model in place. It rejects tied linear weights and `nn.MultiheadAttention`, which reads child weights directly. Models using GPT-2-style `Conv1D`, custom weight access, shared module aliases, or other fused projection APIs require an adapter; use the simulation path for those architectures. Validate outputs before deploying a new model family.
 
+For models with an ordinary, **untied** `nn.Embedding`, opt into INT8 input
+embedding storage as well:
+
+```python
+model = pack_model(model, QuantizationConfig({}, "int8"), pack_embeddings=True)
+save_packed(model, "model.safetensors")
+restored = load_packed(build_model(), "model.safetensors")
+```
+
+Embedding lookup dequantizes only the requested rows. It retains the original
+output dtype and padding-row values. Embeddings with `max_norm`, custom embedding
+subclasses, tied weights, or callers reading `.weight` require an adapter. Explicit
+embedding entries in the precision plan must be INT8; linear assignments keep
+their existing meaning. This option writes version-2 checkpoint metadata. The
+default remains linear-only packing and writes the original version-1 format;
+both formats can be loaded. Smaller persistent tensors do not establish lower
+latency, peak memory, or preserved language-model quality: measure those separately.
+
 Declared output heads now receive at least INT8 by default. The default exact
 module path is `lm_head`; set `output_head_names` for another architecture. This
 follows the [recorded NF4 failure diagnosis](docs/failure-diagnosis.md): protecting
