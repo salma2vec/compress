@@ -2,14 +2,14 @@
 useDefault = true
 
 # Public asset checksums from the pinned Pythia snapshot, not credentials.
-# Require one of these three exact report paths and one of these three exact hashes.
+# Require an exact benchmark source/result path and one of these three exact hashes.
 [[rules]]
 id = "generic-api-key"
 
 [[rules.allowlists]]
 description = "Pinned public tokenizer asset SHA256 values"
 condition = "AND"
-paths = ['''^benchmarks/results/(pythia70m-wikitext2-mps-seed42|pythia70m-nf4-diagnosis|pythia70m-embedding-int8-cpu-summary)\.json$''']
+paths = ['''^benchmarks/(embedding_int8_second_corpus\.py|results/(pythia70m-wikitext2-mps-seed42|pythia70m-nf4-diagnosis|pythia70m-embedding-int8-cpu-summary|pythia70m-embedding-int8-second-corpus-cpu-summary)\.json)$''']
 regexTarget = "secret"
 regexes = [
   '''^70e38394e494931c6f773ba41e19460dd4436526b852207367f04341b4066d3f$''',
