@@ -7,7 +7,7 @@ import json
 
 import torch
 from safetensors import safe_open
-from safetensors.torch import load_file, save_file
+from safetensors.torch import save_file
 from torch import nn
 
 from .quantization import Int8Quantizer, NF4Quantizer, QuantizationConfig
@@ -56,12 +56,8 @@ class PackedLinear(nn.Module):
         return torch.nn.functional.linear(inputs, weight, bias)
 
 
-def pack_model(model: nn.Module, config: QuantizationConfig):
-    """Replace ordinary nn.Linear modules in place; reject tied/shared weights.
-
-    Some architectures directly access child .weight (e.g. MultiheadAttention).
-    Such modules cannot use this portable backend; the caller must exclude them.
-    """
+def _prepare_packed_modules(model: nn.Module, config: QuantizationConfig):
+    """Construct every replacement before changing the supplied model."""
     QuantizationConfig(dict(config.layer_dtypes), config.default_dtype)
     modules = [(name, module) for name, module in model.named_modules() if isinstance(module, nn.Linear)]
     if not modules:
@@ -74,14 +70,27 @@ def pack_model(model: nn.Module, config: QuantizationConfig):
         parent = model.get_submodule(parent_name) if parent_name else model
         if isinstance(parent, nn.MultiheadAttention):
             raise ValueError("MultiheadAttention accesses out_proj.weight directly; use fake quantization")
-    for name, module in modules:
-        packed = PackedLinear(module, config.layer_dtypes.get(name, config.default_dtype))
+    return [(name, PackedLinear(module, config.layer_dtypes.get(name, config.default_dtype)))
+            for name, module in modules]
+
+
+def _install_packed_modules(model, replacements):
+    for name, packed in replacements:
         if not name:
             return packed
         parent_name, _, leaf = name.rpartition('.')
         parent = model.get_submodule(parent_name) if parent_name else model
         setattr(parent, leaf, packed)
     return model
+
+
+def pack_model(model: nn.Module, config: QuantizationConfig):
+    """Replace ordinary nn.Linear modules in place; reject tied/shared weights.
+
+    Some architectures directly access child .weight (e.g. MultiheadAttention).
+    Such modules cannot use this portable backend; the caller must exclude them.
+    """
+    return _install_packed_modules(model, _prepare_packed_modules(model, config))
 
 
 def tensor_bytes(model):
@@ -98,15 +107,42 @@ def save_packed(model, path):
 
 
 def load_packed(model, path):
-    """Restore into a caller-created matching architecture without pickle objects."""
+    """Restore a validated tensor archive into a trusted caller-created model.
+
+    Checkpoint schema errors leave the caller's modules and tensors unchanged.
+    This does not authenticate weights or sandbox the supplied model's Python.
+    """
     with safe_open(str(path), framework="pt", device="cpu") as handle:
         metadata = handle.metadata() or {}
-    if metadata.get("format_version") != "1":
-        raise ValueError("Unsupported packed checkpoint version")
-    layers = json.loads(metadata["layers"])
+        if metadata.get("format_version") != "1":
+            raise ValueError("Unsupported packed checkpoint version")
+        layers = json.loads(metadata.get("layers", "null"))
+        if not isinstance(layers, dict) or not all(isinstance(name, str) for name in layers):
+            raise ValueError("Checkpoint layers must be a name-to-precision mapping")
+        # Read metadata and tensors through one handle; do not reopen a changed path.
+        state = {name: handle.get_tensor(name) for name in handle.keys()}
     expected = {name for name, module in model.named_modules() if isinstance(module, nn.Linear)}
     if set(layers) != expected:
         raise ValueError("Checkpoint linear layers do not match model architecture")
-    model = pack_model(model, QuantizationConfig(layers))
-    model.load_state_dict(load_file(str(path)), strict=True)
+    replacements = _prepare_packed_modules(model, QuantizationConfig(layers))
+    expected_state = dict(model.state_dict())
+    for name, packed in replacements:
+        prefix = f"{name}." if name else ""
+        expected_state = {key: value for key, value in expected_state.items()
+                          if not key.startswith(prefix)}
+        expected_state.update({prefix + key: value for key, value in packed.state_dict().items()})
+    if set(state) != set(expected_state):
+        raise ValueError("Checkpoint tensor names do not match model architecture")
+    for name, target in expected_state.items():
+        source = state[name]
+        if source.shape != target.shape or source.dtype != target.dtype:
+            raise ValueError(f"Checkpoint tensor shape/dtype mismatch: {name}")
+        if (source.is_floating_point() or source.is_complex()) and not bool(torch.isfinite(source).all()):
+            raise ValueError(f"Checkpoint contains nonfinite tensor: {name}")
+    for name, packed in replacements:
+        prefix = f"{name}." if name else ""
+        if packed.precision != "fp16" and not bool((state[prefix + "scale"] > 0).all()):
+            raise ValueError(f"Checkpoint contains nonpositive quantization scale: {name}")
+    model = _install_packed_modules(model, replacements)
+    model.load_state_dict(state, strict=True)
     return model

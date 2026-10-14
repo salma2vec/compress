@@ -16,7 +16,7 @@ python -m pytest -q
 python -m benchmarks.offline --seed 42 --steps 100 --output results/offline.json
 ```
 
-Python 3.11+ and PyTorch 2.6+ are required. The offline benchmark needs no downloaded model, dataset, API key, or accelerator. It trains a small causal attention model on a synthetic cyclic-symbol task, uses separate calibration and evaluation sequences, and writes configuration, corpus hashes, raw timing samples, likelihoods, checkpoint sizes and tensor storage bytes. This is a functional integration experiment, not a pretrained-language-model benchmark.
+Python 3.11+, PyTorch 2.13+ and Transformers 5.10+ are required. The offline benchmark needs no downloaded model, dataset, API key, or accelerator. It trains a small causal attention model on a synthetic cyclic-symbol task, uses separate calibration and evaluation sequences, and writes configuration, corpus hashes, raw timing samples, likelihoods, checkpoint sizes and tensor storage bytes. This is a functional integration experiment, not a pretrained-language-model benchmark.
 
 A measured [CPU reference run](docs/reference-run.md) is included with its raw report.
 
@@ -57,6 +57,7 @@ Packed conversion is inference-only and modifies the model in place. It rejects 
 - Generation latency synchronizes CUDA/MPS and counts tokens actually emitted, including early stopping. Raw samples accompany the summary.
 - The offline comparison includes FP32, uniform INT8, uniform NF4, mixed precision and a mixed assignment shuffled within equal-shaped layer groups. The latter preserves the same stored-byte budget.
 - Checkpoints use safetensors. Hugging Face CLI model loading also requires safetensors and does not enable remote model code.
+- Packed checkpoint names, shapes, dtypes, finite values and quantization scales are checked before changing the caller's model. This detects malformed archives; it does not authenticate weights or make arbitrary model Python safe. Load only architectures you trust and bound artifact sizes in services that accept uploads.
 
 ## Hugging Face simulation workflow
 

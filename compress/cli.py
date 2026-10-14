@@ -29,10 +29,10 @@ def profile(
     from compress.profiling.calibration_data import build_calibration_set
 
     console.print(f"[bold]Loading model:[/bold] {model}")
-    tokenizer = AutoTokenizer.from_pretrained(model)
+    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=False)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True)
+    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True, trust_remote_code=False)
 
     if data:
         with open(data) as f:
@@ -73,8 +73,8 @@ def quantize(
     from compress.compression.mixed_precision import MixedPrecisionConfig
 
     console.print(f"[bold]Loading model:[/bold] {model}")
-    tokenizer = AutoTokenizer.from_pretrained(model)
-    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True)
+    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=False)
+    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True, trust_remote_code=False)
 
     console.print(f"Loading profile from {profile_path}")
     with open(profile_path) as f:
@@ -119,10 +119,10 @@ def evaluate(
     from compress.profiling.calibration_data import build_calibration_set
 
     console.print(f"[bold]Loading model:[/bold] {model}")
-    tokenizer = AutoTokenizer.from_pretrained(model)
+    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=False)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True)
+    lm = AutoModelForCausalLM.from_pretrained(model, use_safetensors=True, trust_remote_code=False)
 
     if data:
         with open(data) as f:

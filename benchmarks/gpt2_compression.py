@@ -39,7 +39,7 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20, model
         return
 
     console.print("Loading tokenizer...")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=False)
     tokenizer.pad_token = tokenizer.eos_token
 
     # Synthetic calibration corpus — deterministic, no external data dependency
@@ -85,7 +85,7 @@ def run_benchmark(n_cal: int = 200, n_test: int = 20, n_batches: int = 20, model
         console.print(f"  Running: [bold]{name}[/bold]")
 
         console.print("    Loading model...")
-        model = AutoModelForCausalLM.from_pretrained(model_name, use_safetensors=True)
+        model = AutoModelForCausalLM.from_pretrained(model_name, use_safetensors=True, trust_remote_code=False)
 
         if quant_mode is not None:
             from compress.profiling.activation_recorder import ActivationRecorder
